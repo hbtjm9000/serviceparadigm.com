@@ -37,3 +37,8 @@ pnpm-debug.log*
 
 # Credentials (keep ga4-credentials.json ignored)
 ga4-credentials.json
+
+# Beads / Dolt files (added by bd init)
+.dolt/
+*.db
+.beads-credential-key
