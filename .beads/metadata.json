@@ -1,0 +1,7 @@
+{
+  "database": "dolt",
+  "backend": "dolt",
+  "dolt_mode": "embedded",
+  "dolt_database": "paradigm_website",
+  "project_id": "fc4ee6a6-10d1-4888-9bfb-a1493009314f"
+}
