@@ -4,6 +4,7 @@ import Hero from '../components/Hero.astro';
 import ServiceCard from '../components/ServiceCard.astro';
 import Button from '../components/Button.astro';
 import { getServices } from '../utils/content-loader';
+import { BOOKING_URL } from '../config';
 
 const services = getServices();
 ---
@@ -169,10 +170,10 @@ const services = getServices();
       </p>
       <div class="flex flex-wrap gap-4 justify-center">
         <a 
-          href="/contact"
+          href={BOOKING_URL}
           class="inline-flex items-center gap-2 bg-white text-primary uppercase text-sm font-space font-semibold tracking-widest px-8 py-4 hover:bg-surface transition-colors duration-200"
         >
-          Book a Consultation
+          Book a Meeting
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <path d="M5 12h14M12 5l7 7-7 7"/>
           </svg>

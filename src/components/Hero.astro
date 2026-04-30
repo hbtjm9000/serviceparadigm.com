@@ -12,6 +12,9 @@ const {
   subtitle = 'IT solutions, digital transformation, and AI integration for Caribbean businesses.',
   tag = 'Jamaica · Caribbean · North America',
 } = Astro.props;
+
+const bookingUrl = import.meta.env.PUBLIC_BOOKING_URL || '/contact';
+---
 ---
 
 <section 
@@ -69,16 +72,16 @@ const {
         {subtitle}
       </p>
 
-      <!-- CTAs -->
+<!-- CTAs -->
       <div class:list={[
         'flex flex-wrap gap-4',
         align === 'center' ? 'justify-center' : 'justify-start'
       ]}>
         <a 
-          href="/contact"
+          href={bookingUrl}
           class="inline-flex items-center gap-2 bg-primary text-white uppercase text-sm font-space font-semibold tracking-widest px-8 py-4 hover:bg-secondary transition-colors duration-200"
         >
-          Book a Consultation
+          Book a Meeting
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true">
             <path d="M5 12h14M12 5l7 7-7 7"/>
           </svg>

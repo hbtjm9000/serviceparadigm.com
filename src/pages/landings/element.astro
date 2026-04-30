@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Button from '../../components/Button.astro';
+import { BOOKING_URL } from '../../config';
 ---
 
 <BaseLayout 
@@ -24,8 +25,8 @@ import Button from '../../components/Button.astro';
           Elements are modular AI and automation building blocks — designed so Caribbean businesses can ship production-grade systems in days, not months.
         </p>
         <div class="flex flex-wrap gap-4">
-          <Button href="/contact" label="Request Early Access" icon={true} />
-          <Button variant="secondary" href="/contact" label="Book a Demo" />
+          <Button href={BOOKING_URL} label="Request Early Access" icon={true} />
+          <Button variant="secondary" href={BOOKING_URL} label="Book a Demo" />
         </div>
       </div>
     </div>
@@ -46,7 +47,7 @@ import Button from '../../components/Button.astro';
           <p class="font-outfit text-on-surface-variant text-lg leading-relaxed mb-8">
             Each Element is independently deployable, composable with others, and backed by our SLA. Mix and match to build exactly what your business needs.
           </p>
-          <Button variant="ghost" href="/contact" label="Learn How It Works" icon={true} />
+          <Button variant="ghost" href={BOOKING_URL} label="Learn How It Works" icon={true} />
         </div>
         <div class="bg-surface p-8">
           <p class="font-space text-xs uppercase tracking-widest text-on-surface-variant mb-6">Available Elements</p>
@@ -106,8 +107,8 @@ import Button from '../../components/Button.astro';
         Join the waitlist for early access or book a technical walkthrough with our team.
       </p>
       <div class="flex flex-wrap gap-4 justify-center">
-        <Button href="/contact" label="Request Early Access" icon={true} />
-        <Button variant="secondary" href="/contact" label="Talk to an Engineer" />
+        <Button href={BOOKING_URL} label="Request Early Access" icon={true} />
+        <Button variant="secondary" href={BOOKING_URL} label="Talk to an Engineer" />
       </div>
     </div>
   </section>

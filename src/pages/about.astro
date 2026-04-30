@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Button from '../components/Button.astro';
+import { BOOKING_URL } from '../config';
 ---
 
 <BaseLayout 
@@ -114,7 +115,7 @@ import Button from '../components/Button.astro';
       <p class="font-outfit text-on-surface-variant text-lg max-w-lg mx-auto mb-10 leading-relaxed">
         We're always looking for talented people and interesting projects. Let's talk.
       </p>
-      <Button href="/contact" label="Get in Touch" icon={true} />
+      <Button href={BOOKING_URL} label="Get in Touch" icon={true} />
     </div>
   </section>
 </BaseLayout>

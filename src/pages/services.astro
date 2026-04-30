@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import ServiceCard from '../components/ServiceCard.astro';
 import Button from '../components/Button.astro';
 import { getServices } from '../utils/content-loader';
+import { BOOKING_URL } from '../config';
 
 const services = getServices();
 ---
@@ -50,7 +51,7 @@ const services = getServices();
       <p class="font-outfit text-white/80 text-lg max-w-xl mx-auto mb-10 leading-relaxed">
         Book a free 30-minute discovery call. We'll diagnose the problem and recommend next steps — no obligation.
       </p>
-      <Button variant="secondary" href="/contact" label="Book Discovery Call" icon={true} />
+      <Button variant="secondary" href={BOOKING_URL} label="Book Discovery Call" icon={true} />
     </div>
   </section>
 </BaseLayout>
