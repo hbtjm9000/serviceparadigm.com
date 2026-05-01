@@ -63,7 +63,7 @@ const services: Service[] = [
 
 <BaseLayout title="Services | Paradigm IT Services">
   <Header />
-  <main>
+  <main id="main">
     <!-- Hero Section -->
     <section class="bg-tertiary text-on-tertiary py-20 lg:py-28">
       <div class="max-w-7xl mx-auto px-6 lg:px-8">
@@ -125,6 +125,10 @@ const services: Service[] = [
               <img 
                 src={service.image} 
                 alt={service.title}
+                width="800"
+                height="600"
+                loading="lazy"
+                decoding="async"
                 class="w-full h-full object-cover"
               />
             </div>

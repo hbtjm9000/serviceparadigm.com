@@ -62,7 +62,12 @@ jobs:
             http://localhost:4321/
             http://localhost:4321/about/
             http://localhost:4321/services/
+            http://localhost:4321/elements/
+            http://localhost:4321/insights/
             http://localhost:4321/contact/
+            http://localhost:4321/privacy/
+            http://localhost:4321/terms/
+            http://localhost:4321/accessibility/
           budgetPath: .lighthouseci/lighthouse-budget.json
           uploadArtifacts: true
           temporaryPublicStorage: true

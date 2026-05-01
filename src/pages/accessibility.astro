@@ -1,0 +1,41 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Accessibility Statement"
+  description="Accessibility statement for Paradigm IT Services website."
+>
+  <main class="bg-surface min-h-screen">
+    <section class="py-24 lg:py-32">
+      <div class="max-w-3xl mx-auto px-6 lg:px-8">
+        <h1 class="font-serif text-4xl lg:text-5xl text-on-surface">Accessibility</h1>
+        <div class="mt-8 space-y-6 font-body text-on-surface/80 leading-relaxed">
+          <p><strong>Last updated:</strong> May 2026</p>
+          
+          <h2 class="font-sans text-xl text-on-surface font-medium mt-8">Our Commitment</h2>
+          <p>Paradigm IT Services is committed to ensuring digital accessibility for people with disabilities. We continually improve the user experience for everyone and apply relevant accessibility standards.</p>
+          
+          <h2 class="font-sans text-xl text-on-surface font-medium mt-8">Conformance Status</h2>
+          <p>We aim to conform to the <a href="https://www.w3.org/TR/WCAG21/" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">Web Content Accessibility Guidelines (WCAG) 2.1</a> at Level AA. These guidelines explain how to make web content more accessible for people with disabilities and more user-friendly for all.</p>
+          
+          <h2 class="font-sans text-xl text-on-surface font-medium mt-8">Measures Taken</h2>
+          <ul class="list-disc pl-6 space-y-2">
+            <li>All images include descriptive alt text</li>
+            <li>Forms have associated labels for screen reader support</li>
+            <li>Semantic HTML elements are used throughout</li>
+            <li>Color contrast meets WCAG AA standards</li>
+            <li>Keyboard navigation is supported</li>
+            <li>Content is resizable up to 200% without loss of functionality</li>
+          </ul>
+          
+          <h2 class="font-sans text-xl text-on-surface font-medium mt-8">Known Limitations</h2>
+          <p>We are aware that some third-party embedded content may not yet be fully accessible. We are working with vendors to address these gaps.</p>
+          
+          <h2 class="font-sans text-xl text-on-surface font-medium mt-8">Feedback</h2>
+          <p>If you experience difficulty accessing any part of this website, contact us at <a href="mailto:hello@serviceparadigm.com" class="text-primary hover:underline">hello@serviceparadigm.com</a>. We take accessibility feedback seriously and will respond within 5 business days.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+</BaseLayout>
