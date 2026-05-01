@@ -15,7 +15,9 @@
       <!-- Form -->
       <form @submit.prevent="handleSubmit" class="mt-10 flex flex-col sm:flex-row gap-4 max-w-lg mx-auto">
         <div class="flex-1 relative">
+          <label for="newsletter-email" class="sr-only">Email address</label>
           <input 
+            id="newsletter-email"
             v-model="email"
             type="email" 
             placeholder="ENCRYPTED EMAIL ADDRESS"
