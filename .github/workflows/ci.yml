@@ -23,6 +23,12 @@ jobs:
       - name: Type check
         run: bun run astro check
 
+      - name: Lint
+        run: bun run lint
+
+      - name: Unit tests
+        run: bun run test
+
       - name: Build
         run: bun run build
 
@@ -91,3 +97,25 @@ jobs:
         with:
           args: --verbose http://localhost:4321/
           fail: true
+
+  e2e:
+    name: Playwright E2E
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Install Playwright browsers
+        run: bunx playwright install --with-deps chromium
+
+      - name: Build
+        run: bun run build
+
+      - name: Run E2E tests
+        run: bun run preview --port 4321 & sleep 5 && bunx playwright test && kill %1

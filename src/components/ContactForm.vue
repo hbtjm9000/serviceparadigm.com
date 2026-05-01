@@ -119,7 +119,7 @@ const submitted = ref(false);
 const error = ref('');
 
 // Form submission endpoint - set after deploying Apps Script Web App
-const FORM_ENDPOINT = ''; // e.g. 'https://script.google.com/macros/s/.../exec'
+const FORM_ENDPOINT = ''; // e.g. 'https://script.google.com/macros/s/AKfycbzeIqCSz4HNpY7SXsXywVRwY8DNubVA-Xw2zR8w0ZO3FyMfNhunUDhyG90mujCYb82f/exec'
 
 const handleSubmit = async () => {
   isSubmitting.value = true;
