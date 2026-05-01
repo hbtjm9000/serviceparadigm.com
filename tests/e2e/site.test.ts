@@ -106,6 +106,17 @@ test.describe('About Page', () => {
   });
 });
 
+test.describe('Footer', () => {
+  test('LinkedIn link points to correct company page', async ({ page }) => {
+    await page.goto('/');
+
+    const linkedinLink = page.locator('footer a[aria-label="LinkedIn"]');
+    await expect(linkedinLink).toBeVisible();
+    const href = await linkedinLink.getAttribute('href');
+    expect(href).toBe('https://www.linkedin.com/company/paradigmitjm/');
+  });
+});
+
 test.describe('SEO & Meta', () => {
   test('sitemap is accessible', async ({ page }) => {
     const response = await page.goto('/sitemap-index.xml');
