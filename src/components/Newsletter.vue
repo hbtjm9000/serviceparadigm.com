@@ -44,8 +44,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-// Newsletter endpoint - set after deploying Apps Script Web App
-const NEWSLETTER_ENDPOINT = ''; // e.g. 'https://script.google.com/macros/s/.../exec'
+// Newsletter endpoint - Google Apps Script Web App
+const NEWSLETTER_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzeIqCSz4HNpY7SXsXywVRwY8DNubVA-Xw2zR8w0ZO3FyMfNhunUDhyG90mujCYb82f/exec';
 
 const email = ref('');
 const isSubmitting = ref(false);
