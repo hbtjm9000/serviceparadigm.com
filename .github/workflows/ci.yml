@@ -103,9 +103,41 @@ jobs:
           args: --verbose http://localhost:4321/
           fail: true
 
+  p0-critical:
+    name: P0 Critical Tests
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Install Playwright browsers
+        run: bunx playwright install --with-deps chromium
+
+      - name: Build
+        run: bun run build
+
+      - name: Run preview server
+        run: bun run preview &
+        env:
+          PORT: 4321
+
+      - name: Wait for preview
+        run: npx --yes wait-on http://localhost:4321 --timeout 30000
+
+      - name: Run P0 critical tests
+        run: bunx playwright test tests/p0-critical.spec.ts
+
   e2e:
     name: Playwright E2E
     runs-on: ubuntu-latest
+    needs: build
     steps:
       - name: Checkout
         uses: actions/checkout@v4

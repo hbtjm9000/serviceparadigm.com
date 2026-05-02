@@ -19,7 +19,7 @@
             id="newsletter-email"
             v-model="email"
             type="email"
-            placeholder="ENCRYPTED EMAIL ADDRESS"
+            placeholder="Your Professional Email"
             required
             class="w-full bg-white/10 border-0 focus:ring-0 text-white font-body placeholder:text-white/40 px-6 py-4"
           />
@@ -32,6 +32,17 @@
           {{ isSubmitting ? 'SUBMITTING...' : 'SUBMIT' }}
         </button>
       </form>
+
+      <!-- Success state -->
+      <div v-if="submitted" class="mt-8 flex flex-col items-center gap-3">
+        <div class="w-12 h-12 rounded-none bg-white/10 border border-white/20 flex items-center justify-center">
+          <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+        <p class="font-body text-lg text-white">Successfully connected.</p>
+        <p class="font-body text-sm text-white/60">We'll be in touch.</p>
+      </div>
     </div>
 
     <!-- Decorative background text -->
