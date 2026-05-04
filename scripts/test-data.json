@@ -1,0 +1,26 @@
+{
+  "experimentKey": "hero",
+  "variants": {
+    "v1-baseline": {
+      "label": "Engineering the Next Paradigm",
+      "headline": "The Digital Infrastructure of Tomorrow.",
+      "headline_highlight": "Tomorrow.",
+      "cta_text": "Start Your Transformation",
+      "subheadline": "We don't sell tools — we engineer outcomes. Strategy, architecture, and precision-built systems that last. No hype. No vendor lock-in. Just results that compound."
+    },
+    "v2-editorial": {
+      "label": "Editorial Precision",
+      "headline": "Your Technology, Editorialized.",
+      "headline_highlight": "Editorialized.",
+      "cta_text": "Read the Method",
+      "subheadline": "We edit out the noise. Keep the signal. Precision systems for enterprises that value clarity over buzzwords, and outcomes over optics."
+    },
+    "v3-direct": {
+      "label": "Direct Engineering",
+      "headline": "Technology That Works.",
+      "headline_highlight": "Works.",
+      "cta_text": "Start Now",
+      "subheadline": "No buzzwords. No vendor pitches. Just systems that run. We build infrastructure that compounds value — not technical debt."
+    }
+  }
+}

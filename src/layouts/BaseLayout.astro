@@ -37,6 +37,14 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <title>{title}</title>
     <!-- GrowthBook Feature Flag SDK -->
     <script src="https://cdn.growthbook.io/growthbook.min.js" defer></script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SLDE3K52MY"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-SLDE3K52MY');
+    </script>
   </head>
   <body class="bg-surface text-on-surface antialiased">
     <!-- Skip to main content for keyboard users (WCAG 2.1 AA) -->

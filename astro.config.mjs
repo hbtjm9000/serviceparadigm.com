@@ -5,8 +5,15 @@ import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
   site: 'https://serviceparadigm.com',
-  integrations: [vue(), sitemap()],
+  integrations: [
+    vue({
+      experimental: {
+        clientSideRouting: true,
+      },
+    }),
+    sitemap(),
+  ],
   vite: {
-    plugins: [tailwindcss()]
-  }
+    plugins: [tailwindcss()],
+  },
 });

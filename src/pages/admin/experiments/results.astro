@@ -1,0 +1,554 @@
+---
+layout: null
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Results Dashboard - Paradigm CMS Admin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body class="bg-gray-50">
+  <script>
+    // Check authentication on page load
+    if (typeof window !== 'undefined' && localStorage.getItem('admin_auth_token') !== 'paradigm2026') {
+      window.location.href = '/admin/login';
+    }
+  </script>
+  <div class="min-h-screen p-8">
+    <!-- Header -->
+    <div class="max-w-7xl mx-auto">
+      <div class="flex justify-between items-center mb-8">
+        <div>
+          <div class="flex items-center gap-3">
+            <a href="/admin/experiments" class="text-gray-400 hover:text-gray-600">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+            </a>
+            <h1 class="text-3xl font-bold text-gray-900">Results Dashboard</h1>
+          </div>
+          <p class="text-sm text-gray-500 mt-1">Statistical analysis and winner promotion</p>
+        </div>
+        <div class="flex items-center gap-4">
+          <select id="days-select" class="rounded-md border-gray-300 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500">
+            <option value="7">Last 7 days</option>
+            <option value="14">Last 14 days</option>
+            <option value="30" selected>Last 30 days</option>
+            <option value="90">Last 90 days</option>
+            <option value="all">All time</option>
+          </select>
+          <button onclick="loadAnalysis()" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            Refresh
+          </button>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div id="loading" class="text-center py-12">
+        <svg class="animate-spin h-8 w-8 text-blue-600 mx-auto" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+        </svg>
+        <p class="mt-4 text-gray-500">Loading analysis...</p>
+      </div>
+
+      <!-- Error State -->
+      <div id="error" class="hidden bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+        <div class="flex">
+          <div class="flex-shrink-0">
+            <svg class="h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <div class="ml-3">
+            <h3 class="text-sm font-medium text-red-800">Failed to load analysis</h3>
+            <p id="error-message" class="mt-1 text-sm text-red-700"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Winner Banner -->
+      <div id="winner-banner" class="hidden bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <svg class="w-8 h-8 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+            </svg>
+            <div>
+              <h3 class="text-lg font-semibold text-green-800">Statistically Significant Winner Found!</h3>
+              <p id="winner-text" class="text-sm text-green-700"></p>
+            </div>
+          </div>
+          <button onclick="promoteWinner()" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700">
+            Promote to Default
+          </button>
+        </div>
+      </div>
+
+      <!-- No Data State -->
+      <div id="no-data" class="hidden text-center py-12">
+        <svg class="w-16 h-16 text-gray-300 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+        </svg>
+        <h3 class="mt-4 text-lg font-medium text-gray-900">No data yet</h3>
+        <p class="mt-2 text-sm text-gray-500">Record some exposures and conversions to see analysis</p>
+        <div class="mt-6">
+          <button onclick="showManualEntry()" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700">
+            Record Data Manually
+          </button>
+        </div>
+      </div>
+
+      <!-- Results Grid -->
+      <div id="results-grid" class="hidden space-y-6">
+        <!-- Summary Cards -->
+        <div class="grid gap-6 md:grid-cols-3">
+          <div class="bg-white rounded-lg shadow border border-gray-200 p-6">
+            <div class="text-sm font-medium text-gray-500">Total Exposures</div>
+            <div id="total-exposures" class="mt-2 text-3xl font-bold text-gray-900">0</div>
+          </div>
+          <div class="bg-white rounded-lg shadow border border-gray-200 p-6">
+            <div class="text-sm font-medium text-gray-500">Total Conversions</div>
+            <div id="total-conversions" class="mt-2 text-3xl font-bold text-gray-900">0</div>
+          </div>
+          <div class="bg-white rounded-lg shadow border border-gray-200 p-6">
+            <div class="text-sm font-medium text-gray-500">Overall Conversion Rate</div>
+            <div id="overall-rate" class="mt-2 text-3xl font-bold text-gray-900">0%</div>
+          </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="grid gap-6 md:grid-cols-2">
+          <!-- Conversion Rate Comparison Chart -->
+          <div class="bg-white rounded-lg shadow border border-gray-200 p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Conversion Rate by Variant</h3>
+            <canvas id="conversion-rate-chart" height="200"></canvas>
+          </div>
+          <!-- Exposures vs Conversions Chart -->
+          <div class="bg-white rounded-lg shadow border border-gray-200 p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Exposures vs Conversions</h3>
+            <canvas id="funnel-chart" height="200"></canvas>
+          </div>
+        </div>
+
+        <!-- Variant Analysis Cards -->
+        <div class="bg-white rounded-lg shadow border border-gray-200 overflow-hidden">
+          <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
+            <h2 class="text-lg font-semibold text-gray-900">Variant Performance</h2>
+          </div>
+          <div id="variant-cards" class="divide-y divide-gray-200">
+            <!-- Variant cards inserted by JavaScript -->
+          </div>
+        </div>
+
+        <!-- Manual Entry Section -->
+        <div class="bg-white rounded-lg shadow border border-gray-200 overflow-hidden">
+          <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
+            <h2 class="text-lg font-semibold text-gray-900">Manual Data Entry</h2>
+            <p class="text-sm text-gray-500 mt-1">Record exposures and conversions for a variant</p>
+          </div>
+          <div class="px-6 py-4">
+            <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Variant</label>
+                <select id="manual-variant" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                  <!-- Populated from variants -->
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Date</label>
+                <input type="date" id="manual-date" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Exposures</label>
+                <input type="number" id="manual-exposures" min="0" placeholder="0" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Conversions</label>
+                <input type="number" id="manual-conversions" min="0" placeholder="0" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" />
+              </div>
+              <div class="flex items-end">
+                <button onclick="recordManualData()" class="w-full inline-flex justify-center items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700">
+                  Record
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let analysisData = null;
+    let variants = {};
+    let conversionRateChart = null;
+    let funnelChart = null;
+
+    // Destroy charts before re-rendering
+    function destroyCharts() {
+      if (conversionRateChart) {
+        conversionRateChart.destroy();
+        conversionRateChart = null;
+      }
+      if (funnelChart) {
+        funnelChart.destroy();
+        funnelChart = null;
+      }
+    }
+
+    // Initialize charts
+    function initCharts(analysis) {
+      destroyCharts();
+
+      // Conversion Rate Bar Chart
+      const ctx1 = document.getElementById('conversion-rate-chart').getContext('2d');
+      conversionRateChart = new Chart(ctx1, {
+        type: 'bar',
+        data: {
+          labels: analysis.map(r => r.variantKey),
+          datasets: [{
+            label: 'Conversion Rate (%)',
+            data: analysis.map(r => (r.conversionRate * 100).toFixed(2)),
+            backgroundColor: analysis.map(r => 
+              r.variantKey === analysisData.winner ? 'rgb(34, 197, 94)' : 
+              !r.pValue ? 'rgb(107, 114, 128)' : 'rgb(59, 130, 246)'
+            ),
+            borderColor: analysis.map(r => 
+              r.variantKey === analysisData.winner ? 'rgb(22, 163, 74)' : 
+              !r.pValue ? 'rgb(75, 85, 99)' : 'rgb(37, 99, 235)'
+            ),
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: (context) => `Conversion Rate: ${context.parsed.y}%`
+              }
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: 'Conversion Rate (%)'
+              }
+            }
+          }
+        }
+      });
+
+      // Funnel Chart (Exposures vs Conversions)
+      const ctx2 = document.getElementById('funnel-chart').getContext('2d');
+      funnelChart = new Chart(ctx2, {
+        type: 'bar',
+        data: {
+          labels: analysis.map(r => r.variantKey),
+          datasets: [
+            {
+              label: 'Exposures',
+              data: analysis.map(r => r.exposures),
+              backgroundColor: 'rgba(59, 130, 246, 0.6)',
+              borderColor: 'rgb(37, 99, 235)',
+              borderWidth: 2
+            },
+            {
+              label: 'Conversions',
+              data: analysis.map(r => r.conversions),
+              backgroundColor: 'rgba(34, 197, 94, 0.6)',
+              borderColor: 'rgb(22, 163, 74)',
+              borderWidth: 2
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'top',
+            },
+            tooltip: {
+              callbacks: {
+                label: (context) => `${context.dataset.label}: ${context.parsed.y.toLocaleString()}`
+              }
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: 'Count'
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Load variants for dropdown
+    async function loadVariants() {
+      try {
+        const response = await fetch('http://localhost:4322/variants?experiment=hero');
+        if (!response.ok) throw new Error('Failed to load variants');
+        variants = await response.json();
+        
+        const select = document.getElementById('manual-variant');
+        select.innerHTML = Object.entries(variants).map(([key, v]) => 
+          `<option value="${escapeHtml(key)}">${escapeHtml(v.label)} (${key})</option>`
+        ).join('');
+      } catch (error) {
+        console.error('Failed to load variants:', error);
+      }
+    }
+
+    // Load analysis
+    async function loadAnalysis() {
+      const days = document.getElementById('days-select').value;
+      const url = `http://localhost:4322/analysis?experiment=hero&days=${days}`;
+      
+      try {
+        const response = await fetch(url);
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.error || 'Analysis failed');
+        }
+        
+        analysisData = await response.json();
+        renderAnalysis();
+      } catch (error) {
+        document.getElementById('loading').classList.add('hidden');
+        document.getElementById('error').classList.remove('hidden');
+        document.getElementById('error-message').textContent = error.message;
+      }
+    }
+
+    function renderAnalysis() {
+      document.getElementById('loading').classList.add('hidden');
+      document.getElementById('error').classList.add('hidden');
+      
+      const { analysis, winner, winnerConfidence } = analysisData;
+      
+      // Check if we have data
+      const hasData = analysis.some(r => r.exposures > 0);
+      if (!hasData) {
+        document.getElementById('no-data').classList.remove('hidden');
+        document.getElementById('results-grid').classList.add('hidden');
+        document.getElementById('winner-banner').classList.add('hidden');
+        destroyCharts();
+        return;
+      }
+      
+      document.getElementById('no-data').classList.add('hidden');
+      document.getElementById('results-grid').classList.remove('hidden');
+      
+      // Initialize charts
+      initCharts(analysis);
+      
+      // Calculate totals
+      const totalExposures = analysis.reduce((sum, r) => sum + r.exposures, 0);
+      const totalConversions = analysis.reduce((sum, r) => sum + r.conversions, 0);
+      const overallRate = totalExposures > 0 ? ((totalConversions / totalExposures) * 100).toFixed(2) : 0;
+      
+      document.getElementById('total-exposures').textContent = totalExposures.toLocaleString();
+      document.getElementById('total-conversions').textContent = totalConversions.toLocaleString();
+      document.getElementById('overall-rate').textContent = overallRate + '%';
+      
+      // Render winner banner
+      if (winner) {
+        const winnerVariant = analysis.find(r => r.variantKey === winner);
+        document.getElementById('winner-text').textContent = 
+          `${winnerVariant?.variantKey} shows ${winnerVariant?.relativeImprovement}% improvement with ${(winnerConfidence * 100).toFixed(0)}% confidence (p=${winnerVariant?.pValue?.toFixed(4)})`;
+        document.getElementById('winner-banner').classList.remove('hidden');
+      } else {
+        document.getElementById('winner-banner').classList.add('hidden');
+      }
+      
+      // Render variant cards
+      const container = document.getElementById('variant-cards');
+      container.innerHTML = analysis.map(r => {
+        const isControl = !r.pValue;
+        const isWinner = r.variantKey === winner;
+        const ciLow = (r.confidenceInterval[0] * 100).toFixed(2);
+        const ciHigh = (r.confidenceInterval[1] * 100).toFixed(2);
+        const rate = (r.conversionRate * 100).toFixed(2);
+        
+        return `
+          <div class="p-6 ${isWinner ? 'bg-green-50' : ''}">
+            <div class="flex justify-between items-start">
+              <div class="flex-1">
+                <div class="flex items-center gap-3">
+                  <h3 class="text-lg font-semibold text-gray-900">${escapeHtml(r.variantKey)}</h3>
+                  ${isControl ? '<span class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">Control</span>' : ''}
+                  ${isWinner ? '<span class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Winner</span>' : ''}
+                </div>
+                
+                <div class="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div>
+                    <div class="text-sm text-gray-500">Exposures</div>
+                    <div class="text-lg font-semibold text-gray-900">${r.exposures.toLocaleString()}</div>
+                  </div>
+                  <div>
+                    <div class="text-sm text-gray-500">Conversions</div>
+                    <div class="text-lg font-semibold text-gray-900">${r.conversions.toLocaleString()}</div>
+                  </div>
+                  <div>
+                    <div class="text-sm text-gray-500">Conversion Rate</div>
+                    <div class="text-lg font-semibold ${isWinner ? 'text-green-700' : 'text-gray-900'}">${rate}%</div>
+                  </div>
+                  <div>
+                    <div class="text-sm text-gray-500">95% CI</div>
+                    <div class="text-sm font-mono text-gray-700">[${ciLow}%, ${ciHigh}%]</div>
+                  </div>
+                </div>
+                
+                ${!isControl ? `
+                  <div class="mt-4 flex items-center gap-6">
+                    <div>
+                      <span class="text-sm text-gray-500">Improvement: </span>
+                      <span class="text-sm font-semibold ${r.relativeImprovement > 0 ? 'text-green-700' : r.relativeImprovement < 0 ? 'text-red-700' : 'text-gray-700'}">
+                        ${r.relativeImprovement > 0 ? '+' : ''}${r.relativeImprovement}%
+                      </span>
+                    </div>
+                    <div>
+                      <span class="text-sm text-gray-500">p-value: </span>
+                      <span class="text-sm font-mono ${r.isSignificant ? 'text-green-700 font-bold' : 'text-gray-700'}">
+                        ${r.pValue?.toFixed(4) || 'N/A'}
+                      </span>
+                      ${r.isSignificant ? '<span class="ml-1 text-xs text-green-600">✓ Significant</span>' : ''}
+                    </div>
+                  </div>
+                ` : ''}
+              </div>
+              
+              <div class="ml-4">
+                <button onclick="previewVariant('${escapeHtml(r.variantKey)}')" class="text-sm text-blue-600 hover:text-blue-800">
+                  Preview →
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    async function recordManualData() {
+      const variantKey = document.getElementById('manual-variant').value;
+      const date = document.getElementById('manual-date').value;
+      const exposures = parseInt(document.getElementById('manual-exposures').value || '0', 10);
+      const conversions = parseInt(document.getElementById('manual-conversions').value || '0', 10);
+      
+      if (!date) {
+        alert('Please select a date');
+        return;
+      }
+      
+      if (exposures < 0 || conversions < 0) {
+        alert('Values cannot be negative');
+        return;
+      }
+      
+      if (conversions > exposures) {
+        alert('Conversions cannot exceed exposures');
+        return;
+      }
+      
+      try {
+        const response = await fetch('http://localhost:4322/results', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            experimentKey: 'hero',
+            variantKey,
+            date,
+            exposures,
+            conversions
+          })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+          alert('Data recorded successfully');
+          document.getElementById('manual-exposures').value = '';
+          document.getElementById('manual-conversions').value = '';
+          loadAnalysis(); // Refresh
+        } else {
+          alert('Failed to record: ' + result.error);
+        }
+      } catch (error) {
+        alert('Failed to record data: ' + error.message);
+      }
+    }
+
+    async function promoteWinner() {
+      if (!analysisData?.winner) return;
+      
+      if (!confirm(`Promote ${analysisData.winner} to default variant? This will make it the control for future experiments.`)) {
+        return;
+      }
+      
+      try {
+        const response = await fetch('http://localhost:4322/promote', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            experimentKey: 'hero',
+            winnerKey: analysisData.winner
+          })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+          alert(`✓ ${analysisData.winner} promoted to default`);
+          loadAnalysis(); // Refresh
+        } else {
+          alert('Failed to promote: ' + result.error);
+        }
+      } catch (error) {
+        alert('Failed to promote: ' + error.message);
+      }
+    }
+
+    function previewVariant(key) {
+      localStorage.setItem('experiment_hero_variant', key);
+      window.location.href = '/';
+    }
+
+    function showManualEntry() {
+      document.getElementById('manual-variant').focus();
+    }
+
+    function logout() {
+      localStorage.removeItem('admin_auth_token');
+      window.location.href = '/admin/login';
+    }
+
+    // Initialize
+    document.getElementById('days-select').addEventListener('change', loadAnalysis);
+    document.getElementById('manual-date').valueAsDate = new Date();
+    loadVariants();
+    loadAnalysis();
+  </script>
+</body>
+</html>

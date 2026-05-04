@@ -139,7 +139,7 @@ const submitted = ref(false);
 const error = ref('');
 
 // Form submission endpoint - Google Apps Script Web App
-const FORM_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzeIqCSz4HNpY7SXsXywVRwY8DNubVA-Xw2zR8w0ZO3FyMfNhunUDhyG90mujCYb82f/exec';
+const FORM_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzlnvrJOb4pQDjOegA6GIqUZ3NmEm8zH3xWZrlreVTGgAdjxukNByPxrAR42Y1WU0HL/exec';
 
 const handleSubmit = async () => {
   isSubmitting.value = true;

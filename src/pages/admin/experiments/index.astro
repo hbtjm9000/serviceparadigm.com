@@ -1,0 +1,366 @@
+---
+layout: null
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Experiments - Paradigm CMS Admin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+  <script>
+    // Check authentication on page load
+    if (typeof window !== 'undefined' && localStorage.getItem('admin_auth_token') !== 'paradigm2026') {
+      window.location.href = '/admin/login';
+    }
+  </script>
+  <div class="min-h-screen p-8">
+    <!-- Header -->
+    <div class="max-w-7xl mx-auto">
+      <div class="flex justify-between items-center mb-8">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900">Hero Experiments</h1>
+          <p class="text-sm text-gray-500 mt-1">Manage A/B test variants for the homepage hero section</p>
+        </div>
+        <div class="flex gap-3">
+          <button
+            onclick="logout()"
+            class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+          >
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+            Logout
+          </button>
+          <a
+            href="/admin/experiments/results"
+            class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+          >
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+            Results
+          </a>
+          <button
+            onclick="showCreateModal()"
+            class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
+          >
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            New Variant
+          </button>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div id="loading" class="text-center py-12">
+        <svg class="animate-spin h-8 w-8 text-blue-600 mx-auto" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+        </svg>
+        <p class="mt-4 text-gray-500">Loading variants...</p>
+      </div>
+
+      <!-- Error State -->
+      <div id="error" class="hidden bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+        <div class="flex">
+          <div class="flex-shrink-0">
+            <svg class="h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <div class="ml-3">
+            <h3 class="text-sm font-medium text-red-800">Failed to load variants</h3>
+            <p id="error-message" class="mt-1 text-sm text-red-700"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variants Grid -->
+      <div id="variants-grid" class="hidden grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <!-- Variants will be inserted here by JavaScript -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Create Modal -->
+  <div id="create-modal" class="hidden fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+      <div class="px-6 py-4 border-b border-gray-200">
+        <h3 class="text-lg font-medium text-gray-900">Create New Variant</h3>
+      </div>
+      <div class="px-6 py-4 space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Variant Key</label>
+          <input
+            id="new-key"
+            type="text"
+            placeholder="v4-your-variant"
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Label</label>
+          <input
+            id="new-label"
+            type="text"
+            placeholder="Descriptive name"
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Headline</label>
+          <input
+            id="new-headline"
+            type="text"
+            placeholder="Main headline text"
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Headline Highlight</label>
+          <input
+            id="new-highlight"
+            type="text"
+            placeholder="Word to highlight"
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">CTA Text</label>
+          <input
+            id="new-cta"
+            type="text"
+            placeholder="Button text"
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Subheadline</label>
+          <textarea
+            id="new-subheadline"
+            rows="3"
+            placeholder="Supporting text"
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+          ></textarea>
+        </div>
+      </div>
+      <div class="px-6 py-4 border-t border-gray-200 flex justify-end space-x-3">
+        <button
+          onclick="hideCreateModal()"
+          class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
+        >
+          Cancel
+        </button>
+        <button
+          onclick="handleCreate()"
+          id="create-btn"
+          class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
+        >
+          Create Variant
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let variants = {};
+    let currentVariant = null;
+
+    // Load variants on page load
+    async function loadVariants() {
+      try {
+        const response = await fetch('http://localhost:4322/variants?experiment=hero&t=' + Date.now());
+        if (!response.ok) {
+          throw new Error('Failed to fetch variants: ' + response.statusText);
+        }
+        variants = await response.json();
+        currentVariant = localStorage.getItem('experiment_hero_variant');
+        renderVariants();
+      } catch (error) {
+        document.getElementById('loading').classList.add('hidden');
+        document.getElementById('error').classList.remove('hidden');
+        document.getElementById('error-message').textContent = error.message;
+      }
+    }
+
+    function renderVariants() {
+      const grid = document.getElementById('variants-grid');
+      document.getElementById('loading').classList.add('hidden');
+      grid.classList.remove('hidden');
+
+      grid.innerHTML = Object.entries(variants).map(([key, variant]) => `
+        <div class="bg-white rounded-lg shadow border border-gray-200 overflow-hidden">
+          <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
+            <div class="flex justify-between items-start">
+              <div>
+                <h3 class="text-lg font-semibold text-gray-900">${escapeHtml(variant.label)}</h3>
+                <p class="text-xs text-gray-500 font-mono mt-1">${escapeHtml(key)}</p>
+              </div>
+              ${key === currentVariant ? '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Active</span>' : ''}
+            </div>
+          </div>
+          
+          <div class="px-6 py-4 space-y-4">
+            <div>
+              <label class="block text-xs font-medium text-gray-500 uppercase">Headline</label>
+              <p class="mt-1 text-sm text-gray-900">${escapeHtml(variant.headline)}</p>
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-gray-500 uppercase">Highlight</label>
+              <p class="mt-1 text-sm text-gray-900">${escapeHtml(variant.headline_highlight)}</p>
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-gray-500 uppercase">CTA</label>
+              <p class="mt-1 text-sm text-gray-900">${escapeHtml(variant.cta_text)}</p>
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-gray-500 uppercase">Subheadline</label>
+              <p class="mt-1 text-sm text-gray-700 line-clamp-2">${escapeHtml(variant.subheadline)}</p>
+            </div>
+          </div>
+          
+          <div class="px-6 py-3 bg-gray-50 border-t border-gray-200 flex justify-between space-x-2">
+            <button onclick="handleEdit('${escapeHtml(key)}')" class="flex-1 inline-flex justify-center items-center px-3 py-1.5 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50">Edit</button>
+            <button onclick="handlePreview('${escapeHtml(key)}')" class="flex-1 inline-flex justify-center items-center px-3 py-1.5 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50">Preview</button>
+            <button onclick="handleDelete('${escapeHtml(key)}')" class="flex-1 inline-flex justify-center items-center px-3 py-1.5 border border-red-300 shadow-sm text-xs font-medium rounded text-red-700 bg-white hover:bg-red-50">Delete</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function showCreateModal() {
+      document.getElementById('create-modal').classList.remove('hidden');
+    }
+
+    function hideCreateModal() {
+      document.getElementById('create-modal').classList.add('hidden');
+      // Clear form
+      document.getElementById('new-key').value = '';
+      document.getElementById('new-label').value = '';
+      document.getElementById('new-headline').value = '';
+      document.getElementById('new-highlight').value = '';
+      document.getElementById('new-cta').value = '';
+      document.getElementById('new-subheadline').value = '';
+    }
+
+    function handleEdit(key) {
+      window.location.href = '/admin/experiments/edit?key=' + encodeURIComponent(key);
+    }
+
+    function handlePreview(key) {
+      localStorage.setItem('experiment_hero_variant', key);
+      window.location.href = '/';
+    }
+
+    async function handleDelete(key) {
+      if (!confirm('Are you sure you want to delete variant "' + key + '"? This cannot be undone.')) {
+        return;
+      }
+
+      const btn = event.target;
+      btn.disabled = true;
+      btn.textContent = 'Deleting...';
+
+      try {
+        const currentVariants = { ...variants };
+        delete currentVariants[key];
+        
+        if (Object.keys(currentVariants).length === 0) {
+          alert('Cannot delete the last variant');
+          return;
+        }
+
+        const response = await fetch('http://localhost:4322/variants', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ experimentKey: 'hero', variants: currentVariants })
+        });
+
+        const result = await response.json();
+        
+        if (result.success) {
+          variants = currentVariants;
+          renderVariants();
+        } else {
+          alert('Failed to delete: ' + result.error);
+        }
+      } catch (error) {
+        alert('Failed to delete variant');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Delete';
+      }
+    }
+
+    async function handleCreate() {
+      const key = document.getElementById('new-key').value.trim();
+      const label = document.getElementById('new-label').value.trim();
+      const headline = document.getElementById('new-headline').value.trim();
+      const highlight = document.getElementById('new-highlight').value.trim();
+      const cta = document.getElementById('new-cta').value.trim();
+      const subheadline = document.getElementById('new-subheadline').value.trim();
+
+      if (!key || !label || !headline) {
+        alert('Please fill in all required fields');
+        return;
+      }
+
+      if (variants[key]) {
+        alert('Variant "' + key + '" already exists');
+        return;
+      }
+
+      const btn = document.getElementById('create-btn');
+      btn.disabled = true;
+      btn.textContent = 'Creating...';
+
+      try {
+        const newVariants = {
+          ...variants,
+          [key]: {
+            label,
+            headline,
+            headline_highlight: highlight,
+            cta_text: cta,
+            subheadline
+          }
+        };
+
+        const response = await fetch('http://localhost:4322/variants', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ experimentKey: 'hero', variants: newVariants })
+        });
+
+        const result = await response.json();
+        
+        if (result.success) {
+          variants = newVariants;
+          hideCreateModal();
+          renderVariants();
+        } else {
+          alert('Failed to create: ' + result.error);
+        }
+      } catch (error) {
+        alert('Failed to create variant');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Create Variant';
+      }
+    }
+
+    // Initialize
+    loadVariants();
+  </script>
+</body>
+</html>
