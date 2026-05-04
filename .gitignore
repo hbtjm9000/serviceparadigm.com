@@ -34,3 +34,6 @@ pnpm-debug.log*
 .vscode/
 *.swp
 *.swo
+
+# Credentials (keep ga4-credentials.json ignored)
+ga4-credentials.json
