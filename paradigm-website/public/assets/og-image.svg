@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#191c1d"/>
+  <rect x="60" y="60" width="1080" height="510" rx="0" fill="#a33900"/>
+  <text x="120" y="300" font-family="Georgia, serif" font-size="72" font-weight="900" fill="#ffffff" letter-spacing="-2">PARADIGM</text>
+  <text x="120" y="390" font-family="Georgia, serif" font-size="52" font-weight="700" fill="#1cdcd9" letter-spacing="-1">IT Services</text>
+  <text x="120" y="480" font-family="Arial, sans-serif" font-size="24" fill="#e7e8e9" letter-spacing="3">ENGINEERING THE NEXT PARADIGM</text>
+  <circle cx="1020" cy="200" r="120" fill="#006a68" opacity="0.6"/>
+  <circle cx="1080" cy="280" r="80" fill="#1cdcd9" opacity="0.4"/>
+</svg>
