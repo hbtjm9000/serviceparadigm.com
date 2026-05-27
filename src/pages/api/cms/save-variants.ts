@@ -1,8 +1,21 @@
 import type { APIRoute } from 'astro';
-import { Database } from 'bun:sqlite';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+
+// Dynamic import for bun:sqlite — only resolves under Bun runtime (Node/Vite ESM
+// loader doesn't understand the bun: protocol). Falls back cleanly for static builds.
+let Database: { new(db: string, opts?: object): any } | null = null;
+async function getDB(): Promise<typeof Database> {
+  if (Database) return Database;
+  try {
+    const mod = await import('bun:sqlite');
+    Database = mod.Database;
+    return Database;
+  } catch {
+    return null;
+  }
+}
 
 export const POST: APIRoute = async ({ request }) => {
   try {
@@ -54,7 +67,14 @@ export const POST: APIRoute = async ({ request }) => {
     const jsonPath = path.join(rootDir, 'src/content/hero/variants.json');
 
     // Open database
-    const db = new Database(dbPath, { readwrite: true });
+    const DB = await getDB();
+    if (!DB) {
+      return new Response(JSON.stringify({ error: 'SQLite not available (Bun runtime required)' }), {
+        status: 501,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+    const db = new DB(dbPath, { readwrite: true });
     
     // Begin transaction
     db.run('BEGIN');
@@ -186,7 +206,14 @@ export const GET: APIRoute = async ({ request }) => {
     const rootDir = path.resolve(__dirname, '../../../..');
     const dbPath = path.join(rootDir, 'variants.db');
 
-    const db = new Database(dbPath, { readonly: true });
+    const DB = await getDB();
+    if (!DB) {
+      return new Response(JSON.stringify({ error: 'SQLite not available (Bun runtime required)' }), {
+        status: 501,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+    const db = new DB(dbPath, { readonly: true });
     
     const variants = db.query(`
       SELECT variant_key, label, headline, headline_highlight, cta_text, subheadline
