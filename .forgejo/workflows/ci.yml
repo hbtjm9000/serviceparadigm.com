@@ -72,7 +72,7 @@ jobs:
           bunx lychee --verbose http://localhost:4321/ 2>&1 | tee $CI_ARTIFACTS/lychee-results.txt || true
 
   deploy-staging:
-    if: github.event_name == 'push'
+    if: github.ref == 'refs/heads/main'
     runs-on: docker
     container: crumbs-ci:latest
     needs: [test]
@@ -104,7 +104,7 @@ jobs:
             && echo "Caddy routing OK" || echo "Caddy routing: configure Caddyfile"
 
   create-pr:
-    if: github.event_name == 'push'
+    if: github.ref == 'refs/heads/main'
     runs-on: docker
     container: curlimages/curl:latest
     needs: [deploy-staging]
