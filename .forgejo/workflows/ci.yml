@@ -50,7 +50,9 @@ jobs:
         run: bun run build
 
       - name: Install Playwright chromium
-        run: bunx playwright install chromium 2>&1 | head -10
+        run: |
+          PLAYWRIGHT_BROWSERS_PATH=$HOME/.cache/ms-playwright bunx playwright install chromium 2>&1 | tail -5
+          ls -la $HOME/.cache/ms-playwright/ 2>/dev/null || echo "check install dir"
 
       - name: Playwright E2E tests
         run: |
