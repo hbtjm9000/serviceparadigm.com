@@ -1,0 +1,115 @@
+name: Delivery Pipeline
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  CI_ARTIFACTS: /workspace/artifacts
+  STAGING_DIR: /var/www/serviceparadigm.stage.paradigm.local
+
+jobs:
+  vet:
+    runs-on: docker
+    container: crumbs-ci:latest
+    steps:
+      - name: Checkout
+        run: |
+          git init .
+          git remote add origin http://hbtjm:${{ secrets.GITHUB_TOKEN }}@127.0.0.1:3020/hbtjm/serviceparadigm.com.git
+          git fetch --depth 1 origin $GITHUB_SHA && git checkout -f $GITHUB_SHA
+
+      - name: Type check
+        run: bun run typecheck
+
+      - name: Lint
+        run: bun run lint
+
+  test:
+    runs-on: docker
+    container: crumbs-ci:latest
+    needs: [vet]
+    steps:
+      - name: Checkout
+        run: |
+          git init .
+          git remote add origin http://hbtjm:${{ secrets.GITHUB_TOKEN }}@127.0.0.1:3020/hbtjm/serviceparadigm.com.git
+          git fetch --depth 1 origin $GITHUB_SHA && git checkout -f $GITHUB_SHA
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Unit tests
+        run: bun run test
+
+      - name: Build
+        run: bun run build
+
+      - name: Install Playwright chromium
+        run: bunx playwright install --with-deps chromium
+
+      - name: Playwright E2E tests
+        run: |
+          mkdir -p $CI_ARTIFACTS
+          bun run preview --port 4321 &
+          bunx wait-on http://localhost:4321 --timeout 30000
+          bunx playwright test tests/e2e/ 2>&1 | tee $CI_ARTIFACTS/e2e-results.txt
+
+      - name: P0 critical tests
+        run: bunx playwright test tests/p0-critical.spec.ts 2>&1 | tee $CI_ARTIFACTS/p0-results.txt
+
+      - name: P1 accessibility tests
+        run: bunx playwright test tests/p1-accessibility.spec.ts 2>&1 | tee $CI_ARTIFACTS/p1-a11y-results.txt
+
+      - name: Link check
+        run: |
+          bun run preview --port 4321 &
+          bunx wait-on http://localhost:4321 --timeout 30000
+          bunx lychee --verbose http://localhost:4321/ 2>&1 | tee $CI_ARTIFACTS/lychee-results.txt || true
+
+  deploy-staging:
+    if: github.event_name == 'push'
+    runs-on: docker
+    container: crumbs-ci:latest
+    needs: [test]
+    steps:
+      - name: Checkout
+        run: |
+          git init .
+          git remote add origin http://hbtjm:${{ secrets.GITHUB_TOKEN }}@127.0.0.1:3020/hbtjm/serviceparadigm.com.git
+          git fetch --depth 1 origin $GITHUB_SHA && git checkout -f $GITHUB_SHA
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Build
+        run: bun run build
+
+      - name: Deploy to staging
+        run: |
+          mkdir -p $STAGING_DIR
+          rm -rf $STAGING_DIR/dist
+          cp -r dist $STAGING_DIR/dist
+          echo "Deployed $GITHUB_SHA to $STAGING_DIR" > $STAGING_DIR/REVISION
+          chown -R 1000:1000 $STAGING_DIR
+
+      - name: Health check
+        run: |
+          echo "Staging URL: http://serviceparadigm.stage.paradigm.local"
+          curl -sf http://127.0.0.1:80 -H 'Host: serviceparadigm.stage.paradigm.local' > /dev/null 2>&1 \
+            && echo "Caddy routing OK" || echo "Caddy routing: configure Caddyfile"
+
+  create-pr:
+    if: github.event_name == 'push'
+    runs-on: docker
+    container: curlimages/curl:latest
+    needs: [deploy-staging]
+    steps:
+      - name: Create production PR
+        run: |
+          PR_URL="http://127.0.0.1:3020/api/v1/repos/hbtjm/serviceparadigm.com/pulls"
+          AUTH=*** Bearer ${{ secrets.GITHUB_TOKEN }}"
+          curl -sf -X POST "$PR_URL" \
+            -H "$AUTH" -H "Content-Type: application/json" \
+            -d '{"title":"Production deploy","head":"main","base":"production"}'

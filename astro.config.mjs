@@ -7,6 +7,7 @@ export default defineConfig({
   site: 'https://serviceparadigm.com',
   server: {
     host: '127.0.0.1', // loopback only — no external exposure
+    allowedHosts: ['serviceparadigm.test'],
   },
   integrations: [
     vue({

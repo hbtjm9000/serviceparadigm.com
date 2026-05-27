@@ -64,25 +64,26 @@ For multi-step tasks, state a brief plan:
 **These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
 <!-- END KARPATHY GUIDELINES -->
 
-<!-- BEGIN BEADS INTEGRATION v:1 profile:minimal hash:ca08a54f -->
-## Beads Issue Tracker
+<!-- BEGIN FORGEJO INTEGRATION v:1 profile:minimal -->
+## Forgejo Issue Tracker
 
-This project uses **bd (beads)** for issue tracking. Run `bd prime` to see full workflow context and commands.
+This project uses **Forgejo** for issue tracking, repos, and CI. Forgejo runs at `http://127.0.0.1:3000`. `forgejo-eventbus` provides bi-directional sync between Forgejo issues and FocalBoard/Crumbs kanban — the single pane of glass for human project management.
 
 ### Quick Reference
 
 ```bash
-bd ready              # Find available work
-bd show <id>          # View issue details
-bd update <id> --claim  # Claim work
-bd close <id>         # Complete work
+# Forgejo web UI: http://127.0.0.1:3000/hal
+# FocalBoard kanban: http://127.0.0.1:9090
+# Clone with embedded token:
+git clone https://<token>@127.0.0.1:3000/hal/<repo>.git
 ```
 
 ### Rules
 
-- Use `bd` for ALL task tracking — do NOT use TodoWrite, TaskCreate, or markdown TODO lists
-- Run `bd prime` for detailed command reference and session close protocol
-- Use `bd remember` for persistent knowledge — do NOT use MEMORY.md files
+- All issues, projects, and tasks are tracked in Forgejo (source of truth for code/dev projects)
+- FocalBoard/Crumbs is the visual kanban layer, synced via forgejo-eventbus
+- Use `tea` CLI or Forgejo web UI for issue operations
+- Do NOT use markdown TODO lists for task tracking
 
 ## Session Completion
 
@@ -90,13 +91,12 @@ bd close <id>         # Complete work
 
 **MANDATORY WORKFLOW:**
 
-1. **File issues for remaining work** - Create issues for anything that needs follow-up
+1. **File issues for remaining work** - Create issues on Forgejo (`http://127.0.0.1:3000/hal`)
 2. **Run quality gates** (if code changed) - Tests, linters, builds
-3. **Update issue status** - Close finished work, update in-progress items
+3. **Update issue status** - Close finished work, update in-progress items in Forgejo
 4. **PUSH TO REMOTE** - This is MANDATORY:
    ```bash
    git pull --rebase
-   bd dolt push
    git push
    git status  # MUST show "up to date with origin"
    ```
@@ -109,7 +109,7 @@ bd close <id>         # Complete work
 - NEVER stop before pushing - that leaves work stranded locally
 - NEVER say "ready to push when you are" - YOU must push
 - If push fails, resolve and retry until it succeeds
-<!-- END BEADS INTEGRATION -->
+<!-- END FORGEJO INTEGRATION -->
 
 
 ## Build & Test
