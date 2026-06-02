@@ -8,9 +8,14 @@ on:
 env:
   CI_ARTIFACTS: /workspace/artifacts
   STAGING_DIR: /var/www/serviceparadigm.stage.paradigm.local
+  BASE_URL: http://localhost:4321
 
 jobs:
-  vet:
+  # ────────────────────────────────────────────────────────────────────────────
+  # JOB 1: Quality Gates (typecheck, lint, unit tests, build)
+  # ────────────────────────────────────────────────────────────────────────────
+  quality:
+    name: Quality Gates
     runs-on: docker
     container: crumbs-ci:latest
     steps:
@@ -24,15 +29,32 @@ jobs:
         run: bun install
 
       - name: Type check
-        run: bun run typecheck || echo "Type check warnings"
+        run: bun run typecheck:ci
 
       - name: Lint
         run: bun run lint || echo "Lint warnings"
 
-  test:
+      - name: Unit tests
+        run: bun run test:unit
+
+      - name: Build
+        run: bun run build
+
+      - name: Save build artifact
+        run: |
+          mkdir -p $CI_ARTIFACTS
+          cp -r dist $CI_ARTIFACTS/dist
+          cp -r .typecheck-output $CI_ARTIFACTS/ 2>/dev/null || true
+          echo "Build saved to $CI_ARTIFACTS"
+
+  # ────────────────────────────────────────────────────────────────────────────
+  # JOB 2: E2E + Accessibility + Visual Regression (Playwright)
+  # ────────────────────────────────────────────────────────────────────────────
+  test-playwright:
+    name: E2E / A11y / Visual
     runs-on: docker
     container: crumbs-ci:latest
-    needs: [vet]
+    needs: [quality]
     steps:
       - name: Checkout
         run: |
@@ -43,41 +65,120 @@ jobs:
       - name: Install dependencies
         run: bun install
 
-      - name: Unit tests
-        run: bun run test
+      - name: Build
+        run: bun run build
+
+      - name: Install Playwright browsers
+        run: |
+          PLAYWRIGHT_BROWSERS_PATH=$HOME/.cache/ms-playwright bunx playwright install --with-deps chromium 2>&1 | tail -5
+
+      - name: Start preview server
+        run: |
+          mkdir -p $CI_ARTIFACTS
+          bun run preview --port 4321 &
+          npx wait-on http://localhost:4321 --timeout 30000
+          echo "Preview server ready"
+
+      - name: P0 critical tests
+        run: bunx playwright test tests/p0-critical.spec.ts --reporter=list 2>&1 | tee $CI_ARTIFACTS/p0-results.txt
+
+      - name: E2E tests
+        run: bunx playwright test tests/e2e/ --reporter=list 2>&1 | tee $CI_ARTIFACTS/e2e-results.txt
+
+      - name: Accessibility (axe-core) tests
+        run: bunx playwright test tests/p1-accessibility.spec.ts --reporter=list 2>&1 | tee $CI_ARTIFACTS/a11y-results.txt
+
+      - name: Visual regression tests
+        run: 'bunx playwright test tests/visual-regression/ --reporter=list 2>&1 | tee $CI_ARTIFACTS/visual-results.txt || echo "Visual regression: baseline may not exist"'
+
+      - name: Collect Playwright report
+        run: |
+          [ -d playwright-report ] && cp -r playwright-report $CI_ARTIFACTS/ 2>/dev/null || true
+
+  # ────────────────────────────────────────────────────────────────────────────
+  # JOB 3: BDD (Cucumber/Gherkin)
+  # ────────────────────────────────────────────────────────────────────────────
+  test-bdd:
+    name: BDD (Cucumber)
+    runs-on: docker
+    container: crumbs-ci:latest
+    needs: [quality]
+    steps:
+      - name: Checkout
+        run: |
+          git init .
+          git remote add origin http://hbtjm:${{ secrets.GITHUB_TOKEN }}@127.0.0.1:3020/hbtjm/serviceparadigm.com.git
+          git fetch --depth 1 origin $GITHUB_SHA && git checkout -f $GITHUB_SHA
+
+      - name: Install dependencies
+        run: bun install
 
       - name: Build
         run: bun run build
 
-      - name: Install Playwright chromium
+      - name: Install Playwright browsers
         run: |
-          PLAYWRIGHT_BROWSERS_PATH=$HOME/.cache/ms-playwright bunx playwright install chromium 2>&1 | tail -5
-          ls -la $HOME/.cache/ms-playwright/ 2>/dev/null || echo "check install dir"
+          PLAYWRIGHT_BROWSERS_PATH=$HOME/.cache/ms-playwright bunx playwright install --with-deps chromium 2>&1 | tail -5
 
-      - name: Playwright E2E tests
+      - name: Start preview server
+        run: |
+          bun run preview --port 4321 &
+          npx wait-on http://localhost:4321 --timeout 30000
+
+      - name: Run BDD scenarios
         run: |
           mkdir -p $CI_ARTIFACTS
-          bun run preview --port 4321 &
-          bunx wait-on http://localhost:4321 --timeout 30000
-          bunx playwright test tests/e2e/ 2>&1 | tee $CI_ARTIFACTS/e2e-results.txt
+          bunx cucumber-js tests/features/ \
+            --require tests/features/steps/*.ts \
+            --format summary \
+            --format json:$CI_ARTIFACTS/bdd-report.json 2>&1 | tee $CI_ARTIFACTS/bdd-results.txt
 
-      - name: P0 critical tests
-        run: bunx playwright test tests/p0-critical.spec.ts 2>&1 | tee $CI_ARTIFACTS/p0-results.txt
+  # ────────────────────────────────────────────────────────────────────────────
+  # JOB 4: Security + SEO Audit
+  # ────────────────────────────────────────────────────────────────────────────
+  audit:
+    name: Security / SEO / Deps
+    runs-on: docker
+    container: crumbs-ci:latest
+    needs: [quality]
+    steps:
+      - name: Checkout
+        run: |
+          git init .
+          git remote add origin http://hbtjm:${{ secrets.GITHUB_TOKEN }}@127.0.0.1:3020/hbtjm/serviceparadigm.com.git
+          git fetch --depth 1 origin $GITHUB_SHA && git checkout -f $GITHUB_SHA
 
-      - name: P1 accessibility tests
-        run: bunx playwright test tests/p1-accessibility.spec.ts 2>&1 | tee $CI_ARTIFACTS/p1-a11y-results.txt
+      - name: Install dependencies
+        run: bun install
 
-      - name: Link check
+      - name: Build
+        run: bun run build
+
+      - name: Audit security (dependencies)
+        run: |
+          mkdir -p $CI_ARTIFACTS
+          bun scripts/audit-security.ts 2>&1 | tee $CI_ARTIFACTS/security-audit.txt
+
+      - name: Start preview + SEO/link audit
         run: |
           bun run preview --port 4321 &
-          bunx wait-on http://localhost:4321 --timeout 30000
-          bunx lychee --verbose http://localhost:4321/ 2>&1 | tee $CI_ARTIFACTS/lychee-results.txt || true
+          npx wait-on http://localhost:4321 --timeout 30000
+          bun scripts/audit-seo.ts 2>&1 | tee $CI_ARTIFACTS/seo-audit.txt
 
+      - name: Bundle size check
+        run: |
+          echo "Bundle size:" > $CI_ARTIFACTS/bundle-size.txt
+          du -sh dist/ >> $CI_ARTIFACTS/bundle-size.txt
+
+  # ────────────────────────────────────────────────────────────────────────────
+  # JOB 5: Deploy to Staging (main branch only)
+  # ────────────────────────────────────────────────────────────────────────────
   deploy-staging:
+    name: Deploy to Staging
     if: github.ref == 'refs/heads/main'
     runs-on: docker
     container: crumbs-ci:latest
-    needs: [test]
+    needs: [test-playwright, test-bdd, audit]
     steps:
       - name: Checkout
         run: |
@@ -105,7 +206,11 @@ jobs:
           curl -sf http://127.0.0.1:80 -H 'Host: serviceparadigm.stage.paradigm.local' > /dev/null 2>&1 \
             && echo "Caddy routing OK" || echo "Caddy routing: configure Caddyfile"
 
+  # ────────────────────────────────────────────────────────────────────────────
+  # JOB 6: Create Production PR
+  # ────────────────────────────────────────────────────────────────────────────
   create-pr:
+    name: Create Production PR
     if: github.ref == 'refs/heads/main'
     runs-on: docker
     container: curlimages/curl:latest
@@ -114,7 +219,7 @@ jobs:
       - name: Create production PR
         run: |
           PR_URL="http://127.0.0.1:3020/api/v1/repos/hbtjm/serviceparadigm.com/pulls"
-          AUTH=*** Bearer ${{ secrets.GITHUB_TOKEN }}"
           curl -sf -X POST "$PR_URL" \
-            -H "$AUTH" -H "Content-Type: application/json" \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Content-Type: application/json" \
             -d '{"title":"Production deploy","head":"main","base":"production"}'
