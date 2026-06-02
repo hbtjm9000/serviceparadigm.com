@@ -17,7 +17,6 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(__dirname, '..');
 const dbPath = path.join(rootDir, 'variants.db');
 const jsonPath = path.join(rootDir, 'src/content/hero/variants.json');
-const statsPath = path.join(rootDir, 'src/cms/lib/stats.ts');
 
 // Initialize database if not exists
 if (!fs.existsSync(dbPath)) {
@@ -77,7 +76,7 @@ function syncVariants(db: Database) {
   console.log(`📄 Synced ${variants.length} variants to JSON`);
 }
 
-const server = Bun.serve({
+const _server = Bun.serve({
   port: PORT,
   async fetch(req) {
     const url = new URL(req.url);

@@ -11,7 +11,10 @@ const astroParser = require('astro-eslint-parser');
 const vueParser = require('vue-eslint-parser');
 const vueFlatRecommended = require('eslint-plugin-vue/dist/configs/flat/vue3-recommended.js');
 
-const vueRecommendedRules = vueFlatRecommended[0]?.rules ?? {};
+// Combine rules from all flat config levels (essential + strongly-recommended + recommended)
+const vueRecommendedRules = vueFlatRecommended
+  .slice(2)
+  .reduce((acc, c) => ({ ...acc, ...(c.rules ?? {}) }), {});
 
 export default [
   {
@@ -32,7 +35,7 @@ export default [
     languageOptions: { parser: tseslint },
     rules: {
       '@typescript-eslint/no-explicit-any': 'warn',
-      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
     },
   },
   // Astro
@@ -58,6 +61,13 @@ export default [
     plugins: { vue: vuePlugin },
     languageOptions: {
       parser: vueParser,
+      parserOptions: {
+        parser: {
+          ts: tseslint,
+        },
+        sourceType: 'module',
+        ecmaFeatures: { jsx: true },
+      },
       globals: { ...globals.browser },
     },
     rules: {

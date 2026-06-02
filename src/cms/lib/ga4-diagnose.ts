@@ -113,7 +113,7 @@ async function diagnose() {
   console.log('Test 4: Checking if GA4 tag is on serviceparadigm.com...');
   try {
     const { exec } = await import('child_process');
-    const result = await new Promise<string>((resolve, reject) => {
+    const result = await new Promise<string>((resolve, _reject) => {
       exec('curl -s https://serviceparadigm.com | grep -o "G-SLDE3K52MY"', (err, stdout) => {
         if (err) resolve('');
         else resolve(stdout.trim());

@@ -6,14 +6,12 @@
  * In production, it fetches from the build-time generated content.
  */
 
-import type { ExperimentVariant, VariantKey } from '@/composables/useExperiment';
-
-const VARIANTS_PATH = '/src/content/hero/variants.json';
+import type { ExperimentVariant } from '@/composables/useExperiment';
 
 /**
  * Fetch all variants for an experiment
  */
-export async function getVariants(experimentKey: string = 'hero'): Promise<Record<string, ExperimentVariant>> {
+export async function getVariants(_experimentKey: string = 'hero'): Promise<Record<string, ExperimentVariant>> {
   try {
     // In development, fetch the JSON file directly
     const response = await fetch(`/src/content/hero/variants.json?t=${Date.now()}`);
@@ -131,7 +129,7 @@ export async function deleteVariant(
     };
   }
 
-  const { [key]: _, ...remaining } = currentVariants;
+  const { [key]: _unused, ...remaining } = currentVariants;
   
   if (Object.keys(remaining).length === 0) {
     return {
