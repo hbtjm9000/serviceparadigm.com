@@ -9,6 +9,7 @@ let Database: { new(db: string, opts?: object): any } | null = null;
 async function getDB(): Promise<typeof Database> {
   if (Database) return Database;
   try {
+    // @ts-expect-error - bun:sqlite only resolves under Bun runtime
     const mod = await import('bun:sqlite');
     Database = mod.Database;
     return Database;

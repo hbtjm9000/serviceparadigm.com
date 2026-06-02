@@ -27,7 +27,6 @@ test('homepage hero screenshot (baseline)', async ({ page }) => {
   await hero.screenshot({
     path: 'tests/visual-regression/screenshots/hero-baseline.png',
     type: 'png',
-    fullPage: false,
   });
   
   // Verify headline is visible
@@ -62,7 +61,6 @@ test('homepage hero — variant comparison (clear storage)', async ({ page }) =>
   await hero.screenshot({
     path: `tests/visual-regression/screenshots/hero-${timestamp}.png`,
     type: 'png',
-    fullPage: false,
   });
   
   // Log variant

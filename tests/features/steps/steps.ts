@@ -7,7 +7,7 @@
  */
 
 import { Given, When, Then, BeforeAll, AfterAll } from '@cucumber/cucumber';
-import { chromium, Browser, Page, BrowserContext } from 'playwright';
+import { chromium, type Browser, type Page, type BrowserContext } from 'playwright';
 import assert from 'assert';
 
 let browser: Browser;
@@ -71,7 +71,7 @@ Then('I should see the hero section heading {string}', async function (text: str
 });
 
 Then('I should see a {string} call-to-action button', async function (text: string) {
-  const button = page.locator(`a, button`, { hasText });
+  const button = page.locator('a, button').filter({ hasText: text });
   await button.waitFor({ state: 'visible', timeout: 5000 });
 });
 

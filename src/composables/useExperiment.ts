@@ -12,6 +12,17 @@
  *   const copy = computed(() => variants[variant]);
  */
 
+// Type definitions for experiment variants
+export type VariantKey = string;
+export interface ExperimentVariant {
+  label: string;
+  headline: string;
+  headline_highlight: string;
+  cta_text: string;
+  subheadline: string;
+  [key: string]: string;
+}
+
 export function useExperiment(experimentKey: string, variants: string[]): string {
   const storageKey = `exp:${experimentKey}`;
   

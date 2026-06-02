@@ -112,7 +112,7 @@ export async function updateVariant(
       ...currentVariants[key],
       ...variant,
     },
-  });
+  } as Record<string, ExperimentVariant>);
 }
 
 /**

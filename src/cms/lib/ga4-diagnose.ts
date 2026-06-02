@@ -7,9 +7,10 @@
 import { google } from 'googleapis';
 import { join } from 'path';
 import { readFileSync } from 'fs';
+import { fileURLToPath } from 'url';
 
-const CREDENTIALS_PATH = process.env.GA4_CREDENTIALS_PATH || 
-  join(import.meta.dir, 'ga4-credentials.json');
+const CREDENTIALS_PATH=process.env.GA4_CREDENTIALS_PATH || 
+  join(fileURLToPath(new URL('.', import.meta.url)), 'ga4-credentials.json');
 
 async function diagnose() {
   const credentials = JSON.parse(readFileSync(CREDENTIALS_PATH, 'utf-8'));
@@ -37,7 +38,7 @@ async function diagnose() {
     console.log('  Accessible properties:');
     if (properties.data.properties?.length) {
       for (const prop of properties.data.properties) {
-        console.log(`    - ${prop.name} (ID: ${prop.property})`);
+        console.log(`    - ${prop.name} (ID: ${prop.name?.split('/').pop()})`);
         console.log(`      Display name: ${prop.displayName}`);
       }
     } else {
