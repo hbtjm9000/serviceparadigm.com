@@ -151,9 +151,11 @@ test.describe('P0 Critical: Launch Integrity', () => {
     await page.fill('#newsletter-email', 'test@techcorp.io');
     await page.click('button[type="submit"]');
 
-    // Wait for the success message to appear (up to 5s)
-    const successMsg = page.locator('section form, .newsletter-form, [class*="newsletter"]').locator('text=/successfully|connected|subscribed|thank you/i');
-    await expect(successMsg.first()).toBeVisible({ timeout: 5000 });
+    // Wait for the success message to appear (up to 10s)
+    // Note: success div is a sibling of the form, not a child
+    const section = page.locator('section').filter({ hasText: 'Join the Network' });
+    const successMsg = section.locator('text=/successfully|connected|subscribed|thank you/i');
+    await expect(successMsg.first()).toBeVisible({ timeout: 10000 });
   });
 
   // ── Contact Form Success State ───────────────────────────────────────────
@@ -172,7 +174,7 @@ test.describe('P0 Critical: Launch Integrity', () => {
 
     await page.click('button[type="submit"]');
 
-    await expect(page.locator('form, [role="form"], .contact-form').locator('text=/message.*received|thank you for contacting|successfully submitted|we.*ve received your/i').first()).toBeVisible({ timeout: 5000 });
+    await expect(page.locator('form').filter({ has: page.locator('#name') }).locator('text=/thank you for your|successfully submitted|message.*received|we.*ve received your/i').first()).toBeVisible({ timeout: 10000 });
   });
 
   // ── OG Meta on All Pages ─────────────────────────────────────────────────

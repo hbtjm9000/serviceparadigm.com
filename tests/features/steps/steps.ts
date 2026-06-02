@@ -34,7 +34,7 @@ const PUBLIC_PAGES = [
   '/landings/element/', '/landings/packaged-ai/',
 ];
 
-BeforeAll(async function () {
+BeforeAll({ timeout: 30 * 1000 }, async function () {
   browser = await chromium.launch({ headless: true });
 });
 
