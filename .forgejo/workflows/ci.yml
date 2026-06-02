@@ -135,13 +135,13 @@ jobs:
 
       - name: Start preview server
         run: |
-          bun run preview --port 4321 &
-          npx wait-on http://localhost:4321 --timeout 30000
+          bun run preview --port 4322 &
+          npx wait-on http://localhost:4322 --timeout 30000
 
       - name: Run BDD scenarios
         run: |
           mkdir -p $CI_ARTIFACTS
-          bunx cucumber-js tests/features/ \
+          BASE_URL=http://localhost:4322 bunx cucumber-js tests/features/ \
             --require tests/features/steps/*.ts \
             --format summary \
             --format json:$CI_ARTIFACTS/bdd-report.json 2>&1 | tee $CI_ARTIFACTS/bdd-results.txt
@@ -178,8 +178,8 @@ jobs:
 
       - name: Start preview + SEO/link audit
         run: |
-          bun run preview --port 4321 &
-          npx wait-on http://localhost:4321 --timeout 30000
+          bun run preview --port 4323 &
+          npx wait-on http://localhost:4323 --timeout 30000
           bun scripts/audit-seo.ts 2>&1 | tee $CI_ARTIFACTS/seo-audit.txt
 
       - name: Bundle size check
