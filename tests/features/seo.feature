@@ -17,7 +17,7 @@ Feature: SEO and Standards Compliance
     And all meta descriptions should be unique
 
   Scenario: Sitemap is accessible
-    When I request /sitemap-index.xml
+    When I request "/sitemap-index.xml"
     Then I should receive HTTP 200
 
   Scenario: robots.txt is accessible and contains sitemap reference

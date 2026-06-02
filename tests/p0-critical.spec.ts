@@ -25,6 +25,17 @@ const CANONICAL_EMAIL = 'hello@serviceparadigm.com';
 
 test.describe('P0 Critical: Launch Integrity', () => {
 
+  // Mock Google Apps Script endpoints for CI
+  test.beforeEach(async ({ page }) => {
+    await page.route('**/script.google.com/**', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, message: 'OK' }),
+      });
+    });
+  });
+
   // ── Route Integrity ──────────────────────────────────────────────────────
   test.describe('Route Integrity', () => {
     for (const path of PAGES) {
@@ -141,7 +152,8 @@ test.describe('P0 Critical: Launch Integrity', () => {
     await page.click('button[type="submit"]');
 
     // Wait for the success message to appear (up to 5s)
-    await expect(page.locator('text=/successfully|connected|subscribed|thank you/i')).toBeVisible({ timeout: 5000 });
+    const successMsg = page.locator('section form, .newsletter-form, [class*="newsletter"]').locator('text=/successfully|connected|subscribed|thank you/i');
+    await expect(successMsg.first()).toBeVisible({ timeout: 5000 });
   });
 
   // ── Contact Form Success State ───────────────────────────────────────────
@@ -160,7 +172,7 @@ test.describe('P0 Critical: Launch Integrity', () => {
 
     await page.click('button[type="submit"]');
 
-    await expect(page.locator('text=/thank you|received|contact|we.*touch/i')).toBeVisible({ timeout: 5000 });
+    await expect(page.locator('form, [role="form"], .contact-form').locator('text=/message.*received|thank you for contacting|successfully submitted|we.*ve received your/i').first()).toBeVisible({ timeout: 5000 });
   });
 
   // ── OG Meta on All Pages ─────────────────────────────────────────────────

@@ -16,6 +16,17 @@ let page: Page;
 
 const BASE_URL = process.env.BASE_URL || 'http://localhost:4321';
 
+// Mock Google Apps Script endpoints for CI (avoids CORS/external dependency issues)
+async function mockGoogleScriptEndpoints(page: any) {
+  await page.route('**/script.google.com/**', async (route: any) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ success: true, message: 'OK' }),
+    });
+  });
+}
+
 // Core pages list
 const PUBLIC_PAGES = [
   '/', '/about/', '/services/', '/contact/', '/privacy/',
@@ -34,18 +45,21 @@ AfterAll(async function () {
 Given('I am on the homepage', async function () {
   context = await browser.newContext({ baseURL: BASE_URL });
   page = await context.newPage();
+  await mockGoogleScriptEndpoints(page);
   await page.goto('/');
 });
 
 Given('I am on the contact page', async function () {
   context = await browser.newContext({ baseURL: BASE_URL });
   page = await context.newPage();
+  await mockGoogleScriptEndpoints(page);
   await page.goto('/contact/');
 });
 
 Given('I browse the site', async function () {
   context = await browser.newContext({ baseURL: BASE_URL });
   page = await context.newPage();
+  await mockGoogleScriptEndpoints(page);
 });
 
 // Generic step helpers
@@ -66,8 +80,9 @@ Then('the body should not be empty', async function () {
 });
 
 Then('I should see the hero section heading {string}', async function (text: string) {
-  const h1 = await page.locator('h1').innerText();
-  assert.ok(h1.includes(text), `Expected h1 to contain "${text}", got "${h1}"`);
+  const hero = page.locator('header h1, header span, [class*="hero"] h1, [class*="hero"] span, .hero-content span, .hero-content h1');
+  const heroText = await hero.first().innerText();
+  assert.ok(heroText.includes(text), `Expected hero to contain "${text}", got "${heroText}"`);
 });
 
 Then('I should see a {string} call-to-action button', async function (text: string) {
@@ -107,10 +122,22 @@ Then('I should see the heading {string}', async function (text: string) {
   await heading.waitFor({ state: 'visible', timeout: 5000 });
 });
 
-Then('I should see statistics for businesses served, years in operation, and uptime', async function () {
-  const stats = page.locator('.stat, [class*="stat"], [class*="metric"], section[aria-labelledby*="about"] p, section[aria-labelledby*="about"] div');
-  const count = await stats.count();
-  assert.ok(count >= 3, `Expected at least 3 statistics, found ${count}`);
+Then('I should see cards for AI Strategy, Solutions Architecture, and Cybersecurity Architecture', async function () {
+  const cards = page.locator('h3');
+  const count = await cards.count();
+  const texts: string[] = [];
+  for (let i = 0; i < count; i++) {
+    texts.push((await cards.nth(i).innerText()).toLowerCase());
+  }
+  assert.ok(texts.some(t => t.includes('ai strategy')), 'Should have AI Strategy card');
+  assert.ok(texts.some(t => t.includes('solutions architecture')), 'Should have Solutions Architecture card');
+  assert.ok(texts.some(t => t.includes('cybersecurity architecture')), 'Should have Cybersecurity Architecture card');
+});
+
+Then('I should see statistics for cost per minute and digital transformation failure rate', async function () {
+  const bodyText = await page.locator('body').innerText();
+  assert.ok(bodyText.includes('Cost Per Minute'), 'Should show cost per minute stat');
+  assert.ok(bodyText.includes('Digital Transformations Fail'), 'Should show DX failure rate stat');
 });
 
 Then('I should see a newsletter email input field', async function () {
@@ -185,8 +212,9 @@ When('I submit the form', async function () {
 });
 
 Then('I should see a success confirmation message', async function () {
-  const success = page.locator('text=/thank you|successfully|received|contact|we.*touch/i');
-  await success.waitFor({ state: 'visible', timeout: 8000 });
+  const form = page.locator('form, [role="form"], .contact-form');
+  const success = form.locator('text=/message.*received|thank you for contacting|successfully submitted|we.*ve received your/i');
+  await success.first().waitFor({ state: 'visible', timeout: 8000 });
 });
 
 Then('I should see the email address {string} on the page', async function (email: string) {
@@ -200,7 +228,7 @@ Then('I should see a phone link with a {string} href', async function (prefix: s
 });
 
 Then('I should see a physical address', async function () {
-  const address = page.locator('address, [class*="address"], text=/Kingston|Jamaica|Street/');
+  const address = page.locator('address, [class*="address"], [class*="location"], [class*="contact-info"] p, text=/Kingston|Jamaica|Street|Avenue|Suite|Drive|Boulevard|Road/');
   const count = await address.count();
   assert.ok(count > 0, 'Should show a physical address');
 });

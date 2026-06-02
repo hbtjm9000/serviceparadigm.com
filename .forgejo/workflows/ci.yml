@@ -180,7 +180,7 @@ jobs:
         run: |
           bun run preview --port 4323 &
           npx wait-on http://localhost:4323 --timeout 30000
-          bun scripts/audit-seo.ts 2>&1 | tee $CI_ARTIFACTS/seo-audit.txt
+          BASE_URL=http://localhost:4323 bun scripts/audit-seo.ts 2>&1 | tee $CI_ARTIFACTS/seo-audit.txt
 
       - name: Bundle size check
         run: |

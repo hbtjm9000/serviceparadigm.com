@@ -13,31 +13,31 @@ Feature: Homepage
 
   Scenario: Hero section is visible
     Then I should see the hero section heading "Engineering the Next Paradigm"
-    And I should see a "Book a Meeting" call-to-action button
-    And I should see a "View Services" call-to-action button
+    And I should see a "Start Your Transformation" call-to-action button
+    And I should see a "Get Started" call-to-action button
 
   Scenario: Navigation is present and functional
     Then I should see the main navigation bar
-    And the navigation should contain links to Home, Services, Elements, About, Contact
+    And the navigation should contain links to "Services, Elements, Insights, About, Contact"
 
   Scenario: Services section is displayed
-    When I scroll to the services section
-    Then I should see the heading "End-to-End IT Services"
-    And I should see cards for Digital Transformation, AI & IT Consulting, and Managed Services
+    When I scroll to the "Strategic Pillars" section
+    Then I should see the heading "Strategic Pillars"
+    And I should see cards for AI Strategy, Solutions Architecture, and Cybersecurity Architecture
 
-  Scenario: About section is displayed
-    When I scroll to the about section
-    Then I should see the heading "Built for Caribbean Business"
-    And I should see statistics for businesses served, years in operation, and uptime
+  Scenario: Mission section is displayed
+    When I scroll to the "Vision and Execution" section
+    Then I should see the heading "Bridging the Latency between Vision and Execution."
+    And I should see statistics for cost per minute and digital transformation failure rate
 
   Scenario: Newsletter signup form is visible
     Then I should see a newsletter email input field
     And I should see a submit button for the newsletter
 
   Scenario: Footer contains required links
-    Then I should see a link to the Privacy page
-    And I should see a link to the Terms of Service page
-    And I should see a link to the Accessibility page
+    And I should see a link to the "privacy" page
+    And I should see a link to the "terms" page
+    And I should see a link to the "accessibility" page
     And I should see a link to the LinkedIn company page
 
   Scenario: Meta tags are properly set

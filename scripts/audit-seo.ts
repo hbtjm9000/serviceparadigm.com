@@ -17,6 +17,8 @@ interface SeoResult {
 
 const results: SeoResult[] = [];
 
+const BASE_URL = process.env.BASE_URL || 'http://localhost:4321';
+
 function check(name: string, cmd: string): void {
   try {
     const output = execSync(cmd, { encoding: 'utf-8', timeout: 120_000, stdio: ['pipe', 'pipe', 'pipe'] });
@@ -29,12 +31,12 @@ function check(name: string, cmd: string): void {
 console.log('🌐 Running SEO / Perf audit...\n');
 
 // 1. Check link health
-check('Link checker (lychee)', 'lychee --verbose --timeout 60 http://localhost:4321/ 2>&1 || true');
+check('Link checker (lychee)', `lychee --verbose --timeout 60 ${BASE_URL}/ 2>&1 || true`);
 
 // 2. Check a few critical pages for basic SEO tags via curl
 const pages = ['/', '/about/', '/services/', '/contact/'];
 for (const page of pages) {
-  check(`SEO meta: ${page}`, `curl -s http://localhost:4321${page} | grep -c '<meta name="description"'`);
+  check(`SEO meta: ${page}`, `curl -s ${BASE_URL}${page} | grep -c '<meta name="description"'`);
 }
 
 console.log('\n📋 SEO Audit Report\n');
