@@ -27,7 +27,11 @@ jobs:
           git fetch --depth 1 origin $GITHUB_SHA && git checkout -f $GITHUB_SHA
 
       - name: Install dependencies
-        run: bun install
+        run: |
+          for i in 1 2 3; do
+            bun install --no-cache 2>&1 && break
+            echo "bun install attempt $i failed, retrying..." && sleep 5
+          done
 
       - name: Type check
         run: bun run typecheck:ci
@@ -64,7 +68,11 @@ jobs:
           git fetch --depth 1 origin $GITHUB_SHA && git checkout -f $GITHUB_SHA
 
       - name: Install dependencies
-        run: bun install
+        run: |
+          for i in 1 2 3; do
+            bun install --no-cache 2>&1 && break
+            echo "bun install attempt $i failed, retrying..." && sleep 5
+          done
 
       - name: Build
         run: bun run build
@@ -112,7 +120,11 @@ jobs:
           git fetch --depth 1 origin $GITHUB_SHA && git checkout -f $GITHUB_SHA
 
       - name: Install dependencies
-        run: bun install
+        run: |
+          for i in 1 2 3; do
+            bun install --no-cache 2>&1 && break
+            echo "bun install attempt $i failed, retrying..." && sleep 5
+          done
 
       - name: Build
         run: bun run build
@@ -150,7 +162,11 @@ jobs:
           git fetch --depth 1 origin $GITHUB_SHA && git checkout -f $GITHUB_SHA
 
       - name: Install dependencies
-        run: bun install
+        run: |
+          for i in 1 2 3; do
+            bun install --no-cache 2>&1 && break
+            echo "bun install attempt $i failed, retrying..." && sleep 5
+          done
 
       - name: Build
         run: bun run build
@@ -188,7 +204,11 @@ jobs:
           git fetch --depth 1 origin $GITHUB_SHA && git checkout -f $GITHUB_SHA
 
       - name: Install dependencies
-        run: bun install
+        run: |
+          for i in 1 2 3; do
+            bun install --no-cache 2>&1 && break
+            echo "bun install attempt $i failed, retrying..." && sleep 5
+          done
 
       - name: Build
         run: bun run build
