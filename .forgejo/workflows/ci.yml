@@ -71,7 +71,7 @@ jobs:
 
       - name: Install Playwright browsers
         run: |
-          PLAYWRIGHT_BROWSERS_PATH=$HOME/.cache/ms-playwright bunx playwright install chromium --no-shell-deps 2>&1 | tail -5
+          PLAYWRIGHT_BROWSERS_PATH=$HOME/.cache/ms-playwright bunx playwright install chromium --no-shell 2>&1 | tail -5
 
       - name: Start preview server
         run: |
@@ -119,7 +119,7 @@ jobs:
 
       - name: Install Playwright browsers
         run: |
-          PLAYWRIGHT_BROWSERS_PATH=$HOME/.cache/ms-playwright bunx playwright install chromium --no-shell-deps 2>&1 | tail -5
+          PLAYWRIGHT_BROWSERS_PATH=$HOME/.cache/ms-playwright bunx playwright install chromium --no-shell 2>&1 | tail -5
 
       - name: Start preview server
         run: |
