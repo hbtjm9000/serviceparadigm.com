@@ -29,7 +29,7 @@ export default defineConfig({
   webServer: {
     command: 'bun run preview',
     url: 'http://localhost:4321',
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: true,
     timeout: 30_000,
     stdout: 'pipe',
     stderr: 'pipe',
