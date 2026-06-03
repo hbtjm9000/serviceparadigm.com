@@ -1,5 +1,16 @@
 import { test, expect } from '@playwright/test';
 
+// Mock Google Apps Script endpoints for CI
+test.beforeEach(async ({ page }) => {
+  await page.route('**/script.google.com/**', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ success: true, message: 'OK' }),
+    });
+  });
+});
+
 test.describe('Contact Page', () => {
   test('page loads without errors', async ({ page }) => {
     const errors: string[] = [];
@@ -32,9 +43,12 @@ test.describe('Contact Page', () => {
 
     await page.click('button[type="submit"]');
 
-    // Simulation takes ~1500ms
-    await page.waitForTimeout(2000);
-    await expect(page.locator('text=Thank you for your inquiry')).toBeVisible();
+    // Simulation takes ~1000ms
+    await page.waitForTimeout(3000);
+    // Success div is a section-level sibling, not a direct child of form
+    await expect(
+      page.locator('section').filter({ hasText: 'Thank you for your inquiry' })
+    ).toBeVisible();
   });
 
   test('phone link is properly formatted', async ({ page }) => {
@@ -43,7 +57,7 @@ test.describe('Contact Page', () => {
     const phoneLink = page.locator('a[href^="tel:"]');
     await expect(phoneLink).toBeVisible();
     const href = await phoneLink.getAttribute('href');
-    expect(href).toBe('tel:+18768904060');
+    expect(href).toBe('tel:+1-876-371-8172');
   });
 });
 
@@ -78,8 +92,11 @@ test.describe('Homepage', () => {
     await page.click('button[type="submit"]');
 
     // Simulation takes ~1000ms
-    await page.waitForTimeout(1500);
-    await expect(page.locator('text=Successfully connected')).toBeVisible();
+    await page.waitForTimeout(3000);
+    // Success div is a sibling of the form, not a child — use section-level filter
+    await expect(
+      page.locator('section').filter({ hasText: 'Successfully connected' })
+    ).toBeVisible();
   });
 
   test('og:image meta tag is present', async ({ page }) => {

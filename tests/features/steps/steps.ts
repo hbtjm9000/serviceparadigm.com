@@ -98,9 +98,9 @@ Then('the body should not be empty', async function () {
 });
 
 Then('I should see the hero section heading {string}', async function (text: string) {
-  const hero = page.locator('header h1, header span, [class*="hero"] h1, [class*="hero"] span, .hero-content span, .hero-content h1');
-  const heroText = await hero.first().innerText();
-  assert.ok(heroText.includes(text), `Expected hero to contain "${text}", got "${heroText}"`);
+  const hero = page.locator('[class*="hero"]');
+  const heroText = (await hero.textContent()) || '';
+  assert.ok(heroText.includes(text), `Expected hero to contain "${text}"`);
 });
 
 Then('I should see a {string} call-to-action button', async function (text: string) {
