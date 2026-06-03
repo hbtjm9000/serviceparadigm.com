@@ -72,7 +72,7 @@ jobs:
         run: |
           mkdir -p $STAGING_DIR
           rm -rf $STAGING_DIR/dist
-          cp -r dist/* $STAGING_DIR/dist/
+          cp -r dist $STAGING_DIR/
           chmod -R 755 $STAGING_DIR/dist
           echo "Deployed $GITHUB_SHA at $(date -u '+%Y-%m-%d %H:%M UTC')" > $STAGING_DIR/REVISION
 
