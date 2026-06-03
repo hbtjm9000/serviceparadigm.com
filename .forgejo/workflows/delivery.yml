@@ -13,7 +13,10 @@ on:
     branches: [main]
 
 env:
-  CI_ARTIFACTS: /tmp/artifacts
+  # CI_ARTIFACTS must be inside the workspace root ($GITHUB_WORKSPACE)
+  # so artifacts survive between job containers (same host volume mount).
+  # Each job's git checkout coexists with this untracked dir.
+  CI_ARTIFACTS: /workspace/ci-artifacts
   STAGING_DIR: /var/www/serviceparadigm.stage.paradigm.local
   FORGEJO_BASE: http://127.0.0.1:3020
   FORGEJO_REPO: hbtjm/serviceparadigm.com
@@ -27,7 +30,6 @@ jobs:
   # CI PHASE — quality gate runs on push + PR to main
   # ═══════════════════════════════════════════════════════════════════════════
   quality:
-    name: Quality Gates
     runs-on: docker
     container: crumbs-ci:latest
     if: github.event_name == 'push' || github.event_name == 'pull_request'
@@ -61,7 +63,6 @@ jobs:
   # CD PHASE — deploy to staging, test, create promotion PR (push to main only)
   # ═══════════════════════════════════════════════════════════════════════════
   cd-build:
-    name: Build production artifacts
     runs-on: docker
     container: crumbs-ci:latest
     needs: [quality]
@@ -92,9 +93,11 @@ jobs:
           ls -lh $CI_ARTIFACTS/dist/
 
   cd-deploy-staging:
-    name: Deploy to staging
     runs-on: docker
-    container: crumbs-ci:latest
+    container:
+      image: crumbs-ci:latest
+      volumes:
+        - /var/www/serviceparadigm.stage.paradigm.local:/var/www/serviceparadigm.stage.paradigm.local
     needs: [cd-build]
     if: github.event_name == 'push' && github.ref_name == 'main'
     steps:
@@ -108,7 +111,6 @@ jobs:
       - name: Write revision
         run: |
           echo "Deployed $GITHUB_SHA at $(date -u '+%Y-%m-%d %H:%M UTC')" > $STAGING_DIR/REVISION
-          chown -R 1000:1000 $STAGING_DIR
 
       - name: Health check (via Caddy)
         run: |
@@ -125,9 +127,11 @@ jobs:
           exit 1
 
   cd-e2e:
-    name: E2E tests (Playwright)
     runs-on: docker
-    container: crumbs-ci:latest
+    container:
+      image: crumbs-ci:latest
+      volumes:
+        - /var/www/serviceparadigm.stage.paradigm.local:/var/www/serviceparadigm.stage.paradigm.local
     needs: [cd-deploy-staging]
     if: github.event_name == 'push' && github.ref_name == 'main'
     env:
@@ -149,7 +153,6 @@ jobs:
 
       - name: Start preview server (serving staging dist)
         run: |
-          # Serve what was just deployed to staging
           npx serve $STAGING_DIR/dist -p 4321 -L &
           for i in $(seq 1 10); do
             curl -sf http://127.0.0.1:4321 >/dev/null 2>&1 && echo "preview ready on :4321" && break
@@ -170,9 +173,11 @@ jobs:
           [ -d playwright-report ] && cp -r playwright-report $CI_ARTIFACTS/e2e/ 2>/dev/null || true
 
   cd-bdd:
-    name: BDD tests (Cucumber)
     runs-on: docker
-    container: crumbs-ci:latest
+    container:
+      image: crumbs-ci:latest
+      volumes:
+        - /var/www/serviceparadigm.stage.paradigm.local:/var/www/serviceparadigm.stage.paradigm.local
     needs: [cd-deploy-staging]
     if: github.event_name == 'push' && github.ref_name == 'main'
     env:
@@ -214,7 +219,6 @@ jobs:
           cp -r test-results $CI_ARTIFACTS/bdd/ 2>/dev/null || true
 
   cd-create-pr:
-    name: Create promotion PR
     runs-on: docker
     container: curlimages/curl:latest
     needs: [cd-e2e, cd-bdd]
@@ -285,7 +289,6 @@ jobs:
   # PROMOTION PHASE — build verified artifacts on production branch (push = manual merge)
   # ═══════════════════════════════════════════════════════════════════════════
   promote:
-    name: Production build (verification only)
     runs-on: docker
     container: crumbs-ci:latest
     if: github.event_name == 'push' && github.ref_name == 'production'
