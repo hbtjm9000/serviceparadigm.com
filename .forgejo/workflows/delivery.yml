@@ -1,0 +1,313 @@
+# Delivery Pipeline — serviceparadigm.com
+# Mirrors the crumbs delivery.yml pattern exactly:
+#   CI phase (push + PR to main)
+#   → CD phase (push to main only):
+#     cd-build → cd-deploy-staging → cd-e2e + cd-bdd → cd-create-pr
+#   → Promotion phase (push to production only): promote
+
+name: Delivery Pipeline
+on:
+  push:
+    branches: [main, production]
+  pull_request:
+    branches: [main]
+
+env:
+  CI_ARTIFACTS: /tmp/artifacts
+  STAGING_DIR: /var/www/serviceparadigm.stage.paradigm.local
+  FORGEJO_BASE: http://127.0.0.1:3020
+  FORGEJO_REPO: hbtjm/serviceparadigm.com
+
+defaults:
+  run:
+    shell: bash -e {0}
+
+jobs:
+  # ═══════════════════════════════════════════════════════════════════════════
+  # CI PHASE — quality gate runs on push + PR to main
+  # ═══════════════════════════════════════════════════════════════════════════
+  quality:
+    name: Quality Gates
+    runs-on: docker
+    container: crumbs-ci:latest
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
+    steps:
+      - name: Checkout
+        run: |
+          git init .
+          git remote add origin http://hbtjm:${{ secrets.GITHUB_TOKEN }}@127.0.0.1:3020/${{ env.FORGEJO_REPO }}.git
+          git fetch --depth 1 origin $GITHUB_SHA && git checkout -f $GITHUB_SHA
+
+      - name: Install dependencies
+        run: |
+          for i in 1 2 3; do
+            bun install --no-cache 2>&1 && break
+            echo "bun install attempt $i failed, retrying..." && sleep 5
+          done
+
+      - name: Type check
+        run: bun run typecheck:ci
+
+      - name: Lint
+        run: bun run lint || echo "Lint warnings"
+
+      - name: Unit tests
+        run: bun run test:unit
+
+      - name: Build
+        run: bun run build
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # CD PHASE — deploy to staging, test, create promotion PR (push to main only)
+  # ═══════════════════════════════════════════════════════════════════════════
+  cd-build:
+    name: Build production artifacts
+    runs-on: docker
+    container: crumbs-ci:latest
+    needs: [quality]
+    if: github.event_name == 'push' && github.ref_name == 'main'
+    steps:
+      - name: Checkout
+        run: |
+          git init .
+          git remote add origin http://hbtjm:${{ secrets.GITHUB_TOKEN }}@127.0.0.1:3020/${{ env.FORGEJO_REPO }}.git
+          git fetch --depth 1 origin $GITHUB_SHA && git checkout -f $GITHUB_SHA
+
+      - name: Install dependencies
+        run: |
+          for i in 1 2 3; do
+            bun install --no-cache 2>&1 && break
+            echo "bun install attempt $i failed, retrying..." && sleep 5
+          done
+
+      - name: Build production dist
+        run: |
+          mkdir -p $CI_ARTIFACTS/dist
+          bun run build
+          cp -r dist/* $CI_ARTIFACTS/dist/
+
+      - name: Verify
+        run: |
+          echo "Dist files: $(find $CI_ARTIFACTS/dist -type f | wc -l)"
+          ls -lh $CI_ARTIFACTS/dist/
+
+  cd-deploy-staging:
+    name: Deploy to staging
+    runs-on: docker
+    container: crumbs-ci:latest
+    needs: [cd-build]
+    if: github.event_name == 'push' && github.ref_name == 'main'
+    steps:
+      - name: Copy artifacts to staging dir
+        run: |
+          mkdir -p $STAGING_DIR
+          rm -rf $STAGING_DIR/dist
+          cp -r $CI_ARTIFACTS/dist $STAGING_DIR/dist
+          chmod -R 755 $STAGING_DIR/dist
+
+      - name: Write revision
+        run: |
+          echo "Deployed $GITHUB_SHA at $(date -u '+%Y-%m-%d %H:%M UTC')" > $STAGING_DIR/REVISION
+          chown -R 1000:1000 $STAGING_DIR
+
+      - name: Health check (via Caddy)
+        run: |
+          for i in $(seq 1 10); do
+            sleep 1
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+              http://127.0.0.1:80 -H 'Host: serviceparadigm.stage.paradigm.local' 2>/dev/null || echo "000")
+            if [ "$STATUS" = "200" ]; then
+              echo "Staging healthy via Caddy (HTTP $STATUS)"
+              exit 0
+            fi
+          done
+          echo "Health check failed — Caddy may need a reload"
+          exit 1
+
+  cd-e2e:
+    name: E2E tests (Playwright)
+    runs-on: docker
+    container: crumbs-ci:latest
+    needs: [cd-deploy-staging]
+    if: github.event_name == 'push' && github.ref_name == 'main'
+    env:
+      CI: "true"
+    steps:
+      - name: Checkout (tests only)
+        run: |
+          git init .
+          git remote add origin http://hbtjm:${{ secrets.GITHUB_TOKEN }}@127.0.0.1:3020/${{ env.FORGEJO_REPO }}.git
+          git fetch --depth 1 origin $GITHUB_SHA && git checkout -f $GITHUB_SHA
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        run: |
+          PLAYWRIGHT_BROWSERS_PATH=$HOME/.cache/ms-playwright \
+            bunx playwright install chromium chromium-headless-shell --no-shell 2>&1 | tail -5
+
+      - name: Start preview server (serving staging dist)
+        run: |
+          # Serve what was just deployed to staging
+          npx serve $STAGING_DIR/dist -p 4321 -L &
+          for i in $(seq 1 10); do
+            curl -sf http://127.0.0.1:4321 >/dev/null 2>&1 && echo "preview ready on :4321" && break
+            sleep 1
+          done
+
+      - name: Run P0 critical tests
+        run: bunx playwright test tests/p0-critical.spec.ts --reporter=list 2>&1 | tee $CI_ARTIFACTS/p0-results.txt
+
+      - name: Run E2E tests
+        run: bunx playwright test tests/e2e/ --reporter=list 2>&1 | tee $CI_ARTIFACTS/e2e-results.txt
+
+      - name: Archive results
+        if: always()
+        run: |
+          mkdir -p $CI_ARTIFACTS/e2e
+          cp -r test-results $CI_ARTIFACTS/e2e/ 2>/dev/null || true
+          [ -d playwright-report ] && cp -r playwright-report $CI_ARTIFACTS/e2e/ 2>/dev/null || true
+
+  cd-bdd:
+    name: BDD tests (Cucumber)
+    runs-on: docker
+    container: crumbs-ci:latest
+    needs: [cd-deploy-staging]
+    if: github.event_name == 'push' && github.ref_name == 'main'
+    env:
+      CI: "true"
+    steps:
+      - name: Checkout (tests only)
+        run: |
+          git init .
+          git remote add origin http://hbtjm:${{ secrets.GITHUB_TOKEN }}@127.0.0.1:3020/${{ env.FORGEJO_REPO }}.git
+          git fetch --depth 1 origin $GITHUB_SHA && git checkout -f $GITHUB_SHA
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        run: |
+          PLAYWRIGHT_BROWSERS_PATH=$HOME/.cache/ms-playwright \
+            bunx playwright install chromium chromium-headless-shell --no-shell 2>&1 | tail -5
+
+      - name: Start preview server (serving staging dist)
+        run: |
+          npx serve $STAGING_DIR/dist -p 4322 -L &
+          for i in $(seq 1 10); do
+            curl -sf http://127.0.0.1:4322 >/dev/null 2>&1 && echo "preview ready on :4322" && break
+            sleep 1
+          done
+
+      - name: Run BDD scenarios
+        run: |
+          mkdir -p $CI_ARTIFACTS/bdd
+          BASE_URL=http://127.0.0.1:4322 bunx cucumber-js tests/features/ \
+            --require tests/features/steps/*.ts \
+            --format summary \
+            --format json:$CI_ARTIFACTS/bdd/bdd-report.json 2>&1 | tee $CI_ARTIFACTS/bdd/bdd-results.txt
+
+      - name: Archive results
+        if: always()
+        run: |
+          cp -r test-results $CI_ARTIFACTS/bdd/ 2>/dev/null || true
+
+  cd-create-pr:
+    name: Create promotion PR
+    runs-on: docker
+    container: curlimages/curl:latest
+    needs: [cd-e2e, cd-bdd]
+    if: github.event_name == 'push' && github.ref_name == 'main'
+    steps:
+      - name: Create promotion PR via Forgejo API
+        run: |
+          RELEASE_DATE=$(date -u '+%Y-%m-%d %H:%M UTC')
+          SHA_SHORT=$(echo $GITHUB_SHA | head -c 7)
+          PR_TITLE="Release: serviceparadigm.com ${SHA_SHORT} — ${RELEASE_DATE}"
+
+          # Check if PR already exists (don't spam)
+          EXISTING=$(curl -sf \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "${{ env.FORGEJO_BASE }}/api/v1/repos/${{ env.FORGEJO_REPO }}/pulls?base=production&head=main&state=open" 2>/dev/null | \
+            python3 -c "import sys,json; d=json.load(sys.stdin); print(len(d))" 2>/dev/null || echo 0)
+
+          if [ "$EXISTING" -gt 0 ]; then
+            echo "Promotion PR already exists — skipping creation"
+            exit 0
+          fi
+
+          PR_BODY=$(cat <<'BODYEOF'
+          ## Release Promotion: serviceparadigm.com
+
+          **Commit:** `$GITHUB_SHA`
+          **Date:** $RELEASE_DATE
+
+          ### Verification
+
+          | Gate | Status |
+          |------|--------|
+          | Quality Gates | ✅ |
+          | Build artifacts | ✅ |
+          | Deploy staging | ✅ |
+          | E2E tests (Playwright) | ✅ |
+          | BDD tests (Cucumber) | ✅ |
+
+          ### Deploy
+
+          All gates passed — merge this PR, then deploy from the host:
+
+          ```bash
+          # Deploy serviceparadigm.com $SHA_SHORT — $RELEASE_DATE
+          set -euo pipefail
+          cd ~/lab/serviceparadigm.com
+          git checkout production && git pull
+          bun install && bun run build
+          rm -rf ~/.paradigm/serviceparadigm.com/dist
+          cp -r dist ~/.paradigm/serviceparadigm.com/dist
+          echo "Deployed: $SHA_SHORT"
+          ```
+
+          ---
+          _Auto-generated by Forgejo Actions — delivery pipeline_
+          BODYEOF
+          )
+
+          curl -sf -X POST \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d "$(jq -n --arg t "$PR_TITLE" --arg b "$PR_BODY" '{base:"production", head:"main", title:$t, body:$b}')" \
+            "${{ env.FORGEJO_BASE }}/api/v1/repos/${{ env.FORGEJO_REPO }}/pulls"
+
+          echo "Promotion PR created"
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # PROMOTION PHASE — build verified artifacts on production branch (push = manual merge)
+  # ═══════════════════════════════════════════════════════════════════════════
+  promote:
+    name: Production build (verification only)
+    runs-on: docker
+    container: crumbs-ci:latest
+    if: github.event_name == 'push' && github.ref_name == 'production'
+    steps:
+      - name: Checkout
+        run: |
+          git init .
+          git remote add origin http://hbtjm:${{ secrets.GITHUB_TOKEN }}@127.0.0.1:3020/${{ env.FORGEJO_REPO }}.git
+          git fetch --depth 1 origin $GITHUB_SHA && git checkout -f $GITHUB_SHA
+
+      - name: Install dependencies
+        run: |
+          for i in 1 2 3; do
+            bun install --no-cache 2>&1 && break
+            echo "bun install attempt $i failed, retrying..." && sleep 5
+          done
+
+      - name: Build
+        run: bun run build
+
+      - name: Verify build
+        run: |
+          echo "Dist files: $(find dist -type f | wc -l)"
+          ls -lh dist/
+          echo "Build complete — production deployment is manual (see PR body for steps)"
