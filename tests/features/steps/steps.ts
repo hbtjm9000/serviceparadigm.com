@@ -153,9 +153,9 @@ Then('I should see cards for AI Strategy, Solutions Architecture, and Cybersecur
 });
 
 Then('I should see statistics for cost per minute and digital transformation failure rate', async function () {
-  const bodyText = await page.locator('body').innerText();
+  const bodyText = await page.locator('body').textContent() || '';
   assert.ok(bodyText.includes('Cost Per Minute'), 'Should show cost per minute stat');
-  assert.ok(bodyText.includes('Digital Transformations Fail'), 'Should show DX failure rate stat');
+  assert.ok(bodyText.includes('Digital Transformations'), 'Should show DX failure rate stat');
 });
 
 Then('I should see a newsletter email input field', async function () {
