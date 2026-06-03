@@ -88,15 +88,27 @@ test.describe('Homepage', () => {
   test('newsletter success state (simulation)', async ({ page }) => {
     await page.goto('/');
 
-    await page.fill('input[type="email"]', 'subscriber@example.com');
-    await page.click('button[type="submit"]');
+    // Scroll newsletter into view (client:visible hydration)
+    const newsletter = page.locator('section').filter({ hasText: 'Join the Network' });
+    await newsletter.scrollIntoViewIfNeeded();
+    await page.waitForTimeout(500); // allow Vue hydration to attach handlers
 
-    // Simulation takes ~1000ms
-    await page.waitForTimeout(3000);
-    // Success div is a sibling of the form, not a child — use section-level filter
-    await expect(
-      page.locator('section').filter({ hasText: 'Successfully connected' })
-    ).toBeVisible();
+    // Fill and submit
+    await page.fill('#newsletter-email', 'subscriber@example.com');
+
+    // Wait for the mock API response before checking DOM
+    const responsePromise = page.waitForResponse(
+      resp => resp.url().includes('script.google.com') && resp.status() === 200
+    );
+    await page.click('button[type="submit"]');
+    await responsePromise;
+
+    // Allow Vue reactivity tick to update the DOM
+    await page.waitForTimeout(300);
+
+    // Success text is inside the newsletter section
+    const successMsg = newsletter.locator('text=Successfully connected');
+    await expect(successMsg.first()).toBeVisible({ timeout: 10000 });
   });
 
   test('og:image meta tag is present', async ({ page }) => {
