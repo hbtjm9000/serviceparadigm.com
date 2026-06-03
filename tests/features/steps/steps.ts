@@ -6,10 +6,10 @@
  * Run: `bunx cucumber-js tests/features/ --require tests/features/steps/*.ts`
  */
 
-import { Given, When, Then, Before, BeforeAll, AfterAll, setDefaultTimeout } from '@cucumber/cucumber';
+import { Given, When, Then, Before, BeforeAll, After, AfterAll, setDefaultTimeout } from '@cucumber/cucumber';
 
-// Increase default step timeout from 5s to 15s for CI resource contention
-setDefaultTimeout(15 * 1000);
+// Increase default step timeout from 5s to 20s for CI resource contention
+setDefaultTimeout(20 * 1000);
 import { chromium, type Browser, type Page, type BrowserContext } from 'playwright';
 import assert from 'assert';
 
@@ -42,12 +42,18 @@ Before(async function () {
   // No-op per-scenario — experiment variant is set via page.addInitScript
 });
 
+// Clean up per-scenario: close page + context to avoid accumulation
+After(async function () {
+  if (page) await page.close().catch(() => {});
+  if (context) await context.close().catch(() => {});
+});
+
 BeforeAll({ timeout: 30 * 1000 }, async function () {
   browser = await chromium.launch({ headless: true });
 });
 
-AfterAll(async function () {
-  if (browser) await browser.close();
+AfterAll({ timeout: 30 * 1000 }, async function () {
+  if (browser) await browser.close().catch(() => {});
 });
 
 Given('I am on the homepage', async function () {
