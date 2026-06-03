@@ -21,7 +21,7 @@ Feature: SEO and Standards Compliance
     Then I should receive HTTP 200
 
   Scenario: robots.txt is accessible and contains sitemap reference
-    When I request /robots.txt
+    When I request "/robots.txt"
     Then I should receive HTTP 200
     And the content should contain "Sitemap"
 

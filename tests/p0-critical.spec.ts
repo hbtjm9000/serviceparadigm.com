@@ -143,18 +143,32 @@ test.describe('P0 Critical: Launch Integrity', () => {
    * After submitting the newsletter form, a visible success confirmation
    * must appear. The component sets submitted.value = true but the template
    * must render it — this is the functional gap.
+   *
+   * Newsletter uses client:visible hydration, so we must scroll it into view first.
    */
   test('Newsletter: success state is visible after submit (simulated)', async ({ page }) => {
     await page.goto('/');
 
+    // Scroll newsletter into view (client:visible hydration)
+    const newsletter = page.locator('section').filter({ hasText: 'Join the Network' });
+    await newsletter.scrollIntoViewIfNeeded();
+    await page.waitForTimeout(500); // allow Vue hydration to attach handlers
+
     // Fill and submit with a real-looking address
     await page.fill('#newsletter-email', 'test@techcorp.io');
-    await page.click('button[type="submit"]');
 
-    // Wait for the success message to appear (up to 10s)
+    // Wait for the mock API response before checking DOM
+    const responsePromise = page.waitForResponse(
+      resp => resp.url().includes('script.google.com') && resp.status() === 200
+    );
+    await page.click('button[type="submit"]');
+    await responsePromise;
+
+    // Allow Vue reactivity tick to update the DOM
+    await page.waitForTimeout(300);
+
     // Note: success div is a sibling of the form, not a child
-    const section = page.locator('section').filter({ hasText: 'Join the Network' });
-    const successMsg = section.locator('text=/successfully|connected|subscribed|thank you/i');
+    const successMsg = newsletter.locator('text=/successfully|connected|subscribed|thank you/i');
     await expect(successMsg.first()).toBeVisible({ timeout: 10000 });
   });
 

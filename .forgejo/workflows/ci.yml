@@ -9,7 +9,8 @@ on:
 env:
   CI_ARTIFACTS: /tmp/artifacts
   STAGING_DIR: /var/www/serviceparadigm.stage.paradigm.local
-  BASE_URL: http://localhost:4321
+  CI_HOST: 192.168.2.62
+  BASE_URL: http://192.168.2.62:4321
 
 jobs:
   # ────────────────────────────────────────────────────────────────────────────
@@ -84,8 +85,8 @@ jobs:
       - name: Start preview server
         run: |
           mkdir -p $CI_ARTIFACTS
-          bun run preview --port 4321 &
-          npx wait-on http://localhost:4321 --timeout 30000
+          bun run preview --host $CI_HOST --port 4321 &
+          npx wait-on http://$CI_HOST:4321 --timeout 30000
           echo "Preview server ready"
 
       - name: P0 critical tests
@@ -135,13 +136,13 @@ jobs:
 
       - name: Start preview server
         run: |
-          bun run preview --port 4322 &
-          npx wait-on http://localhost:4322 --timeout 30000
+          bun run preview --host $CI_HOST --port 4322 &
+          npx wait-on http://$CI_HOST:4322 --timeout 30000
 
       - name: Run BDD scenarios
         run: |
           mkdir -p $CI_ARTIFACTS
-          BASE_URL=http://localhost:4322 bunx cucumber-js tests/features/ \
+          BASE_URL=http://$CI_HOST:4322 bunx cucumber-js tests/features/ \
             --require tests/features/steps/*.ts \
             --format summary \
             --format json:$CI_ARTIFACTS/bdd-report.json 2>&1 | tee $CI_ARTIFACTS/bdd-results.txt
@@ -178,9 +179,9 @@ jobs:
 
       - name: Start preview + SEO/link audit
         run: |
-          bun run preview --port 4323 &
-          npx wait-on http://localhost:4323 --timeout 30000
-          BASE_URL=http://localhost:4323 bun scripts/audit-seo.ts 2>&1 | tee $CI_ARTIFACTS/seo-audit.txt
+          bun run preview --host $CI_HOST --port 4323 &
+          npx wait-on http://$CI_HOST:4323 --timeout 30000
+          BASE_URL=http://$CI_HOST:4323 bun scripts/audit-seo.ts 2>&1 | tee $CI_ARTIFACTS/seo-audit.txt
 
       - name: Bundle size check
         run: |

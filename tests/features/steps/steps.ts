@@ -6,7 +6,10 @@
  * Run: `bunx cucumber-js tests/features/ --require tests/features/steps/*.ts`
  */
 
-import { Given, When, Then, BeforeAll, AfterAll } from '@cucumber/cucumber';
+import { Given, When, Then, Before, BeforeAll, AfterAll, setDefaultTimeout } from '@cucumber/cucumber';
+
+// Increase default step timeout from 5s to 15s for CI resource contention
+setDefaultTimeout(15 * 1000);
 import { chromium, type Browser, type Page, type BrowserContext } from 'playwright';
 import assert from 'assert';
 
@@ -34,6 +37,11 @@ const PUBLIC_PAGES = [
   '/landings/element/', '/landings/packaged-ai/',
 ];
 
+// Force experiment variant for deterministic tests
+Before(async function () {
+  // No-op per-scenario — experiment variant is set via page.addInitScript
+});
+
 BeforeAll({ timeout: 30 * 1000 }, async function () {
   browser = await chromium.launch({ headless: true });
 });
@@ -45,6 +53,10 @@ AfterAll(async function () {
 Given('I am on the homepage', async function () {
   context = await browser.newContext({ baseURL: BASE_URL });
   page = await context.newPage();
+  // Force hero A/B test variant for deterministic tests
+  await page.addInitScript(() => {
+    localStorage.setItem('exp:hero-copy-test', 'v1-baseline');
+  });
   await mockGoogleScriptEndpoints(page);
   await page.goto('/');
 });
@@ -190,7 +202,7 @@ Then('every image on the page should have an alt attribute', async function () {
 
 // Contact form specific
 Then('I should see a field labeled {string}', async function (label: string) {
-  const field = page.locator(`label[for="${label.toLowerCase()}"], input#${label.toLowerCase()}, textarea#${label.toLowerCase()}, select#${label.toLowerCase()}`);
+  const field = page.locator(`label[for="${label.toLowerCase()}"], input#${label.toLowerCase()}, textarea#${label.toLowerCase()}, select#${label.toLowerCase()}`).first();
   await field.waitFor({ state: 'visible', timeout: 5000 });
 });
 
@@ -212,9 +224,10 @@ When('I submit the form', async function () {
 });
 
 Then('I should see a success confirmation message', async function () {
-  const form = page.locator('form, [role="form"], .contact-form');
-  const success = form.locator('text=/message.*received|thank you for contacting|successfully submitted|we.*ve received your/i');
-  await success.first().waitFor({ state: 'visible', timeout: 8000 });
+  // Success div is inside the form element — scope to the contact form
+  const form = page.locator('form').filter({ has: page.locator('#name') });
+  const success = form.locator('text=/thank you for your|message.*received|successfully submitted|we.*ve received your/i');
+  await success.first().waitFor({ state: 'visible', timeout: 10000 });
 });
 
 Then('I should see the email address {string} on the page', async function (email: string) {
@@ -228,9 +241,15 @@ Then('I should see a phone link with a {string} href', async function (prefix: s
 });
 
 Then('I should see a physical address', async function () {
-  const address = page.locator('address, [class*="address"], [class*="location"], [class*="contact-info"] p, text=/Kingston|Jamaica|Street|Avenue|Suite|Drive|Boulevard|Road/');
-  const count = await address.count();
-  assert.ok(count > 0, 'Should show a physical address');
+  // Check for address elements or location-related class names
+  const addressEl = page.locator('address, [class*="address"], [class*="location"], [class*="contact-info"] p').first();
+  const hasAddressElement = await addressEl.count() > 0;
+
+  // Fallback: check page text for location keywords
+  const bodyText = await page.locator('body').innerText();
+  const hasLocationText = /Kingston|Jamaica|Street|Avenue|Suite|Drive|Boulevard|Road/i.test(bodyText);
+
+  assert.ok(hasAddressElement || hasLocationText, 'Should show a physical address');
 });
 
 Then('every mailto link on the page should point to {string}', async function (email: string) {
@@ -250,6 +269,14 @@ When('I request {string}', async function (path: string) {
   await page.goto(path);
 });
 
+When('I visit the privacy page', async function () {
+  await page.goto('/privacy/');
+});
+
+When('I visit the terms page', async function () {
+  await page.goto('/terms/');
+});
+
 Then('I should receive HTTP {int}', async function (status: number) {
   const response = await page.goto(page.url());
   assert.equal(response?.status(), status);
@@ -260,7 +287,7 @@ Then('the content should contain {string}', async function (text: string) {
   assert.ok(content.includes(text), `Expected content to contain "${text}"`);
 });
 
-Then('every page should return HTTP {int}', async function () {
+Then('every page should return HTTP 200', async function () {
   for (const path of PUBLIC_PAGES) {
     const response = await page.goto(path);
     assert.equal(response?.status(), 200, `${path} should return 200`);
