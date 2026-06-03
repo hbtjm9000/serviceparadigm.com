@@ -43,10 +43,7 @@ jobs:
 
   cd:
     runs-on: docker
-    container:
-      image: crumbs-ci:latest
-      volumes:
-        - /var/www/serviceparadigm.stage.paradigm.local:/var/www/serviceparadigm.stage.paradigm.local
+    container: crumbs-ci:latest
     needs: [quality]
     if: github.event_name == 'push' && github.ref_name == 'main'
     env:
