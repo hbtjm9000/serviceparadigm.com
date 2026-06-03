@@ -104,7 +104,7 @@ Then('I should see the hero section heading {string}', async function (text: str
 
 Then('I should see a {string} call-to-action button', async function (text: string) {
   const button = page.locator('a, button').filter({ hasText: text });
-  await button.waitFor({ state: 'visible', timeout: 5000 });
+  await button.first().waitFor({ state: 'visible', timeout: 5000 });
 });
 
 Then('I should see the main navigation bar', async function () {
