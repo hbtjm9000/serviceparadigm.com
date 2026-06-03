@@ -166,7 +166,7 @@ jobs:
           curl -sf -X POST \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             -H "Content-Type: application/json" \
-            -d "$(jq -n --arg t "$PR_TITLE" --arg b "$PR_BODY" '{base:"production", head:"main", title:$t, body:$b}')" \
+            -d "$(python3 -c "import json,sys; d={\"title\":sys.argv[1],\"body\":sys.argv[2],\"base\":\"production\",\"head\":\"main\"}; print(json.dumps(d))" "$PR_TITLE" "$PR_BODY")" \
             "${{ env.FORGEJO_BASE }}/api/v1/repos/${{ env.FORGEJO_REPO }}/pulls"
           echo "Promotion PR created"
 
