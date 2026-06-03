@@ -67,13 +67,13 @@ For multi-step tasks, state a brief plan:
 <!-- BEGIN FORGEJO INTEGRATION v:1 profile:minimal -->
 ## Forgejo Issue Tracker
 
-This project uses **Forgejo** for issue tracking, repos, and CI. Forgejo runs at `http://127.0.0.1:3000`. `forgejo-eventbus` provides bi-directional sync between Forgejo issues and FocalBoard/Crumbs kanban — the single pane of glass for human project management.
+This project uses **Forgejo** for issue tracking, repos, and CI. Forgejo runs at `https://forgejo.paradigm.local`. `forgejo-eventbus` provides sync between Forgejo issues and Crumbs kanban — the single pane of glass for human project management.
 
 ### Quick Reference
 
 ```bash
 # Forgejo web UI: http://127.0.0.1:3000/hal
-# FocalBoard kanban: http://127.0.0.1:9090
+# Crumbs kanban: https://kanban.paradigm.local
 # Clone with embedded token:
 git clone https://<token>@127.0.0.1:3000/hal/<repo>.git
 ```
@@ -81,7 +81,7 @@ git clone https://<token>@127.0.0.1:3000/hal/<repo>.git
 ### Rules
 
 - All issues, projects, and tasks are tracked in Forgejo (source of truth for code/dev projects)
-- FocalBoard/Crumbs is the visual kanban layer, synced via forgejo-eventbus
+- Crumbs is the visual kanban layer, synced via forgejo-eventbus
 - Use `tea` CLI or Forgejo web UI for issue operations
 - Do NOT use markdown TODO lists for task tracking
 

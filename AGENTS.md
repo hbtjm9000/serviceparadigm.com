@@ -1,12 +1,12 @@
 # Agent Instructions
 
-This project uses **Forgejo** for issue tracking, repos, and CI (Forgejo Actions). Forgejo runs at `http://127.0.0.1:3000`. `forgejo-eventbus` provides bi-directional sync between Forgejo issues and FocalBoard/Crumbs kanban for a single pane of glass.
+This project uses **Forgejo** for issue tracking, repos, and CI (Forgejo Actions). Forgejo runs at `https://forgejo.paradigm.local`. `forgejo-eventbus` provides bi-directional sync between Forgejo issues and Crumbs kanban for a single pane of glass.
 
 ## Quick Reference
 
 ```bash
 # Forgejo web UI: http://127.0.0.1:3000/hal
-# FocalBoard kanban: http://127.0.0.1:9090
+# Crumbs kanban: https://kanban.paradigm.local
 # Clone with embedded token:
 git clone https://<token>@127.0.0.1:3000/hal/<repo>.git
 ```
