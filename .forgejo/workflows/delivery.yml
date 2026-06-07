@@ -19,6 +19,8 @@ jobs:
   quality:
     runs-on: docker
     container: crumbs-ci:latest
+    env:
+      SONAR_TOKEN: squ_16393345509341058969c79a
     if: github.event_name == 'push' || github.event_name == 'pull_request'
     steps:
       - name: Checkout
@@ -38,6 +40,13 @@ jobs:
         run: bun run lint || echo "Lint warnings"
       - name: Unit tests
         run: bun run test:unit
+      - name: SonarQube analysis
+        run: |
+          sonar-scanner \
+            -Dsonar.projectKey=paradigm_serviceparadigm \
+            -Dsonar.sources=src/ \
+            -Dsonar.host.url=http://127.0.0.1:9100
+        continue-on-error: true
       - name: Build
         run: bun run build
 
