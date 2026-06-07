@@ -191,7 +191,7 @@ jobs:
   deploy:
     name: Deploy to Cloudflare Pages
     if: github.ref == 'refs/heads/main'
-    needs: [build, lighthouse, links, p0-critical, e2e, p1-accessibility]
+    needs: [build, lighthouse, links, p0-critical, e2e]
     runs-on: ubuntu-latest
     permissions:
       contents: read

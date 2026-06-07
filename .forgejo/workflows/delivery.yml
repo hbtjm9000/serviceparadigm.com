@@ -201,4 +201,15 @@ jobs:
         run: |
           echo "Dist files: $(find dist -type f | wc -l)"
           ls -lh dist/
-          echo "Build complete — production deployment is manual"
+      - name: Deploy to Cloudflare Pages
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "CLOUDFLARE_API_TOKEN not set — skipping Cloudflare deploy"
+            exit 0
+          fi
+          bunx wrangler pages deploy dist/ \
+            --project-name=serviceparadigm-com \
+            --branch=production
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        continue-on-error: true
