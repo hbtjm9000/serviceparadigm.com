@@ -44,3 +44,4 @@ ga4-credentials.json
 *.db
 .beads-credential-key
 *.db-*
+.claude/
