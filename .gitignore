@@ -45,3 +45,4 @@ ga4-credentials.json
 .beads-credential-key
 *.db-*
 .claude/
+bun.lock
