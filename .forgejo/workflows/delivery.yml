@@ -50,7 +50,37 @@ jobs:
       - name: Build
         run: bun run build
 
-  cd:
+  self_correct:
+  runs-on: docker
+  container: crumbs-ci:latest
+  needs: [quality]
+  if: github.event_name == 'push' || github.event_name == 'pull_request'
+  env:
+    FORGEJO_BASE: ${{ env.FORGEJO_BASE }}
+    FORGEJO_REPO: ${{ env.FORGEJO_REPO }}
+    FORGEJO_TOKEN: ${{ secrets.FORGEJO_TOKEN }}
+  steps:
+    - name: Checkout
+      run: |
+        git init .
+        git remote add origin http://hbtjm:${{ secrets.GITHUB_TOKEN }}@127.0.0.1:3020/${{ env.FORGEJO_REPO }}.git
+        git fetch --depth 1 origin $GITHUB_SHA && git checkout -f $GITHUB_SHA
+    - name: Run AGY review
+      id: review
+      run: |
+        npx ts-node scripts/agy-review.ts > review.txt
+        SCORE=$(grep -Eo '[0-9]+/5' review.txt | head -1 | cut -d'/' -f1)
+        echo "score=$SCORE" >> $GITHUB_OUTPUT
+    - name: Create issue if score < 5
+      if: steps.review.outputs.score < 5
+      run: |
+        TITLE="AGY Review Score ${{ steps.review.outputs.score }}/5 – Needs Fix"
+        BODY=$(cat review.txt)
+        curl -sf -X POST "${{ env.FORGEJO_BASE }}/api/v1/repos/${{ env.FORGEJO_REPO }}/issues" \
+          -H "Authorization: token ${{ secrets.FORGEJO_TOKEN }}" \
+          -H "Content-Type: application/json" \
+          -d "$(printf '{\"title\":\"%s\",\"body\":\"%s\"}' \"$TITLE\" \"$BODY\")"
+cd:
     runs-on: docker
     container: crumbs-ci:latest
     needs: [quality]
