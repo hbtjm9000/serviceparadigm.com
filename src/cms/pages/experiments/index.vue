@@ -67,22 +67,22 @@
         <!-- Variant Content -->
         <div class="px-6 py-4 space-y-4">
           <div>
-            <label class="block text-xs font-medium text-gray-500 uppercase">Headline</label>
+            <span class="block text-xs font-medium text-gray-500 uppercase">Headline</span>
             <p class="mt-1 text-sm text-gray-900">{{ variant.headline }}</p>
           </div>
           
           <div>
-            <label class="block text-xs font-medium text-gray-500 uppercase">Highlight</label>
+            <span class="block text-xs font-medium text-gray-500 uppercase">Highlight</span>
             <p class="mt-1 text-sm text-gray-900">{{ variant.headline_highlight }}</p>
           </div>
           
           <div>
-            <label class="block text-xs font-medium text-gray-500 uppercase">CTA</label>
+            <span class="block text-xs font-medium text-gray-500 uppercase">CTA</span>
             <p class="mt-1 text-sm text-gray-900">{{ variant.cta_text }}</p>
           </div>
           
           <div>
-            <label class="block text-xs font-medium text-gray-500 uppercase">Subheadline</label>
+            <span class="block text-xs font-medium text-gray-500 uppercase">Subheadline</span>
             <p class="mt-1 text-sm text-gray-700 line-clamp-2">{{ variant.subheadline }}</p>
           </div>
         </div>
@@ -122,8 +122,9 @@
         </div>
         <div class="px-6 py-4 space-y-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700">Variant Key</label>
+            <label for="new-variant-key" class="block text-sm font-medium text-gray-700">Variant Key</label>
             <input
+              id="new-variant-key"
               v-model="newVariant.key"
               type="text"
               placeholder="v4-your-variant"
@@ -131,8 +132,9 @@
             />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700">Label</label>
+            <label for="new-variant-label" class="block text-sm font-medium text-gray-700">Label</label>
             <input
+              id="new-variant-label"
               v-model="newVariant.label"
               type="text"
               placeholder="Descriptive name"
@@ -140,8 +142,9 @@
             />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700">Headline</label>
+            <label for="new-variant-headline" class="block text-sm font-medium text-gray-700">Headline</label>
             <input
+              id="new-variant-headline"
               v-model="newVariant.headline"
               type="text"
               placeholder="Main headline text"
@@ -149,8 +152,9 @@
             />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700">Headline Highlight</label>
+            <label for="new-variant-highlight" class="block text-sm font-medium text-gray-700">Headline Highlight</label>
             <input
+              id="new-variant-highlight"
               v-model="newVariant.headline_highlight"
               type="text"
               placeholder="Word to highlight"
@@ -158,8 +162,9 @@
             />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700">CTA Text</label>
+            <label for="new-variant-cta" class="block text-sm font-medium text-gray-700">CTA Text</label>
             <input
+              id="new-variant-cta"
               v-model="newVariant.cta_text"
               type="text"
               placeholder="Button text"
@@ -167,8 +172,9 @@
             />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700">Subheadline</label>
+            <label for="new-variant-subheadline" class="block text-sm font-medium text-gray-700">Subheadline</label>
             <textarea
+              id="new-variant-subheadline"
               v-model="newVariant.subheadline"
               rows="3"
               placeholder="Supporting text"

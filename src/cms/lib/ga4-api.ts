@@ -247,13 +247,12 @@ if (import.meta.main) {
   const experiment = experimentArg?.split('=')[1] || 'hero';
   const days = parseInt(daysArg?.split('=')[1] || '7');
 
-  syncGA4Data(experiment, days)
-    .then(results => {
-      console.log('\nSync complete:', JSON.stringify(results, null, 2));
-      process.exit(0);
-    })
-    .catch(error => {
-      console.error('Sync failed:', error);
-      process.exit(1);
-    });
+  try {
+    const results = await syncGA4Data(experiment, days);
+    console.log('\nSync complete:', JSON.stringify(results, null, 2));
+    process.exit(0);
+  } catch (error) {
+    console.error('Sync failed:', error);
+    process.exit(1);
+  }
 }

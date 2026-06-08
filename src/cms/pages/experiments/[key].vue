@@ -47,8 +47,9 @@
           
           <div class="space-y-4">
             <div>
-              <label class="block text-sm font-medium text-gray-700">Variant Key</label>
+              <label for="variant-key" class="block text-sm font-medium text-gray-700">Variant Key</label>
               <input
+                id="variant-key"
                 v-model="variant.key"
                 type="text"
                 disabled
@@ -57,11 +58,12 @@
             </div>
             
             <div>
-              <label class="block text-sm font-medium text-gray-700">
+              <label for="variant-label" class="block text-sm font-medium text-gray-700">
                 Label
                 <span class="text-gray-500 font-normal ml-1">(Internal name)</span>
               </label>
               <input
+                id="variant-label"
                 v-model="variant.label"
                 type="text"
                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
@@ -69,11 +71,12 @@
             </div>
             
             <div>
-              <label class="block text-sm font-medium text-gray-700">
+              <label for="variant-headline" class="block text-sm font-medium text-gray-700">
                 Headline
                 <span class="text-gray-500 font-normal ml-1">(Main hero text)</span>
               </label>
               <input
+                id="variant-headline"
                 v-model="variant.headline"
                 type="text"
                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
@@ -81,11 +84,12 @@
             </div>
             
             <div>
-              <label class="block text-sm font-medium text-gray-700">
+              <label for="variant-highlight" class="block text-sm font-medium text-gray-700">
                 Headline Highlight
                 <span class="text-gray-500 font-normal ml-1">(Emphasized word)</span>
               </label>
               <input
+                id="variant-highlight"
                 v-model="variant.headline_highlight"
                 type="text"
                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
@@ -93,11 +97,12 @@
             </div>
             
             <div>
-              <label class="block text-sm font-medium text-gray-700">
+              <label for="variant-cta" class="block text-sm font-medium text-gray-700">
                 CTA Text
                 <span class="text-gray-500 font-normal ml-1">(Button label)</span>
               </label>
               <input
+                id="variant-cta"
                 v-model="variant.cta_text"
                 type="text"
                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
@@ -105,11 +110,12 @@
             </div>
             
             <div>
-              <label class="block text-sm font-medium text-gray-700">
+              <label for="variant-subheadline" class="block text-sm font-medium text-gray-700">
                 Subheadline
                 <span class="text-gray-500 font-normal ml-1">(Supporting description)</span>
               </label>
               <textarea
+                id="variant-subheadline"
                 v-model="variant.subheadline"
                 rows="4"
                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"

@@ -131,4 +131,4 @@ async function diagnose() {
   }
 }
 
-diagnose();
+await diagnose();

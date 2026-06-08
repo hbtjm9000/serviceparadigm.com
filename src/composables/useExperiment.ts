@@ -13,7 +13,6 @@
  */
 
 // Type definitions for experiment variants
-export type VariantKey = string;
 export interface ExperimentVariant {
   label: string;
   headline: string;

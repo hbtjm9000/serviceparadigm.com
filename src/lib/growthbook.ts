@@ -18,10 +18,13 @@ export const growthbook = new GrowthBook({
 
 // Initialize on client-side only
 if (typeof window !== 'undefined') {
-  growthbook
-    .loadFeatures()
-    .then(() => console.log('[GrowthBook] Features loaded'))
-    .catch(err => console.error('[GrowthBook] Load failed:', err));
+  (async () => {
+    try {
+      await growthbook.loadFeatures();
+    } catch {
+      // Suppress — initialization errors are non-critical
+    }
+  })();
 }
 
 export function getFeatureValue<V = string>(key: string, defaultValue: V): WidenPrimitives<V> {

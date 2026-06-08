@@ -32,8 +32,11 @@ export function calculateConversionRate(
 
   const rate = conversions / exposures;
   
-  // Wilson score interval
-  const z = confidenceLevel === 0.95 ? 1.96 : confidenceLevel === 0.99 ? 2.576 : 1.645;
+  // Wilson score interval — determine z-score based on confidence level
+  let z: number;
+  if (confidenceLevel === 0.95) z = 1.96;
+  else if (confidenceLevel === 0.99) z = 2.576;
+  else z = 1.645;
   const denominator = 1 + z * z / exposures;
   const centre = (rate + z * z / (2 * exposures)) / denominator;
   const margin = (z / denominator) * Math.sqrt((rate * (1 - rate)) / exposures + z * z / (4 * exposures * exposures));
@@ -157,7 +160,8 @@ export function findWinner(
 
   // Return the variant with the lowest p-value (most significant)
   const winner = significantVariants.reduce((best, current) => 
-    (current.pValue! < best.pValue!) ? current : best
+    (current.pValue! < best.pValue!) ? current : best,
+    significantVariants[0]
   );
 
   return {

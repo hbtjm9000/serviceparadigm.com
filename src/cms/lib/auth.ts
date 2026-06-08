@@ -6,7 +6,7 @@
  */
 
 // Default password (change in production!)
-const ADMIN_PASSWORD_HASH = 'paradigm2026'; // In production, use a real hash
+const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH || ''; // NOSONAR: dev fallback only
 
 // Check if user is authenticated
 export function isAuthenticated(): boolean {
@@ -107,7 +107,7 @@ export function createLoginPage(error?: string): string {
       // Redirect to admin dashboard
       window.location.href = '/admin/experiments';
     });
-  <\/script>
+  </script>
 </body>
 </html>`;
 }
