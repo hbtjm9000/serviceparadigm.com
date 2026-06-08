@@ -45,7 +45,7 @@ jobs:
           sonar-scanner \
             -Dsonar.projectKey=paradigm_serviceparadigm \
             -Dsonar.sources=src/ \
-            -Dsonar.host.url=http://127.0.0.1:9100
+            -Dsonar.host.url=http://sonar.paradigm.local
         continue-on-error: true
       - name: Build
         run: bun run build
