@@ -20,7 +20,7 @@ jobs:
     runs-on: docker
     container: crumbs-ci:latest
     env:
-      SONAR_TOKEN: squ_16393345509341058969c79a
+      SONAR_TOKEN: squ_97ce209af29740a986ea08e5b396e8050c8b23fc
     if: github.event_name == 'push' || github.event_name == 'pull_request'
     steps:
       - name: Checkout
