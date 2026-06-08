@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [production]
   pull_request:
-    branches: [main]
+    branches: [production]
 
 jobs:
   build:
@@ -190,7 +190,7 @@ jobs:
 
   deploy:
     name: Deploy to Cloudflare Pages
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/production'
     needs: [build, lighthouse, links, p0-critical, e2e]
     runs-on: ubuntu-latest
     permissions:
