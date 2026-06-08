@@ -45,7 +45,9 @@ jobs:
           sonar-scanner \
             -Dsonar.projectKey=paradigm_serviceparadigm \
             -Dsonar.sources=src/ \
-            -Dsonar.host.url=http://sonar.paradigm.local
+            -Dsonar.host.url=http://sonar.paradigm.local \
+            -Dsonar.javascript.node.maxspace=4096 \
+            -Dsonar.javascript.node.debugMemory=true
         continue-on-error: true
       - name: Build
         run: bun run build
