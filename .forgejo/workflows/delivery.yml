@@ -1,5 +1,7 @@
 # Delivery Pipeline — serviceparadigm.com
-# CI phase (push + PR to main) → CD phase (push to main only): build, deploy, test, PR
+# Single-job pipeline: CI phase → AGY review → CD phase (gated by score >= 5)
+# Self-correct loop: AGY issue → coding agent → fix → push → re-trigger CI
+# Loop exits when score == 5/5 or max 5 turns reached
 on:
   push:
     branches: [main, production]
@@ -50,74 +52,55 @@ jobs:
       - name: Build
         run: bun run build
 
-  self_correct:
-    runs-on: docker
-    container: crumbs-ci:latest
-    needs: [quality]
-    outputs:
-      score: ${{ steps.review.outputs.score }}
-    if: github.event_name == 'push' || github.event_name == 'pull_request'
-    env:
-      FORGEJO_BASE: ${{ env.FORGEJO_BASE }}
-      FORGEJO_REPO: ${{ env.FORGEJO_REPO }}
-      FORGEJO_TOKEN: ${{ secrets.FORGEJOTOKEN }}
-    steps:
-      - name: Checkout
-        run: |
-          git init .
-          git remote add origin http://hbtjm:${{ secrets.GITHUB_TOKEN }}@127.0.0.1:3020/${{ env.FORGEJO_REPO }}.git
-          git fetch --depth 1 origin $GITHUB_SHA && git checkout -f $GITHUB_SHA
+      # ─── Self-correct: AGY review + issue creation ───
       - name: Run AGY review
         id: review
         run: |
           npx ts-node scripts/agy-review.ts > review.txt
+          cat review.txt
           SCORE=$(grep -Eo '[0-9]+/5' review.txt | head -1 | cut -d'/' -f1)
           echo "score=$SCORE" >> $GITHUB_OUTPUT
+          echo "AGY Score: $SCORE/5"
       - name: Create issue if score < 5
         if: steps.review.outputs.score < 5
         run: |
           TITLE="AGY Review Score ${{ steps.review.outputs.score }}/5 – Needs Fix"
           BODY=$(cat review.txt)
           curl -sf -X POST "${{ env.FORGEJO_BASE }}/api/v1/repos/${{ env.FORGEJO_REPO }}/issues" \
-            -H "Authorization: token ${{ secrets.FORGEJO_TOKEN }}" \
+            -H "Authorization: token ${{ secrets.FORGEJOTOKEN }}" \
             -H "Content-Type: application/json" \
             -d "$(python3 -c "import json,sys; print(json.dumps({'title':sys.argv[1],'body':sys.argv[2]}))" "$TITLE" "$BODY")"
-  cd:
-    runs-on: docker
-    container: crumbs-ci:latest
-    needs: [self_correct]
-    if: needs.self_correct.outputs.score >= 5 && github.event_name == 'push' && github.ref_name == 'main'
-    env:
-      CI: "true"
-    steps:
-      - name: Checkout
-        run: |
-          git init .
-          git remote add origin http://hbtjm:${{ secrets.GITHUB_TOKEN }}@127.0.0.1:3020/${{ env.FORGEJO_REPO }}.git
-          git fetch --depth 1 origin $GITHUB_SHA && git checkout -f $GITHUB_SHA
 
-      - name: Install dependencies
+      # ─── CD phase: deploy + test (only main, score >= 5) ───
+      - name: Check deploy conditions
+        id: gate
         run: |
-          for i in 1 2 3; do
-            bun install --no-cache 2>&1 && break
-            echo "bun install attempt $i failed, retrying..." && sleep 5
-          done
-
+          if [ "${{ github.event_name }}" != "push" ] || [ "${{ github.ref_name }}" != "main" ]; then
+            echo "Not a push to main — skipping CD"
+            echo "skip=true" >> $GITHUB_OUTPUT
+          elif [ "${{ steps.review.outputs.score }}" -lt 5 ]; then
+            echo "Score ${{ steps.review.outputs.score }}/5 < 5 — skipping CD"
+            echo "skip=true" >> $GITHUB_OUTPUT
+          else
+            echo "Deploy conditions met"
+            echo "skip=false" >> $GITHUB_OUTPUT
+          fi
       - name: Build production dist
+        if: steps.gate.outputs.skip == 'false'
         run: |
           bun run build
           echo "Dist files: $(find dist -type f | wc -l)"
           ls -lh dist/
-
       - name: Deploy to staging
+        if: steps.gate.outputs.skip == 'false'
         run: |
           mkdir -p $STAGING_DIR
           rm -rf $STAGING_DIR/dist
           cp -r dist $STAGING_DIR/
           chmod -R 755 $STAGING_DIR/dist
           echo "Deployed $GITHUB_SHA at $(date -u '+%Y-%m-%d %H:%M UTC')" > $STAGING_DIR/REVISION
-
       - name: Health check (via Caddy)
+        if: steps.gate.outputs.skip == 'false'
         run: |
           for i in $(seq 1 10); do
             sleep 1
@@ -130,13 +113,13 @@ jobs:
           done
           echo "Health check failed — Caddy may need a reload"
           exit 1
-
       - name: Install Playwright browsers
+        if: steps.gate.outputs.skip == 'false'
         run: |
           PLAYWRIGHT_BROWSERS_PATH=$HOME/.cache/ms-playwright \
             bunx playwright install chromium chromium-headless-shell --no-shell 2>&1 | tail -5
-
       - name: Run P0 critical tests
+        if: steps.gate.outputs.skip == 'false'
         run: |
           npx serve $STAGING_DIR/dist -p 4321 -L &
           for i in $(seq 1 10); do
@@ -144,22 +127,22 @@ jobs:
             sleep 1
           done
           bunx playwright test tests/p0-critical.spec.ts --reporter=list 2>&1
-
       - name: Run E2E tests
+        if: steps.gate.outputs.skip == 'false'
         run: |
           npx serve $STAGING_DIR/dist -p 4321 -L &
           sleep 2
           bunx playwright test tests/e2e/ --reporter=list 2>&1
-
       - name: Run BDD scenarios
+        if: steps.gate.outputs.skip == 'false'
         run: |
           npx serve $STAGING_DIR/dist -p 4322 -L &
           sleep 2
           BASE_URL=http://127.0.0.1:4322 bunx cucumber-js tests/features/ \
             --require tests/features/steps/*.ts \
             --format summary 2>&1
-
       - name: Create promotion PR
+        if: steps.gate.outputs.skip == 'false'
         run: |
           RELEASE_DATE=$(date -u '+%Y-%m-%d %H:%M UTC')
           SHA_SHORT=$(echo $GITHUB_SHA | head -c 7)
