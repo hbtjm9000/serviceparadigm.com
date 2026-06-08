@@ -10,6 +10,7 @@ env:
   STAGING_DIR: /var/www/serviceparadigm.stage.paradigm.local
   FORGEJO_BASE: http://127.0.0.1:3020
   FORGEJO_REPO: hbtjm/serviceparadigm.com
+  SONAR_TOKEN: squ_97ce209af29740a986ea08e5b396e8050c8b23fc
 
 defaults:
   run:
@@ -19,8 +20,6 @@ jobs:
   quality:
     runs-on: docker
     container: crumbs-ci:latest
-    env:
-      SONAR_TOKEN: squ_97ce209af29740a986ea08e5b396e8050c8b23fc
     if: github.event_name == 'push' || github.event_name == 'pull_request'
     steps:
       - name: Checkout
@@ -46,8 +45,7 @@ jobs:
             -Dsonar.projectKey=paradigm_serviceparadigm \
             -Dsonar.sources=src/ \
             -Dsonar.host.url=http://sonar.paradigm.local \
-            -Dsonar.javascript.node.maxspace=4096 \
-            -Dsonar.javascript.node.debugMemory=true
+            -Dsonar.javascript.node.maxspace=4096
         continue-on-error: true
       - name: Build
         run: bun run build
@@ -56,6 +54,8 @@ jobs:
     runs-on: docker
     container: crumbs-ci:latest
     needs: [quality]
+    outputs:
+      score: ${{ steps.review.outputs.score }}
     if: github.event_name == 'push' || github.event_name == 'pull_request'
     env:
       FORGEJO_BASE: ${{ env.FORGEJO_BASE }}
@@ -85,8 +85,8 @@ jobs:
   cd:
     runs-on: docker
     container: crumbs-ci:latest
-    needs: [quality]
-    if: github.event_name == 'push' && github.ref_name == 'main'
+    needs: [self_correct]
+    if: needs.self_correct.outputs.score >= 5 && github.event_name == 'push' && github.ref_name == 'main'
     env:
       CI: "true"
     steps:
