@@ -36,14 +36,14 @@ jobs:
         continue-on-error: true
         run: |
           git config --global credential.helper ""
-          git push https://${{ secrets.GH_TOKEN }}@github.com/hbtjm9000/serviceparadigm.com.git production
+          GIT_TERMINAL_PROMPT=0 git push https://${{ secrets.GH_TOKEN }}@github.com/hbtjm9000/serviceparadigm.com.git production
           echo "Pushed to GitHub — Option A (GitHub only) or B (Both) satisfied"
 
       - name: Deploy to Cloudflare Pages
         continue-on-error: true
         run: |
           bunx wrangler pages deploy dist/ \
-            --project-name=serviceparadigm \
+            --project-name=serviceparadigm-com \
             --branch=production
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
