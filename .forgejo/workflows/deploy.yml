@@ -35,9 +35,13 @@ jobs:
       - name: Deploy to GitHub (origin/production)
         continue-on-error: true
         run: |
-          git config --global credential.helper ""
-          GIT_TERMINAL_PROMPT=0 git push https://${{ secrets.GH_TOKEN }}@github.com/hbtjm9000/serviceparadigm.com.git production
-          echo "Pushed to GitHub — Option A (GitHub only) or B (Both) satisfied"
+          # Push via GitHub API to avoid container git credential helper issues
+          BRANCH_SHA=$(git rev-parse production)
+          curl -sf -X PATCH "https://api.github.com/repos/hbtjm9000/serviceparadigm.com/git/refs/heads/production" \
+            -H "Authorization: token ${{ secrets.GH_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d "{\"sha\":\"$BRANCH_SHA\",\"force\":true}"
+          echo "Pushed to GitHub via API"
 
       - name: Deploy to Cloudflare Pages
         continue-on-error: true
