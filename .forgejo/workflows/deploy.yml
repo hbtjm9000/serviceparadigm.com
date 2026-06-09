@@ -36,7 +36,7 @@ jobs:
         continue-on-error: true
         run: |
           # Use .netrc for auth to bypass credential helper
-          echo "machine github.com login ${{ secrets.GH_TOKEN }}" > ~/.netrc
+          echo "machine github.com login git password ${{ secrets.GH_TOKEN }}" > ~/.netrc
           chmod 600 ~/.netrc
           git push https://github.com/hbtjm9000/serviceparadigm.com.git HEAD:production
           echo "Pushed to GitHub"
