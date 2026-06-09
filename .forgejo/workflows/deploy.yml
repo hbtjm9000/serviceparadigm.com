@@ -19,7 +19,8 @@ jobs:
         run: |
           git init .
           git remote add origin http://hbtjm:${{ secrets.GITHUB_TOKEN }}@127.0.0.1:3020/hbtjm/serviceparadigm.com.git
-          git fetch --depth 1 origin $GITHUB_SHA && git checkout -f $GITHUB_SHA
+          git fetch --depth 1 origin refs/heads/production:production
+          git checkout production
 
       - name: Install dependencies
         run: |
@@ -32,6 +33,7 @@ jobs:
         run: bun run build
 
       - name: Deploy to GitHub (origin/production)
+        continue-on-error: true
         run: |
           git remote add github https://${{ secrets.GH_TOKEN }}@github.com/hbtjm9000/serviceparadigm.com.git 2>/dev/null || true
           git push github production
