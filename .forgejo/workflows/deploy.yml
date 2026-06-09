@@ -36,7 +36,7 @@ jobs:
         continue-on-error: true
         run: |
           git remote add github https://${{ secrets.GH_TOKEN }}@github.com/hbtjm9000/serviceparadigm.com.git 2>/dev/null || true
-          git push github production
+          git -c credential.helper= push github production
           echo "Pushed to GitHub — Option A (GitHub only) or B (Both) satisfied"
 
       - name: Deploy to Cloudflare Pages
