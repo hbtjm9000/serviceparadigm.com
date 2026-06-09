@@ -35,13 +35,11 @@ jobs:
       - name: Deploy to GitHub (origin/production)
         continue-on-error: true
         run: |
-          # Push via GitHub API to avoid container git credential helper issues
-          BRANCH_SHA=$(git rev-parse production)
-          curl -sf -X PATCH "https://api.github.com/repos/hbtjm9000/serviceparadigm.com/git/refs/heads/production" \
-            -H "Authorization: token ${{ secrets.GH_TOKEN }}" \
-            -H "Content-Type: application/json" \
-            -d "{\"sha\":\"$BRANCH_SHA\",\"force\":true}"
-          echo "Pushed to GitHub via API"
+          # Use .netrc for auth to bypass credential helper
+          echo "machine github.com login ${{ secrets.GH_TOKEN }}" > ~/.netrc
+          chmod 600 ~/.netrc
+          git push https://github.com/hbtjm9000/serviceparadigm.com.git HEAD:production
+          echo "Pushed to GitHub"
 
       - name: Deploy to Cloudflare Pages
         continue-on-error: true
