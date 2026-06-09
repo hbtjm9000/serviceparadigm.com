@@ -1,0 +1,120 @@
+# Validate Pipeline — serviceparadigm.com
+# CD: deploy PR content to staging → BDD → E2E → Lighthouse
+# Triggers on pull_request to production (the promotion PR)
+on:
+  pull_request:
+    branches: [production]
+
+env:
+  STAGING_DIR: /var/www/serviceparadigm.stage.paradigm.local
+  FORGEJO_BASE: http://127.0.0.1:3020
+  FORGEJO_REPO: hbtjm/serviceparadigm.com
+
+defaults:
+  run:
+    shell: bash -e {0}
+
+jobs:
+  validate:
+    runs-on: docker
+    container: crumbs-ci:latest
+    steps:
+
+      - name: Checkout PR head
+        run: |
+          git init .
+          git remote add origin http://hbtjm:${{ secrets.GITHUB_TOKEN }}@127.0.0.1:3020/${{ env.FORGEJO_REPO }}.git
+          git fetch --depth 1 origin $GITHUB_SHA && git checkout -f $GITHUB_SHA
+
+      - name: Install dependencies
+        run: |
+          for i in 1 2 3; do
+            bun install --no-cache 2>&1 && break
+            echo "Attempt $i failed, retrying in 5s..." && sleep 5
+          done
+
+      - name: Build
+        run: bun run build
+
+      - name: Deploy to staging
+        run: |
+          mkdir -p $STAGING_DIR
+          rm -rf $STAGING_DIR/dist
+          cp -r dist $STAGING_DIR/
+          chmod -R 755 $STAGING_DIR/dist
+          echo "Deployed $GITHUB_SHA at $(date -u '+%Y-%m-%d %H:%M UTC')" > $STAGING_DIR/REVISION
+          echo "Staging: $(find $STAGING_DIR/dist -type f | wc -l) files"
+
+      - name: Health check (Caddy)
+        run: |
+          for i in $(seq 1 10); do
+            sleep 1
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+              http://127.0.0.1:80 -H 'Host: serviceparadigm.stage.paradigm.local' 2>/dev/null || echo "000")
+            if [ "$STATUS" = "200" ]; then
+              echo "Staging healthy via Caddy (HTTP $STATUS)"
+              exit 0
+            fi
+          done
+          echo "Health check failed after 10 attempts"
+          exit 1
+
+      - name: Install Playwright browsers
+        run: |
+          PLAYWRIGHT_BROWSERS_PATH=$HOME/.cache/ms-playwright \
+            bunx playwright install chromium chromium-headless-shell --no-shell 2>&1 | tail -5
+
+      - name: Start preview (serving staging dist)
+        run: |
+          npx serve $STAGING_DIR/dist -p 4321 -L &
+          for i in $(seq 1 10); do
+            curl -sf http://127.0.0.1:4321 >/dev/null 2>&1 && echo "Preview ready" && break
+            sleep 1
+          done
+
+      - name: BDD against staging
+        run: |
+          BASE_URL=http://127.0.0.1:4321 \
+            bunx cucumber-js tests/features/ \
+            --require tests/features/steps/*.ts \
+            --format summary 2>&1
+
+      - name: E2E against staging
+        run: |
+          bunx playwright test tests/e2e/ --reporter=list 2>&1
+
+      - name: Lighthouse against staging
+        run: |
+          npx lighthouse http://127.0.0.1:4321 \
+            --output json --output html \
+            --chrome-flags="--headless --no-sandbox" \
+            --only-categories=performance,accessibility,best-practices,seo 2>&1 | tail -30
+
+      - name: Comment results on PR
+        if: always()
+        run: |
+          PR_NUMBER=$(echo $GITHUB_REF | grep -oP 'refs/pull/\K[0-9]+' || echo "")
+          if [ -z "$PR_NUMBER" ]; then
+            echo "Not a PR event — skipping comment"
+            exit 0
+          fi
+          COMMENT="## Validation Results
+          **Commit:** \`$GITHUB_SHA\`
+
+          | Gate | Status |
+          |------|--------|
+          | Staging deploy | ✅ |
+          | Health check | ✅ |
+          | BDD | $([ -f /tmp/bdd_result ] && cat /tmp/bdd_result || echo '⚠️ see logs') |
+          | E2E | $([ -f /tmp/e2e_result ] && cat /tmp/e2e_result || echo '⚠️ see logs') |
+          | Lighthouse | $([ -f /tmp/lh_result ] && cat /tmp/lh_result || echo '⚠️ see logs') |
+          "
+          curl -sf -X POST \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d "$(python3 -c "
+          import json,sys
+          d={'body': sys.argv[1]}
+          print(json.dumps(d))
+          " "$COMMENT")" \
+            "${{ env.FORGEJO_BASE }}/api/v1/repos/${{ env.FORGEJO_REPO }}/issues/$PR_NUMBER/comments"

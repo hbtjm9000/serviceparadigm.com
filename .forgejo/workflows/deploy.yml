@@ -1,0 +1,47 @@
+# Deploy Pipeline — serviceparadigm.com
+# Production: build → GitHub push (always) → Cloudflare Pages (non-blocking)
+# Triggers on push to production (merge of promotion PR)
+on:
+  push:
+    branches: [production]
+
+defaults:
+  run:
+    shell: bash -e {0}
+
+jobs:
+  deploy:
+    runs-on: docker
+    container: crumbs-ci:latest
+    steps:
+
+      - name: Checkout
+        run: |
+          git init .
+          git remote add origin http://hbtjm:${{ secrets.GITHUB_TOKEN }}@127.0.0.1:3020/hbtjm/serviceparadigm.com.git
+          git fetch --depth 1 origin $GITHUB_SHA && git checkout -f $GITHUB_SHA
+
+      - name: Install dependencies
+        run: |
+          for i in 1 2 3; do
+            bun install --no-cache 2>&1 && break
+            echo "Attempt $i failed, retrying in 5s..." && sleep 5
+          done
+
+      - name: Production build
+        run: bun run build
+
+      - name: Deploy to GitHub (origin/production)
+        run: |
+          git remote add github https://${{ secrets.GH_TOKEN }}@github.com/hbtjm9000/serviceparadigm.com.git 2>/dev/null || true
+          git push github production
+          echo "Pushed to GitHub — Option A (GitHub only) or B (Both) satisfied"
+
+      - name: Deploy to Cloudflare Pages
+        continue-on-error: true
+        run: |
+          bunx wrangler pages deploy dist/ \
+            --project-name=serviceparadigm \
+            --branch=production
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
