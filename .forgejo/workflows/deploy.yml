@@ -44,6 +44,8 @@ jobs:
         run: |
           bunx wrangler pages deploy dist/ \
             --project-name=serviceparadigm \
-            --branch=production
+            --branch=production \
+            --account-id=${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
