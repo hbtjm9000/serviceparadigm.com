@@ -1,8 +1,7 @@
 @import 'tailwindcss';
-
-/* Font imports */
-@import '@fontsource-variable/fraunces';
-@import '@fontsource-variable/outfit';
+@import '../styles/fonts.css';
+@import '@fontsource/instrument-serif';
+@import '@fontsource/space-grotesk';
 
 /* Design System Colors - "The Digital Lithograph" */
 :root {
@@ -76,10 +75,10 @@
 }
 
 @theme inline {
-  /* Fonts */
-  --font-serif: 'Fraunces', Georgia, 'Times New Roman', serif;
-  --font-sans: 'Outfit', system-ui, sans-serif;
-  --font-body: 'Outfit', 'Inter', system-ui, sans-serif;
+  /* Design system font roles */
+  --font-headline: 'Instrument Serif', Georgia, serif;
+  --font-body: 'Switzer', system-ui, sans-serif;
+  --font-label: 'Space Grotesk', 'SF Mono', monospace;
 
   /* Colors */
   --color-surface: var(--surface);
@@ -142,7 +141,7 @@
 
   /* Editorial Typography */
   h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-serif);
+    font-family: var(--font-headline);
     font-weight: 700;
     letter-spacing: -0.02em;
     line-height: 1.1;
@@ -152,7 +151,7 @@
 
   /* Labels and technical text */
   .label, .meta, .tag {
-    font-family: var(--font-sans);
+    font-family: var(--font-label);
     text-transform: uppercase;
     letter-spacing: 0.05em;
     font-size: var(--label-md);
@@ -168,6 +167,11 @@
   :focus-visible {
     outline: 2px solid var(--primary);
     outline-offset: 2px;
+  }
+
+  /* Rounded-none base for all interactive elements */
+  button, input, select, textarea, a[role="button"] {
+    border-radius: 0px;
   }
 }
 
@@ -189,5 +193,72 @@
   /* Ink bleed for headlines */
   .ink-bleed {
     text-shadow: 0.5px 0.5px 0px rgba(13, 72, 108, 0.2);
+  }
+}
+
+/* Component Classes */
+@layer components {
+  /* Primary button: filled with brand primary, shifts to secondary on hover */
+  .btn-primary {
+    font-family: var(--font-label);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.5rem 1.5rem;
+    background-color: var(--primary);
+    color: var(--on-primary);
+    border-radius: 0px;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .btn-primary:hover {
+    background-color: var(--secondary);
+  }
+
+  /* Secondary button: ghost border, no fill */
+  .btn-secondary {
+    font-family: var(--font-label);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.5rem 1.5rem;
+    background-color: transparent;
+    color: var(--secondary);
+    border: 1px solid rgba(0, 106, 104, 0.2);
+    border-radius: 0px;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .btn-secondary:hover {
+    background-color: var(--secondary);
+    color: var(--on-secondary);
+    border-color: var(--secondary);
+  }
+
+  /* Underline input style */
+  .input-underline {
+    width: 100%;
+    background-color: transparent;
+    border: 0;
+    border-bottom: 2px solid rgba(111, 121, 122, 0.2);
+    padding: 0.75rem 0;
+    font-family: var(--font-label);
+    color: var(--on-surface);
+    border-radius: 0px;
+    transition: border-color 0.2s ease;
+  }
+  .input-underline:focus {
+    outline: none;
+    border-bottom-color: var(--primary);
+    border-bottom-width: 2px;
+  }
+  .input-underline::placeholder {
+    color: rgba(25, 28, 29, 0.4);
   }
 }

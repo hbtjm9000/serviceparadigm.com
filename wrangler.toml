@@ -1,7 +1,0 @@
-name = "serviceparadigm-com"
-pages_build_output_dir = "./dist"
-compatibility_date = "2026-06-05"
-
-[vars]
-ENVIRONMENT = "production"
-PUBLIC_FORM_ENDPOINT = "https://script.google.com/macros/s/AKfycbzlnvrJOb4pQDjOegA6GIqUZ3NmEm8zH3xWZrlreVTGgAdjxukNByPxrAR42Y1WU0HL/exec"

@@ -1,4 +1,6 @@
 ---
+import { Image } from 'astro:assets';
+import strategicLeader from '../assets/images/strategic-leader.jpg';
 ---
 
 <section class="bg-surface py-20 lg:py-32 relative">
@@ -8,11 +10,13 @@
       <!-- Image Column -->
       <div class="w-full lg:w-1/2 relative">
         <div class="absolute -top-12 -left-12 w-48 h-48 bg-secondary-fixed-dim/10 z-0"></div>
-        <img
-          src="/images/strategic-leader.jpg"
+        <Image
+          src={strategicLeader}
           alt="Strategic technology leadership"
           class="w-full h-[600px] object-cover grayscale hover:grayscale-0 transition-all duration-700 relative z-10"
-          width="600" height="750"
+          width="600"
+          height="750"
+          loading="lazy"
         />
         <!-- Quote overlay -->
         <div class="absolute bottom-6 right-6 bg-slate-900 text-white p-8 z-20 max-w-xs">

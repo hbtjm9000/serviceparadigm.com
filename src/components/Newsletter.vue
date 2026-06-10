@@ -21,13 +21,13 @@
             type="email"
             placeholder="Your Professional Email"
             required
-            class="w-full bg-white/10 border-0 focus:ring-0 text-white font-body placeholder:text-white/40 px-6 py-4"
+            class="w-full bg-white/10 border-0 focus:ring-0 text-white font-label placeholder:text-white/40 px-6 py-4"
           />
         </div>
         <button
           type="submit"
           :disabled="isSubmitting"
-          class="bg-slate-900 hover:bg-black text-white px-10 py-4 font-body font-bold uppercase tracking-widest text-sm transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+          class="bg-slate-900 hover:bg-black text-white px-10 py-4 font-label font-bold uppercase tracking-widest text-sm transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {{ isSubmitting ? 'SUBMITTING...' : 'SUBMIT' }}
         </button>

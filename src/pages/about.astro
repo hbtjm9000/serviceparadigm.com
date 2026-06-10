@@ -3,6 +3,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Newsletter from '../components/Newsletter.vue';
+import { Image } from 'astro:assets';
+import summitEvent from '../assets/images/summit-event.jpg';
 ---
 
 <BaseLayout title="About | Paradigm IT Services" description="Meet the founder: Hal B. Thompson, 25-year IT veteran and CTO of Paradigm IT Services. First-principles engineering, digital transformation, and cloud architecture.">
@@ -96,8 +98,8 @@ import Newsletter from '../components/Newsletter.vue';
       <div class="max-w-7xl mx-auto px-6 lg:px-8">
         <div class="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
           <div class="aspect-[4/3] bg-surface-container overflow-hidden">
-            <img 
-              src="/images/summit-event.jpg" 
+            <Image
+              src={summitEvent}
               alt="Paradigm team collaboration"
               width="800" height="600"
               loading="lazy"

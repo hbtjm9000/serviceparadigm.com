@@ -2,6 +2,16 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
+import { Image } from 'astro:assets';
+import cloudEngineering from '../../assets/images/cloud-engineering.jpg';
+import securityProtocol from '../../assets/images/security-protocol.jpg';
+import privacyPaper from '../../assets/images/privacy-paper.jpg';
+
+const pagesImageMap: Record<string, ImageMetadata> = {
+  '/images/cloud-engineering.jpg': cloudEngineering,
+  '/images/security-protocol.jpg': securityProtocol,
+  '/images/privacy-paper.jpg': privacyPaper,
+};
 
 interface Service {
   id: string;
@@ -122,8 +132,8 @@ const services: Service[] = [
 
             <!-- Image -->
             <div class={`aspect-[4/3] bg-surface-container overflow-hidden ${index % 2 === 1 ? 'lg:col-start-1 lg:row-start-1' : ''}`}>
-              <img 
-                src={service.image} 
+              <Image
+                src={pagesImageMap[service.image]}
                 alt={service.title}
                 width="800"
                 height="600"

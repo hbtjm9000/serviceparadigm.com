@@ -43,9 +43,9 @@ const services: Service[] = [
     <div class="grid grid-cols-1 md:grid-cols-3 gap-0 border-collapse">
       {services.map((service, i) => (
         <article
-          class={i === 0 ? 'bg-white p-12 hover:bg-tertiary hover:text-white transition-colors duration-500 group' :
+          class={i === 0 ? 'bg-surface-container-lowest p-12 hover:bg-tertiary hover:text-white transition-colors duration-500 group' :
                 i === 1 ? 'bg-surface-container-high p-12 hover:bg-primary hover:text-white transition-colors duration-500 group' :
-                'bg-white p-12 hover:bg-slate-900 hover:text-white transition-colors duration-500 group'}
+                'bg-surface-container-lowest p-12 hover:bg-slate-900 hover:text-white transition-colors duration-500 group'}
         >
           <span class={`font-body text-xs ${i === 0 ? 'opacity-40' : i === 1 ? '' : 'opacity-40'} mb-12 block group-hover:opacity-40`}>
             {service.label}
@@ -62,9 +62,7 @@ const services: Service[] = [
           <div class="flex flex-wrap gap-2">
             {service.tags.map((tag) => (
               <span
-                class={i === 0 ? 'px-3 py-1 bg-surface-container text-[10px] font-body font-bold text-secondary group-hover:bg-white/10 group-hover:text-secondary-fixed' :
-                      i === 1 ? 'px-3 py-1 bg-white/20 text-[10px] font-body font-bold uppercase group-hover:text-white' :
-                      'px-3 py-1 bg-surface-container text-[10px] font-body font-bold text-secondary group-hover:bg-white/10 group-hover:text-secondary-fixed'}
+                class="px-3 py-1 bg-surface-container text-[10px] font-label font-bold text-secondary group-hover:bg-white/10 group-hover:text-secondary-fixed"
               >
                 {tag}
               </span>

@@ -1,4 +1,10 @@
 ---
+import { Image } from 'astro:assets';
+import logocolored from '../assets/images/logos/paradigm-logo-header-colored.png';
+import logowhite from '../assets/images/logos/paradigm-logo-header-mono-white.png';
+import logoteal from '../assets/images/logos/paradigm-logo-header-mono-teal.png';
+import logogray from '../assets/images/logos/paradigm-logo-header-grayscale.png';
+
 interface NavItem {
   label: string;
   href: string;
@@ -10,6 +16,13 @@ interface Props {
 
 const { logoVariant = 'colored' } = Astro.props;
 
+const logoMap: Record<string, ImageMetadata> = {
+  'colored': logocolored,
+  'mono-white': logowhite,
+  'mono-teal': logoteal,
+  'grayscale': logogray,
+};
+
 const navItems: NavItem[] = [
   { label: 'Services', href: '/services' },
   { label: 'Elements', href: '/elements' },
@@ -19,17 +32,17 @@ const navItems: NavItem[] = [
 ];
 ---
 
-<header class="bg-slate-900 text-white">
+<header class="bg-primary/80 backdrop-blur-md text-white" role="navigation">
   <div class="max-w-7xl mx-auto px-6 lg:px-8">
     <nav class="flex items-center justify-between h-16">
       <!-- Logo -->
       <a href="/" class="flex items-center">
-        <img
-          src={`/images/paradigm-logo-header-${logoVariant}.png`}
+        <Image
+          src={logoMap[logoVariant]}
           alt="Paradigm IT Services"
+          class="h-10 w-auto object-contain"
           width="200"
           height="45"
-          class="h-10 w-auto object-contain"
         />
       </a>
 
@@ -38,7 +51,7 @@ const navItems: NavItem[] = [
         {navItems.map((item) => (
           <a
             href={item.href}
-            class="font-serif italic text-lg text-slate-300 hover:text-white transition-colors tracking-tight"
+            class="font-headline italic text-lg text-slate-300 hover:text-white transition-colors tracking-tight"
           >
             {item.label}
           </a>
@@ -48,8 +61,16 @@ const navItems: NavItem[] = [
       <!-- CTA Button -->
       <div class="hidden md:flex items-center gap-6">
         <a
+          href="https://calendar.app.google/teRByg9wRAUZSYww5"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="border border-secondary text-secondary px-4 py-2 font-label uppercase tracking-widest text-xs hover:bg-secondary hover:text-white transition-all duration-200 rounded-none"
+        >
+          Book a Meeting
+        </a>
+        <a
           href="/contact"
-          class="bg-primary hover:bg-secondary text-on-primary px-6 py-2 font-body uppercase tracking-widest text-xs transition-all duration-200 active:scale-95"
+          class="bg-primary hover:bg-secondary text-on-primary px-6 py-2 font-body uppercase tracking-widest text-xs transition-all duration-200 active:scale-95 rounded-none"
         >
           Get Started
         </a>
@@ -70,19 +91,27 @@ const navItems: NavItem[] = [
     </nav>
 
     <!-- Mobile Menu -->
-    <div id="mobile-menu" class="hidden md:hidden pb-4">
-      <div class="flex flex-col gap-4">
+    <div id="mobile-menu" class="hidden md:hidden pb-4 transition-opacity duration-200 opacity-0">
+      <div class="flex flex-col gap-8">
         {navItems.map((item) => (
           <a
             href={item.href}
-            class="font-serif italic text-lg text-slate-300 hover:text-white transition-colors tracking-tight"
+            class="font-headline italic text-lg text-slate-300 hover:text-white transition-colors tracking-tight"
           >
             {item.label}
           </a>
         ))}
         <a
+          href="https://calendar.app.google/teRByg9wRAUZSYww5"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="border border-secondary text-secondary px-4 py-2 font-label uppercase tracking-widest text-xs hover:bg-secondary hover:text-white transition-all duration-200 inline-block w-fit rounded-none mt-4"
+        >
+          Book a Meeting
+        </a>
+        <a
           href="/contact"
-          class="bg-primary hover:bg-secondary text-on-primary px-6 py-2 font-body uppercase tracking-widest text-xs transition-all duration-200 inline-block w-fit mt-2"
+          class="bg-primary hover:bg-secondary text-on-primary px-6 py-2 font-body uppercase tracking-widest text-xs transition-all duration-200 inline-block w-fit mt-2 rounded-none"
         >
           Get Started
         </a>
@@ -98,6 +127,8 @@ const navItems: NavItem[] = [
   mobileMenuBtn?.addEventListener('click', () => {
     const isExpanded = mobileMenuBtn.getAttribute('aria-expanded') === 'true';
     mobileMenu?.classList.toggle('hidden');
+    mobileMenu?.classList.toggle('opacity-0');
+    mobileMenu?.classList.toggle('opacity-100');
     mobileMenuBtn.setAttribute('aria-expanded', String(!isExpanded));
   });
 </script>

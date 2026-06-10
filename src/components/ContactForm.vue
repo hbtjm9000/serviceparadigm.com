@@ -2,101 +2,101 @@
   <form @submit.prevent="handleSubmit" class="space-y-6">
     <!-- Name -->
     <div>
-      <label for="name" class="block font-sans text-xs tracking-[0.1em] text-on-surface-variant uppercase mb-2">
-        Full Name *
+      <label for="name" class="block font-label text-xs tracking-[0.1em] text-on-surface-variant uppercase mb-2">
+        Name <span class="text-error">*</span>
       </label>
       <input
         id="name"
         v-model="form.name"
         type="text"
         required
-        class="w-full bg-transparent border-b-2 border-outline/30 text-on-surface py-3 px-0 font-body focus:outline-none focus:border-primary transition-colors"
-        placeholder="Your name"
+        class="input-underline"
+        placeholder="Your full name"
       />
     </div>
 
     <!-- Email -->
     <div>
-      <label for="email" class="block font-sans text-xs tracking-[0.1em] text-on-surface-variant uppercase mb-2">
-        Email Address *
+      <label for="email" class="block font-label text-xs tracking-[0.1em] text-on-surface-variant uppercase mb-2">
+        Email <span class="text-error">*</span>
       </label>
       <input
         id="email"
         v-model="form.email"
         type="email"
         required
-        class="w-full bg-transparent border-b-2 border-outline/30 text-on-surface py-3 px-0 font-body focus:outline-none focus:border-primary transition-colors"
+        class="input-underline"
         placeholder="you@company.com"
       />
     </div>
 
     <!-- Company -->
     <div>
-      <label for="company" class="block font-sans text-xs tracking-[0.1em] text-on-surface-variant uppercase mb-2">
+      <label for="company" class="block font-label text-xs tracking-[0.1em] text-on-surface-variant uppercase mb-2">
         Company
       </label>
       <input
         id="company"
         v-model="form.company"
         type="text"
-        class="w-full bg-transparent border-b-2 border-outline/30 text-on-surface py-3 px-0 font-body focus:outline-none focus:border-primary transition-colors"
-        placeholder="Your company"
+        class="input-underline"
+        placeholder="Company name"
       />
     </div>
 
     <!-- Service Interest -->
     <div>
-      <label for="service" class="block font-sans text-xs tracking-[0.1em] text-on-surface-variant uppercase mb-2">
+      <label for="service" class="block font-label text-xs tracking-[0.1em] text-on-surface-variant uppercase mb-2">
         Service Interest
       </label>
       <select
         id="service"
         v-model="form.service"
-        class="w-full bg-transparent border-b-2 border-outline/30 text-on-surface py-3 px-0 font-body focus:outline-none focus:border-primary transition-colors cursor-pointer"
+        class="input-underline"
       >
-        <option value="" class="bg-surface">Select a service</option>
-        <option value="ai-strategy" class="bg-surface">AI Strategy & Implementation</option>
-        <option value="solutions-architecture" class="bg-surface">Solutions Architecture</option>
-        <option value="cybersecurity" class="bg-surface">Cybersecurity Architecture</option>
-        <option value="elements" class="bg-surface">Elements (Managed Services)</option>
-        <option value="other" class="bg-surface">Other / General Inquiry</option>
+        <option value="" disabled>Select a service</option>
+        <option value="ai-strategy">AI Strategy & Implementation</option>
+        <option value="solutions-architecture">Solutions Architecture</option>
+        <option value="cybersecurity">Cybersecurity Architecture</option>
+        <option value="digital-presence">Digital Presence</option>
+        <option value="other">Other</option>
       </select>
     </div>
 
     <!-- Message -->
     <div>
-      <label for="message" class="block font-sans text-xs tracking-[0.1em] text-on-surface-variant uppercase mb-2">
-        Message *
+      <label for="message" class="block font-label text-xs tracking-[0.1em] text-on-surface-variant uppercase mb-2">
+        Message <span class="text-error">*</span>
       </label>
       <textarea
         id="message"
         v-model="form.message"
         required
+        class="input-underline"
         rows="4"
-        class="w-full bg-transparent border-b-2 border-outline/30 text-on-surface py-3 px-0 font-body focus:outline-none focus:border-primary transition-colors resize-none"
-        placeholder="Tell us about your project or inquiry..."
+        placeholder="Tell us about your project..."
       ></textarea>
     </div>
 
     <!-- Submit Button -->
     <button
       type="submit"
+      class="btn-primary w-full justify-center mt-4"
       :disabled="isSubmitting"
-      class="w-full bg-primary text-on-primary font-sans text-sm px-6 py-4 hover:bg-secondary transition-colors tracking-wide disabled:opacity-50 disabled:cursor-not-allowed mt-4"
     >
-      {{ isSubmitting ? 'SUBMITTING...' : 'SUBMIT REQUEST' }}
+      {{ isSubmitting ? 'SENDING...' : 'SEND MESSAGE' }}
     </button>
 
     <!-- Success Message -->
-    <div v-if="submitted" class="p-4 bg-secondary/10 border-l-4 border-secondary">
-      <p class="text-secondary font-sans text-sm">
-        ✓ Thank you for your inquiry. We&apos;ll be in touch within 24 hours.
+    <div v-if="submitted" class="p-4 bg-surface-container-low">
+      <p class="text-secondary font-label text-sm">
+        ✓ Thank you. We'll be in touch within 24 hours.
       </p>
     </div>
 
     <!-- Error Message -->
-    <div v-if="error" class="p-4 bg-error/10 border-l-4 border-error">
-      <p class="text-error font-sans text-sm">
+    <div v-if="error" class="p-4 bg-surface-container-low">
+      <p class="text-error font-label text-sm">
         {{ error }}
       </p>
     </div>
