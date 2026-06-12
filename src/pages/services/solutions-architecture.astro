@@ -1,0 +1,15 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import SolArch from '../../components/services/SolArch.vue';
+---
+
+<BaseLayout 
+  title="Solutions Architecture | Paradigm IT Services" 
+  description="Cloud architecture, platform modernization, integration architecture. Scalable systems design for modern organizations."
+>
+  <Header logoVariant="mono-white" />
+  <SolArch client:load />
+  <Footer />
+</BaseLayout>

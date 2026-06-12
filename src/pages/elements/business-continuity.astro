@@ -1,0 +1,11 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import BusinessContinuity from '../../components/elements/BusinessContinuity.vue';
+---
+<BaseLayout title="Business Continuity Element | Paradigm IT Services" description="Backup and disaster recovery for any disruption.">
+  <Header logoVariant="mono-white" />
+  <BusinessContinuity client:load />
+  <Footer />
+</BaseLayout>

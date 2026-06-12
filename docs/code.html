@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,700;0,800;1,400&amp;family=Public+Sans:wght@300;400;600&amp;family=Space+Grotesk:wght@400;500;700&amp;family=Fraunces:opsz,wght@9..144,700;9..144,900&amp;family=Outfit:wght@300;400;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "inverse-on-surface": "#f0f1f2",
+              "secondary-container": "#4df6f3",
+              "outline-variant": "#e0c0b4",
+              "on-tertiary-container": "#fcfcff",
+              "on-primary-container": "#fffbff",
+              "surface-container-lowest": "#ffffff",
+              "secondary-fixed-dim": "#1cdcd9",
+              "on-secondary-fixed-variant": "#00504e",
+              "on-error-container": "#93000a",
+              "inverse-surface": "#2e3132",
+              "tertiary-container": "#49799f",
+              "on-background": "#191c1d",
+              "surface": "#f9f9fa",
+              "inverse-primary": "#ffb599",
+              "tertiary-fixed-dim": "#9cccf6",
+              "surface-variant": "#e1e2e3",
+              "on-surface-variant": "#594239",
+              "error-container": "#ffdad6",
+              "outline": "#8c7167",
+              "on-tertiary": "#ffffff",
+              "on-secondary": "#ffffff",
+              "on-primary-fixed-variant": "#7f2b00",
+              "surface-container-high": "#e7e8e9",
+              "error": "#ba1a1a",
+              "surface-container-low": "#f3f4f5",
+              "primary-fixed-dim": "#ffb599",
+              "on-tertiary-fixed-variant": "#124b6f",
+              "on-primary-fixed": "#370e00",
+              "surface-tint": "#a73a00",
+              "secondary-fixed": "#51f9f6",
+              "on-primary": "#ffffff",
+              "on-error": "#ffffff",
+              "surface-container-highest": "#e1e2e3",
+              "surface-container": "#edeeef",
+              "on-secondary-fixed": "#00201f",
+              "primary-container": "#c94c0e",
+              "primary-fixed": "#ffdbce",
+              "background": "#f9f9fa",
+              "tertiary": "#2e6085",
+              "secondary": "#006a68",
+              "on-surface": "#191c1d",
+              "surface-dim": "#d9dadb",
+              "primary": "#a33900",
+              "on-tertiary-fixed": "#001e31",
+              "tertiary-fixed": "#cce5ff",
+              "on-secondary-container": "#006e6d",
+              "surface-bright": "#f9f9fa"
+            },
+            fontFamily: {
+              "headline": ["Fraunces", "serif"],
+              "body": ["Outfit", "sans-serif"],
+              "label": ["Space Grotesk", "monospace"],
+              "newsreader": ["Newsreader", "serif"]
+            },
+            borderRadius: {"DEFAULT": "0px", "lg": "0px", "xl": "0px", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      body {
+        background-color: #f9f9fa;
+        color: #191c1d;
+      }
+      .lithograph-gradient {
+        background: linear-gradient(135deg, #a33900 0%, #c94c0e 100%);
+      }
+      .ink-bleed {
+        text-shadow: 0.5px 0.5px 0px rgba(13, 72, 108, 0.2);
+      }
+    </style>
+</head>
+<body class="font-body selection:bg-secondary-container selection:text-on-secondary-container">
+<!-- TopNavBar -->
+<nav class="bg-slate-900 flex justify-between items-center w-full px-12 py-6 max-w-full fixed top-0 z-50">
+<div class="font-newsreader text-2xl font-bold tracking-tighter text-white">Lithograph Technical</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="text-slate-300 hover:text-white transition-colors font-newsreader italic text-lg tracking-tight" href="#">Archive</a>
+<a class="text-slate-300 hover:text-white transition-colors font-newsreader italic text-lg tracking-tight" href="#">Technical Specs</a>
+<a class="text-slate-300 hover:text-white transition-colors font-newsreader italic text-lg tracking-tight" href="#">Insights</a>
+<a class="text-slate-300 hover:text-white transition-colors font-newsreader italic text-lg tracking-tight" href="#">Editions</a>
+<a class="text-slate-300 hover:text-white transition-colors font-newsreader italic text-lg tracking-tight" href="#">Network</a>
+</div>
+<div class="flex items-center gap-6">
+<button class="text-white material-symbols-outlined hover:bg-white/10 p-2 transition-all duration-200">search</button>
+<button class="bg-primary hover:bg-secondary text-on-primary px-6 py-2 font-label uppercase tracking-widest text-xs transition-all duration-200 active:scale-95">Subscribe</button>
+</div>
+</nav>
+<!-- Hero Section -->
+<header class="relative min-h-screen bg-tertiary flex items-center pt-24 overflow-hidden">
+<div class="absolute inset-0 opacity-20 pointer-events-none" data-alt="Abstract digital network connections with glowing cyan lines on a deep blue technical background with film grain" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCSnQqfribQJQfn7hb_MsGIpcyUZ1kq9V6OaczTFqdmL76VG_hcpCKkWbgvB6_WujU3ZrqyT2h3REVLFA7SKY0QMEsFPuhnoy4yKwTWL8jWHmQ14fj1qOwoKUcL1vKpkgRRDTAMmzpnFswAHt3b_-nSiy5fDEOq5K7BTXINOu97GWeSAeuCM4-ADgZevKS47IkEbxnO7GVYHx2i00LDG8JHb-E_ZoeSaRob1Vd_dJ7dyxbpVF92sDMDyJtzuoq4rvcXhuV5BvVFOw'); background-size: cover; background-position: center;"></div>
+<div class="container mx-auto px-12 grid grid-cols-12 gap-8 relative z-10">
+<div class="col-span-12 lg:col-span-8">
+<span class="font-label text-secondary-fixed tracking-[0.3em] uppercase text-sm mb-6 block">The Ledger : Volume I</span>
+<h1 class="font-headline text-7xl lg:text-9xl text-white leading-[0.9] font-black tracking-tighter mb-12 ink-bleed">
+                    The Digital Infrastructure of the <span class="italic text-secondary-fixed">Diaspora.</span>
+</h1>
+<div class="flex flex-col md:flex-row gap-8 items-start">
+<button class="bg-secondary-fixed text-on-secondary-fixed px-10 py-5 font-label font-bold uppercase tracking-widest text-sm hover:bg-white transition-all duration-300 flex items-center gap-4 group">
+                        Access Terminal
+                        <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+<p class="max-w-md text-tertiary-fixed text-lg font-light leading-relaxed border-l border-tertiary-fixed/30 pl-6">
+                        Architecting the future of Caribbean innovation through high-fidelity documentation and technical editorial excellence.
+                    </p>
+</div>
+</div>
+</div>
+</header>
+<!-- Transition Section: Featured Professional -->
+<section class="bg-surface py-24 relative">
+<div class="container mx-auto px-12">
+<div class="flex flex-col lg:flex-row gap-16 items-center">
+<div class="w-full lg:w-1/2 relative">
+<div class="absolute -top-12 -left-12 w-48 h-48 bg-secondary-fixed-dim/10 z-0"></div>
+<img alt="Portrait of a Caribbean female software engineer in a modern tech environment, high contrast professional lighting" class="w-full h-[600px] object-cover grayscale hover:grayscale-0 transition-all duration-700 relative z-10" data-alt="Close-up portrait of a confident black female tech professional with natural hair, wearing minimalist glasses, soft warm studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCotYJ09VHo8fcLeC6cGSXStJB3dnPpZq1wJAdMdN_HyJ8xM1TYjRrdlM_7A7RG5q6BTD0IcdJq_SayMqofhPskJ4x7qtY7rV5pSb8fSia_XfX-nTrRYToOIewlhDIfcEdClrCDtXQyHitLZ9Jf1Q-TZkdi1igahB_l2bKxNCTvHWZlDpLPjSs6GM2nrVdoh8FMs5fr1-pQGWowGMH3VxhX6JAH497_PN8XmH2gVTvZHC-HLi5lp3ZbY_oGV1_7mNbPRMT7gJK0Xg"/>
+<div class="absolute bottom-6 right-6 bg-slate-900 text-white p-8 z-20 max-w-xs">
+<span class="font-label text-[10px] uppercase tracking-widest text-secondary-fixed mb-2 block">Executive Highlight</span>
+<p class="font-headline text-xl italic mb-4">"The network is the primary asset of the emerging tech hub."</p>
+<p class="font-label text-xs opacity-60">Director of Systems, Kingston Protocol</p>
+</div>
+</div>
+<div class="w-full lg:w-1/2">
+<h2 class="font-headline text-5xl lg:text-6xl text-on-surface mb-8 tracking-tight">Bridging the Latency between Vision and <span class="text-primary italic">Execution.</span></h2>
+<div class="space-y-8 font-body text-on-surface-variant text-lg leading-relaxed">
+<p>Our editorial focus centers on the intersection of legacy infrastructure and the decentralized future. We provide the technical blueprints necessary for a digital-first Caribbean ecosystem.</p>
+<div class="grid grid-cols-2 gap-4 pt-8">
+<div class="border-t border-outline-variant/30 pt-4">
+<span class="block font-label text-3xl font-bold text-primary">84%</span>
+<span class="font-label text-xs uppercase opacity-60">Connectivity Growth</span>
+</div>
+<div class="border-t border-outline-variant/30 pt-4">
+<span class="block font-label text-3xl font-bold text-primary">12.5 TB</span>
+<span class="font-label text-xs uppercase opacity-60">Daily Data Ingress</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Paradigms Section: 3-Column Layout -->
+<section class="bg-surface-container-low py-32">
+<div class="container mx-auto px-12">
+<div class="flex justify-between items-end mb-20">
+<div>
+<span class="font-label text-primary uppercase tracking-[0.4em] text-xs mb-4 block">Core Paradigms</span>
+<h2 class="font-headline text-5xl font-black">Strategic Pillars.</h2>
+</div>
+<div class="hidden md:block w-1/3 h-[1px] bg-outline-variant mb-4"></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-0 border-collapse">
+<!-- Paradigm 1 -->
+<div class="bg-white p-12 hover:bg-tertiary hover:text-white transition-colors duration-500 group">
+<span class="font-label text-xs opacity-40 mb-12 block group-hover:text-tertiary-fixed">01 / ARCHITECTURE</span>
+<h3 class="font-headline text-3xl mb-8 group-hover:italic">Resilient Systems</h3>
+<p class="font-body text-on-surface-variant group-hover:text-tertiary-fixed-dim leading-relaxed mb-12">
+                        Designing software architectures that withstand regional volatility while maintaining global synchronization standards.
+                    </p>
+<div class="flex flex-wrap gap-2">
+<span class="px-3 py-1 bg-surface-container text-[10px] font-label font-bold text-secondary uppercase group-hover:bg-white/10 group-hover:text-secondary-fixed">Cloud Native</span>
+<span class="px-3 py-1 bg-surface-container text-[10px] font-label font-bold text-secondary uppercase group-hover:bg-white/10 group-hover:text-secondary-fixed">Edge Computing</span>
+</div>
+</div>
+<!-- Paradigm 2 -->
+<div class="bg-surface-container-high p-12 hover:bg-primary hover:text-white transition-colors duration-500 group">
+<span class="font-label text-xs opacity-40 mb-12 block group-hover:text-primary-fixed">02 / CAPITAL</span>
+<h3 class="font-headline text-3xl mb-8 group-hover:italic">Tokenized Equity</h3>
+<p class="font-body text-on-surface-variant group-hover:text-primary-fixed-dim leading-relaxed mb-12">
+                        Leveraging blockchain for cross-border investment liquidity and democratic capital allocation across the archipelago.
+                    </p>
+<div class="flex flex-wrap gap-2">
+<span class="px-3 py-1 bg-white/20 text-[10px] font-label font-bold uppercase group-hover:text-white">DeFi Protocols</span>
+<span class="px-3 py-1 bg-white/20 text-[10px] font-label font-bold uppercase group-hover:text-white">Smart Contracts</span>
+</div>
+</div>
+<!-- Paradigm 3 -->
+<div class="bg-white p-12 hover:bg-slate-900 hover:text-white transition-colors duration-500 group">
+<span class="font-label text-xs opacity-40 mb-12 block group-hover:text-slate-400">03 / TALENT</span>
+<h3 class="font-headline text-3xl mb-8 group-hover:italic">Knowledge Graph</h3>
+<p class="font-body text-on-surface-variant group-hover:text-slate-300 leading-relaxed mb-12">
+                        Mapping the intellectual capital of the diaspora into a unified, high-speed collaboration network.
+                    </p>
+<div class="flex flex-wrap gap-2">
+<span class="px-3 py-1 bg-surface-container text-[10px] font-label font-bold text-secondary uppercase group-hover:bg-white/10 group-hover:text-secondary-fixed">Mentorship</span>
+<span class="px-3 py-1 bg-surface-container text-[10px] font-label font-bold text-secondary uppercase group-hover:bg-white/10 group-hover:text-secondary-fixed">Skill Verification</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Editorial Feed / Bento Grid -->
+<section class="py-32 bg-surface">
+<div class="container mx-auto px-12">
+<h2 class="font-headline text-4xl mb-16 italic border-b-2 border-primary w-fit pb-2">Latest Documentation</h2>
+<div class="grid grid-cols-12 gap-8">
+<!-- Large Card -->
+<div class="col-span-12 lg:col-span-8 bg-surface-container relative group overflow-hidden">
+<div class="flex flex-col md:flex-row h-full">
+<div class="w-full md:w-1/2 overflow-hidden">
+<img alt="Modern laboratory setup in a tropical setting" class="h-full w-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="Interior of a high-tech laboratory with surgical precision, tropical foliage visible through large windows, bright clinical lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBrDmieRMsjgvpmzVan06PKB3EEeqjecv8SXToP_Vd5Z-Y55M4b-Yym_6S_TyrR3IVhifpnqaBayXkdRtRT-SHxBJZF0uEJkwGQIYYNMfgJXLkPtSjOK2HEKV0M4ezg3ZtSEMueklUYRK5KLZUblTdpVPVyDctfafJCj3wxgX5UO_9epscZOcu8u1dbPJL3zELGWvp4SgWM_Si2TEy-0eYZHQbw6MsGtqIBnYp168exAtdMqVNFLv0f7sVEGmPJnj-nQfbyZPYxAg"/>
+</div>
+<div class="w-full md:w-1/2 p-10 flex flex-col justify-between">
+<div>
+<span class="font-label text-[10px] uppercase tracking-widest text-primary mb-4 block">Hardware Engineering</span>
+<h3 class="font-headline text-3xl mb-4 leading-tight">Solar Arrays &amp; Edge Logic: Powering the Blue Economy</h3>
+<p class="font-body text-on-surface-variant text-sm line-clamp-3 mb-6">Examining the deployment of integrated solar computing units in coastal research facilities across the Lesser Antilles.</p>
+</div>
+<a class="font-label text-xs uppercase font-bold tracking-widest flex items-center gap-2 group/link" href="#">
+                                Read Specification
+                                <span class="material-symbols-outlined text-sm group-hover/link:translate-x-1 transition-transform">east</span>
+</a>
+</div>
+</div>
+</div>
+<!-- Small Technical Card -->
+<div class="col-span-12 lg:col-span-4 bg-slate-900 p-10 flex flex-col justify-between text-white">
+<div>
+<div class="w-12 h-12 bg-secondary flex items-center justify-center mb-8">
+<span class="material-symbols-outlined text-white">database</span>
+</div>
+<h3 class="font-headline text-2xl mb-4">The Nassau Protocol</h3>
+<p class="font-body text-slate-400 text-sm leading-relaxed">Technical audit of the region's first sovereign data center and its impact on regional latency.</p>
+</div>
+<div class="pt-8 border-t border-white/10">
+<div class="flex justify-between items-center text-[10px] font-label uppercase tracking-tighter text-secondary-fixed">
+<span>Status: Published</span>
+<span>Rev: 4.02</span>
+</div>
+</div>
+</div>
+<!-- Grid Item 3 -->
+<div class="col-span-12 lg:col-span-4 bg-surface-container-highest p-10">
+<span class="font-label text-[10px] uppercase tracking-widest text-primary mb-4 block">Data Ethics</span>
+<h3 class="font-headline text-2xl mb-4">Privacy in the Public Square</h3>
+<p class="font-body text-on-surface-variant text-sm mb-8">A philosophical dive into biometric data collection and civil liberties within the smart-city framework.</p>
+<img alt="Digital grid overlaying a Caribbean map" class="w-full h-40 object-cover grayscale brightness-50" data-alt="Blue glowing digital data visualization across a map of the Caribbean islands, dark technical aesthetic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCewWhxMTBUEKh3ZejOu0HcqazAw21a33RQz5VEM7bN3SKFY1lvnMMKlWKmNxTiczpV41qT_Nl2AHu-H4Z_x8DhdpTQtftHzCLJriyRcTjO9c7w2ML9k-vXi5Z0dlRU5SgrqmcKSZIrwuSGNf2rDUOUMxa5_2EBJ0PIfbOSsvXvKAdtASGrTNAb6DvEp1Eih-1PYYLUE7eqTML30rcno_DTQF7VSbXjVmvUQwRyeXwW10YhXCJ2jqR8LT7HDfQKKn6FyryeEmfqAQ"/>
+</div>
+<!-- Grid Item 4 -->
+<div class="col-span-12 lg:col-span-8 bg-white border border-outline-variant/20 p-10 flex flex-col md:flex-row gap-8 items-center">
+<div class="w-full md:w-1/3">
+<img alt="Diverse team collaborating in a workshop" class="w-full h-48 object-cover" data-alt="Group of diverse professionals in a sunlit modern office collaborating over technical drawings and tablets" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAE8nMJ2ZSnJMWGc_3o45GuIRA2mIa0kab8Ho2bcPqRiqS2t0oKhj9BRuYXd3On89tPrReGau5_wJIskJ_aqx2G_7jvr258U7OqTnj6J1hjwqJUaKJviLUzggYj3rwK-Q5LnVh89sIxuE999384lwiFOsG5Nd-nfIpT0D_iNqZXMv7aCp-GrCm2cBnoHHoS88ThD6FMvqtOpJfcXvmEo-OZQ5jlLPPho-cFGsmqRzNQ9ReHGxiF-hQJqAgZ1HbTHbiFiymE1nASeg"/>
+</div>
+<div class="w-full md:w-2/3">
+<span class="font-label text-[10px] uppercase tracking-widest text-secondary mb-4 block">Event Recap</span>
+<h3 class="font-headline text-3xl mb-4">The Lithograph Summit 2024</h3>
+<p class="font-body text-on-surface-variant text-sm mb-6">Key takeaways from the gathering of the top 100 technical leads from the Caribbean Diaspora in London.</p>
+<button class="border border-secondary text-secondary font-label px-6 py-2 text-xs uppercase hover:bg-secondary hover:text-white transition-all">View Gallery</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Newsletter CTA -->
+<section class="bg-primary py-24 text-white overflow-hidden relative">
+<div class="container mx-auto px-12 relative z-10 flex flex-col items-center text-center">
+<h2 class="font-headline text-5xl lg:text-7xl mb-8 font-black">Join the Network.</h2>
+<p class="font-body text-primary-fixed max-w-2xl mb-12 text-lg">Receive technical editorial briefs, white papers, and event invitations directly in your secure terminal.</p>
+<form class="flex flex-col md:flex-row gap-0 w-full max-w-xl">
+<input class="flex-grow bg-white/10 border-0 focus:ring-0 text-white font-label placeholder:text-white/40 px-6 py-4" placeholder="ENCRYPTED EMAIL ADDRESS" type="email"/>
+<button class="bg-slate-900 hover:bg-black text-white px-10 py-4 font-label font-bold uppercase tracking-widest text-sm transition-all duration-300">Submit</button>
+</form>
+</div>
+<!-- Decorative Text background -->
+<div class="absolute -bottom-10 -right-20 text-[20rem] font-black text-white/5 font-headline pointer-events-none select-none">LEDGER</div>
+</section>
+<!-- Footer -->
+<footer class="bg-slate-100 grid grid-cols-1 md:grid-cols-2 w-full px-12 py-16 gap-8 border-t border-slate-200">
+<div class="flex flex-col justify-between">
+<div>
+<div class="font-newsreader text-xl font-black text-slate-900 mb-6">Lithograph Technical</div>
+<p class="font-newsreader text-sm uppercase tracking-widest text-slate-600 max-w-md leading-relaxed">
+                    © 2024 Lithograph Technical Editorial. All Rights Reserved. Built for the Caribbean Diaspora.
+                </p>
+</div>
+<div class="mt-12 flex gap-6">
+<span class="material-symbols-outlined text-slate-600 hover:text-orange-700 cursor-pointer transition-colors">language</span>
+<span class="material-symbols-outlined text-slate-600 hover:text-orange-700 cursor-pointer transition-colors">mail</span>
+<span class="material-symbols-outlined text-slate-600 hover:text-orange-700 cursor-pointer transition-colors">terminal</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-8">
+<div class="flex flex-col gap-4">
+<h4 class="font-label font-bold text-xs uppercase text-slate-900 mb-2">Navigation</h4>
+<a class="font-newsreader text-sm uppercase tracking-widest text-slate-600 hover:text-orange-700 transition-colors" href="#">Privacy Policy</a>
+<a class="font-newsreader text-sm uppercase tracking-widest text-slate-600 hover:text-orange-700 transition-colors" href="#">Editorial Guidelines</a>
+<a class="font-newsreader text-sm uppercase tracking-widest text-slate-600 hover:text-orange-700 transition-colors" href="#">Terms of Service</a>
+</div>
+<div class="flex flex-col gap-4">
+<h4 class="font-label font-bold text-xs uppercase text-slate-900 mb-2">Connect</h4>
+<a class="font-newsreader text-sm uppercase tracking-widest text-slate-600 hover:text-orange-700 transition-colors" href="#">Press Kit</a>
+<a class="font-newsreader text-sm uppercase tracking-widest text-slate-600 hover:text-orange-700 transition-colors" href="#">Contact</a>
+<a class="font-newsreader text-sm uppercase tracking-widest text-slate-600 hover:text-orange-700 transition-colors" href="#">Accessibility</a>
+</div>
+</div>
+</footer>
+</body></html>

@@ -18,7 +18,7 @@ import { fileURLToPath } from 'url';
 
 const GA4_PROPERTY_ID = process.env.GA4_PROPERTY_ID || '394420';
 const CREDENTIALS_PATH = process.env.GA4_CREDENTIALS_PATH || 
-  join(fileURLToPath(new URL('.', import.meta.url)), 'ga4-credentials.json');
+  './secrets/ga4-credentials.json';
 
 /**
  * Initialize GA4 Analytics Data API client

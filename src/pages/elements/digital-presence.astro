@@ -1,0 +1,11 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import DigitalPresence from '../../components/elements/DigitalPresence.vue';
+---
+<BaseLayout title="Digital Presence Element | Paradigm IT Services" description="Websites and social media to establish and grow your digital footprint.">
+  <Header logoVariant="mono-white" />
+  <DigitalPresence client:load />
+  <Footer />
+</BaseLayout>

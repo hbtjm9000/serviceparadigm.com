@@ -1,5 +1,7 @@
 ---
 import '../styles/globals.css';
+import SEOMeta from '../components/SEOMeta.astro';
+import { ClientRouter } from 'astro:transitions';
 
 interface Props {
   title?: string;
@@ -22,21 +24,14 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="canonical" href={canonicalURL} />
-    <meta name="description" content={description} />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    <meta property="og:image" content={new URL(ogImage, Astro.site)} />
-    <meta property="og:url" content={canonicalURL} />
-    <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Paradigm IT Services" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={title} />
-    <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={new URL(ogImage, Astro.site)} />
+    <SEOMeta title={title} description={description} image={ogImage} url={canonicalURL} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <ClientRouter />
+
+    <!-- Font preloads — critical for first paint -->
+    <link rel="preload" href="/fonts/switzer/Switzer-Variable.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+    <link rel="preload" href="/fonts/switzer/Switzer-VariableItalic.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
     <title>{title}</title>
-    <!-- GrowthBook Feature Flag SDK -->
-    <script src="https://cdn.growthbook.io/growthbook.min.js" defer></script>
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-SLDE3K52MY"></script>
     <script>
@@ -44,6 +39,12 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       gtag('config', 'G-SLDE3K52MY');
+    </script>
+    <!-- Feature flag bootstrap (GrowthBook SDK init) -->
+    <script>
+      import { getFlag } from '../lib/features';
+      // Module import triggers GrowthBook SDK init; getFlag is available globally
+      window.__featureFlags = { getFlag };
     </script>
   </head>
   <body class="bg-surface text-on-surface antialiased">

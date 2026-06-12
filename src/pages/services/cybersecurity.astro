@@ -1,0 +1,15 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import CyberSec from '../../components/services/CyberSec.vue';
+---
+
+<BaseLayout 
+  title="Cybersecurity Architecture | Paradigm IT Services" 
+  description="Zero trust architecture, security posture design, compliance. Defense-in-depth security for Caribbean enterprises and global organizations."
+>
+  <Header logoVariant="mono-white" />
+  <CyberSec client:load />
+  <Footer />
+</BaseLayout>

@@ -22,4 +22,5 @@ interface ImportMeta {
 // Google Analytics gtag
 interface Window {
   gtag?: (command: string, eventName: string, eventParams?: Record<string, unknown>) => void;
+  __featureFlags?: { getFlag: (key: string, defaultValue: string) => string };
 }

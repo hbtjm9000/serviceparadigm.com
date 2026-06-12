@@ -3,14 +3,19 @@
 
 <section class="bg-tertiary text-on-tertiary relative overflow-hidden hero">
   <!-- Subtle tech pattern overlay -->
-  <div class="absolute inset-0 opacity-10">
+  <div class="absolute inset-0">
     <div class="absolute inset-0" style="background-image: url('/pattern.svg'); background-repeat: repeat;"></div>
+  </div>
+
+  <!-- Background text effect -->
+  <div class="absolute -bottom-10 -right-20 text-[20rem] font-black text-white/5 font-serif pointer-events-none select-none" aria-hidden="true">
+    Paradigm
   </div>
 
   <div class="max-w-7xl mx-auto px-6 lg:px-8 py-20 lg:py-32 relative z-10">
     <!-- Label -->
     <div class="mb-6">
-      <span class="font-sans text-xs tracking-[0.2em] text-secondary-fixed-dim uppercase">Engineering the Next Paradigm</span>
+      <span class="font-label text-xs tracking-[0.2em] text-secondary-fixed-dim uppercase">Engineering the Next Paradigm</span>
     </div>
 
     <!-- Main Headline -->
@@ -26,12 +31,20 @@
     <div class="flex flex-col md:flex-row gap-8 items-start">
       <a
         href="/contact"
-        class="bg-secondary-fixed text-on-secondary-fixed px-10 py-5 font-sans font-bold uppercase tracking-widest text-sm hover:bg-white transition-all duration-300 flex items-center gap-4 group"
+        class="bg-secondary-fixed text-on-secondary-fixed px-10 py-5 font-label font-bold uppercase tracking-widest text-sm hover:bg-white transition-all duration-300 flex items-center gap-4 group"
       >
         Start Your Transformation
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
         </svg>
+      </a>
+      <a
+        href="https://calendar.app.google/teRByg9wRAUZSYww5"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="border border-white/30 text-white px-10 py-5 font-label uppercase tracking-widest text-sm hover:bg-white hover:text-on-surface transition-all duration-300 flex items-center gap-4"
+      >
+        Book a Meeting
       </a>
       <p class="max-w-md text-secondary-fixed-dim text-lg font-body leading-relaxed border-l border-secondary-fixed-dim/30 pl-6">
         We don't sell tools — we engineer outcomes. Strategy, architecture, and precision-built

@@ -7,45 +7,40 @@ import Newsletter from '../components/Newsletter.vue';
 interface Element {
   symbol: string;
   name: string;
+  route: string;
   description: string;
   features: string[];
 }
 
 const elements: Element[] = [
   { 
-    symbol: "Em", 
-    name: "Email", 
+    symbol: "Em", name: "Email", route: "/elements/email",
     description: "Enterprise-grade business email infrastructure with advanced security, compliance features, and seamless collaboration tools.",
     features: ["Custom domains", "Advanced spam filtering", "Email archiving", "Mobile sync"]
   },
   { 
-    symbol: "Zt", 
-    name: "Zero Trust", 
+    symbol: "Zt", name: "Zero Trust", route: "/elements/zero-trust",
     description: "Identity and access management built on zero trust principles. Never trust, always verify—protecting your organization from modern threats.",
     features: ["Multi-factor authentication", "Single sign-on", "Conditional access", "Identity governance"]
   },
   { 
-    symbol: "Dp", 
-    name: "Digital Presence", 
+    symbol: "Dp", name: "Digital Presence", route: "/elements/digital-presence",
     description: "Websites and social media platforms designed to establish and grow your digital footprint with consistent branding and engagement.",
     features: ["Website hosting", "Social media management", "Content strategy", "Analytics & insights"]
   },
   { 
-    symbol: "Bc", 
-    name: "Business Continuity", 
+    symbol: "Bc", name: "Business Continuity", route: "/elements/business-continuity",
     description: "Backup and disaster recovery solutions that ensure your organization can withstand and recover from any disruption.",
     features: ["Automated backups", "Disaster recovery", "Incident response", "Recovery testing"]
   },
   { 
-    symbol: "Cp", 
-    name: "Cloud", 
+    symbol: "Cp", name: "Cloud", route: "/elements/cloud",
     description: "Cloud hosting and infrastructure services designed for performance, scalability, and security across leading cloud platforms.",
     features: ["Multi-cloud management", "Infrastructure as Code", "Cost optimization", "24/7 monitoring"]
   },
   { 
-    symbol: "Ha", 
-    name: "Hermes Agent", 
-    description: "Deploy and manage your own autonomous AI agent infrastructure—powered by Nous Research\u2019s Hermes Agent. Deterministic, sovereign, and fully under your control.",
+    symbol: "Ha", name: "Hermes Agent", route: "/elements/hermes-agent",
+    description: "Deploy and manage your own autonomous AI agent infrastructure—powered by Nous Research's Hermes Agent. Deterministic, sovereign, and fully under your control.",
     features: ["Agent lifecycle management", "Deterministic workspace", "Private model inference", "24/7 NOC support"]
   },
 ];
@@ -55,8 +50,11 @@ const elements: Element[] = [
   <Header logoVariant="mono-white" />
   <main id="main">
     <!-- Hero Section -->
-    <section class="bg-tertiary text-on-tertiary py-20 lg:py-28">
-      <div class="max-w-7xl mx-auto px-6 lg:px-8">
+    <section class="bg-tertiary text-on-tertiary py-20 lg:py-28 relative overflow-hidden">
+      <div class="absolute -bottom-10 -right-20 text-[20rem] font-black text-white/5 font-serif pointer-events-none select-none" aria-hidden="true">
+        Elements
+      </div>
+      <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
         <span class="font-sans text-xs tracking-[0.2em] text-secondary-fixed-dim uppercase">Managed Services</span>
         <h1 class="font-serif text-5xl md:text-6xl lg:text-7xl text-white leading-[1.05] mt-4 max-w-4xl text-balance">
           The Fundamental
@@ -70,75 +68,42 @@ const elements: Element[] = [
       </div>
     </section>
 
-    <!-- Elements Periodic Table Style -->
+    <!-- Element Cards — 2-col 3-row -->
     <section class="bg-surface py-20 lg:py-28">
       <div class="max-w-7xl mx-auto px-6 lg:px-8">
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-20">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-12">
           {elements.map((element) => (
             <a 
-              href={`#${element.symbol.toLowerCase()}`}
-              class="bg-surface-container p-6 text-center group hover:bg-tertiary transition-colors duration-300"
+              href={element.route}
+              class="group grid grid-cols-[auto_1fr] gap-6 items-start p-6 bg-surface-container-low hover:bg-tertiary transition-colors duration-300"
             >
-              <div class="inline-block border border-on-surface/20 group-hover:border-white/30 p-4 mb-4">
-                <span class="font-serif text-4xl lg:text-5xl text-on-surface group-hover:text-white transition-colors">{element.symbol}</span>
+              <!-- Symbol -->
+              <div class="border border-on-surface/20 group-hover:border-white/30 p-4">
+                <span class="font-serif text-4xl text-on-surface group-hover:text-white transition-colors">{element.symbol}</span>
               </div>
-              <h3 class="font-sans text-sm tracking-wide text-on-surface group-hover:text-white uppercase transition-colors">{element.name}</h3>
+              <!-- Content -->
+              <div>
+                <h3 class="font-sans text-sm tracking-wide text-on-surface group-hover:text-white uppercase transition-colors mb-2">{element.name}</h3>
+                <p class="font-body text-sm text-on-surface-variant group-hover:text-white/70 leading-relaxed mb-4">
+                  {element.description}
+                </p>
+                <div class="flex flex-wrap gap-x-4 gap-y-1 mb-4">
+                  {element.features.map((feature) => (
+                    <span class="font-sans text-xs text-on-surface-variant group-hover:text-white/50">▸ {feature}</span>
+                  ))}
+                </div>
+                <span class="inline-flex items-center gap-1 font-label font-bold uppercase tracking-widest text-xs text-primary group-hover:text-white transition-colors">
+                  Learn More
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  </svg>
+                </span>
+              </div>
             </a>
           ))}
         </div>
       </div>
     </section>
-
-    <!-- Element Details -->
-    {elements.map((element, index) => (
-      <section 
-        id={element.symbol.toLowerCase()}
-        class={`py-20 lg:py-24 ${index % 2 === 0 ? 'bg-surface-container-low' : 'bg-surface'}`}
-      >
-        <div class="max-w-7xl mx-auto px-6 lg:px-8">
-          <div class="grid lg:grid-cols-12 gap-12 items-start">
-            <!-- Symbol -->
-            <div class="lg:col-span-3">
-              <div class="inline-block border-2 border-tertiary p-8">
-                <span class="font-serif text-6xl lg:text-7xl text-tertiary">{element.symbol}</span>
-              </div>
-            </div>
-
-            <!-- Content -->
-            <div class="lg:col-span-9">
-              <span class="font-sans text-xs tracking-[0.2em] text-primary uppercase">Element {String(index + 1).padStart(2, '0')}</span>
-              <h2 class="font-serif text-4xl lg:text-5xl text-on-surface mt-4 leading-[1.1]">
-                {element.name}
-              </h2>
-              <p class="font-body text-on-surface-variant mt-6 leading-relaxed text-lg max-w-2xl">
-                {element.description}
-              </p>
-
-              <!-- Features -->
-              <div class="grid grid-cols-2 gap-4 mt-10">
-                {element.features.map((feature) => (
-                  <div class="flex items-center gap-3">
-                    <div class="w-2 h-2 bg-secondary-fixed-dim flex-shrink-0"></div>
-                    <span class="font-sans text-sm text-on-surface">{feature}</span>
-                  </div>
-                ))}
-              </div>
-
-              <!-- CTA -->
-              <a 
-                href="/contact" 
-                class="inline-flex items-center gap-2 font-sans text-sm text-primary hover:text-secondary transition-colors tracking-wide mt-8 group"
-              >
-                <span>Request {element.name} Element</span>
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
-    ))}
 
     <!-- CTA Section -->
     <Newsletter client:visible />

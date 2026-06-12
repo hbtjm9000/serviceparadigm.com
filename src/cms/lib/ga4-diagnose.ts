@@ -9,8 +9,8 @@ import { join } from 'path';
 import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 
-const CREDENTIALS_PATH=process.env.GA4_CREDENTIALS_PATH || 
-  join(fileURLToPath(new URL('.', import.meta.url)), 'ga4-credentials.json');
+const CREDENTIALS_PATH = process.env.GA4_CREDENTIALS_PATH || 
+  './secrets/ga4-credentials.json';
 
 async function diagnose() {
   const credentials = JSON.parse(readFileSync(CREDENTIALS_PATH, 'utf-8'));

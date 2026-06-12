@@ -1,0 +1,21 @@
+/* =============================================
+   Self-hosted font declarations
+   All fonts served locally — no external CDNs
+   ============================================= */
+
+/* Switzer — variable neo-grotesque (primary body) */
+@font-face {
+  font-family: 'Switzer';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/fonts/switzer/Switzer-Variable.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Switzer';
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/fonts/switzer/Switzer-VariableItalic.woff2') format('woff2');
+}

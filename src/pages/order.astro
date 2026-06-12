@@ -1,0 +1,17 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import OrderCart from '../components/OrderCart.vue';
+---
+
+<BaseLayout 
+  title="Place an Order | Paradigm IT Services" 
+  description="Order AI readiness assessments, Hermes Agent hosting, and custom engagements from Paradigm IT Services."
+>
+  <Header logoVariant="mono-white" />
+  <main id="main">
+    <OrderCart client:load />
+  </main>
+  <Footer />
+</BaseLayout>
