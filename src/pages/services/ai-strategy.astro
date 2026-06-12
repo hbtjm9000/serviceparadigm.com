@@ -1,0 +1,15 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import AiStrategy from '../../components/services/AiStrategy.vue';
+---
+
+<BaseLayout 
+  title="AI Strategy & Implementation | Paradigm IT Services" 
+  description="AI strategy consulting: readiness assessments, architecture design, automation systems. From $999 consult to $99 hosted Hermes Agent."
+>
+  <Header logoVariant="mono-white" />
+  <AiStrategy client:load />
+  <Footer />
+</BaseLayout>

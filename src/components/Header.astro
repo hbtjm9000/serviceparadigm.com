@@ -4,6 +4,8 @@ import logocolored from '../assets/images/logos/paradigm-logo-header-colored.png
 import logowhite from '../assets/images/logos/paradigm-logo-header-mono-white.png';
 import logoteal from '../assets/images/logos/paradigm-logo-header-mono-teal.png';
 import logogray from '../assets/images/logos/paradigm-logo-header-grayscale.png';
+import ServicesMegaMenu from './ServicesMegaMenu.vue';
+import ElementsMegaMenu from './ElementsMegaMenu.vue';
 
 interface NavItem {
   label: string;
@@ -32,7 +34,7 @@ const navItems: NavItem[] = [
 ];
 ---
 
-<header class="bg-primary/80 backdrop-blur-md text-white" role="navigation">
+<header class="bg-primary/80 backdrop-blur-md text-white relative z-50" role="navigation">
   <div class="max-w-7xl mx-auto px-6 lg:px-8">
     <nav class="flex items-center justify-between h-16">
       <!-- Logo -->
@@ -48,7 +50,9 @@ const navItems: NavItem[] = [
 
       <!-- Desktop Navigation -->
       <div class="hidden md:flex items-center gap-8">
-        {navItems.map((item) => (
+        <ServicesMegaMenu client:load />
+        <ElementsMegaMenu client:load />
+        {navItems.filter(i => i.label !== 'Services' && i.label !== 'Elements').map((item) => (
           <a
             href={item.href}
             class="font-headline italic text-lg text-slate-300 hover:text-white transition-colors tracking-tight"
@@ -92,15 +96,34 @@ const navItems: NavItem[] = [
 
     <!-- Mobile Menu -->
     <div id="mobile-menu" class="hidden md:hidden pb-4 transition-opacity duration-200 opacity-0">
-      <div class="flex flex-col gap-8">
-        {navItems.map((item) => (
-          <a
-            href={item.href}
-            class="font-headline italic text-lg text-slate-300 hover:text-white transition-colors tracking-tight"
-          >
-            {item.label}
-          </a>
-        ))}
+    <div class="flex flex-col gap-4">
+      {navItems.filter(i => i.label !== 'Services').map((item) => (
+        <a
+          href={item.href}
+          class="font-headline italic text-lg text-slate-300 hover:text-white transition-colors tracking-tight"
+        >
+          {item.label}
+        </a>
+      ))}
+      <div class="pt-2 pb-2">
+        <span class="font-body text-xs text-slate-500 uppercase tracking-wider block mb-2">Services</span>
+        <div class="flex flex-col gap-2 pl-2 border-l border-slate-700">
+          <a href="/services/ai-strategy" class="font-headline italic text-base text-slate-300 hover:text-white transition-colors">AI Strategy</a>
+          <a href="/services/solutions-architecture" class="font-headline italic text-base text-slate-300 hover:text-white transition-colors">Solutions Architecture</a>
+          <a href="/services/cybersecurity" class="font-headline italic text-base text-slate-300 hover:text-white transition-colors">Cybersecurity</a>
+        </div>
+      </div>
+      <div class="pt-1 pb-2">
+        <span class="font-body text-xs text-slate-500 uppercase tracking-wider block mb-2">Elements</span>
+        <div class="flex flex-col gap-2 pl-2 border-l border-slate-700">
+          <a href="/elements/email" class="font-headline italic text-base text-slate-300 hover:text-white transition-colors">Email</a>
+          <a href="/elements/zero-trust" class="font-headline italic text-base text-slate-300 hover:text-white transition-colors">Zero Trust</a>
+          <a href="/elements/digital-presence" class="font-headline italic text-base text-slate-300 hover:text-white transition-colors">Digital Presence</a>
+          <a href="/elements/business-continuity" class="font-headline italic text-base text-slate-300 hover:text-white transition-colors">Business Continuity</a>
+          <a href="/elements/cloud" class="font-headline italic text-base text-slate-300 hover:text-white transition-colors">Cloud</a>
+          <a href="/elements/hermes-agent" class="font-headline italic text-base text-slate-300 hover:text-white transition-colors">Hermes Agent</a>
+        </div>
+      </div>
         <a
           href="https://calendar.app.google/teRByg9wRAUZSYww5"
           target="_blank"

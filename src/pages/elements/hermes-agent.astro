@@ -1,0 +1,11 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import HermesAgent from '../../components/elements/HermesAgent.vue';
+---
+<BaseLayout title="Hermes Agent Element | Paradigm IT Services" description="Autonomous AI agent infrastructure, fully under your control.">
+  <Header logoVariant="mono-white" />
+  <HermesAgent client:load />
+  <Footer />
+</BaseLayout>

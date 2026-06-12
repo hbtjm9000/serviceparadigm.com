@@ -103,6 +103,9 @@ export function getFlag<T extends string = string>(
 
 /** Returns true if the boolean feature flag is on */
 export function isOn(key: string): boolean {
+  // Dev: always show features for testing
+  if (import.meta.env.DEV) return true;
+  // Production: use GrowthBook evaluation
   return getBooleanValue(key, false);
 }
 

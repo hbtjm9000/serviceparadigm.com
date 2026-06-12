@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>serviceparadigm.com — Site Analysis</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<style>
+  body { font-family: system-ui, -apple-system, sans-serif; max-width: 1000px; margin: 0 auto; padding: 2rem; background: #0f172a; color: #e2e8f0; line-height: 1.6; }
+  h1 { color: #f1f5f9; border-bottom: 2px solid #334155; padding-bottom: 0.5rem; }
+  h2 { color: #cbd5e1; border-bottom: 1px solid #334155; margin-top: 2.5rem; padding-bottom: 0.3rem; }
+  h3 { color: #94a3b8; margin-top: 1.5rem; }
+  h4 { color: #64748b; }
+  a { color: #38bdf8; }
+  table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: 0.9rem; }
+  th, td { border: 1px solid #334155; padding: 0.4rem 0.6rem; text-align: left; }
+  th { background: #1e293b; color: #94a3b8; }
+  td { background: #0f172a; }
+  code { background: #1e293b; padding: 0.15rem 0.4rem; border-radius: 3px; font-size: 0.85em; color: #f472b6; }
+  .rm { background: #7f1d1d; border-left: 4px solid #ef4444; padding: 0.5rem 1rem; margin: 1rem 0; }
+  .rm h4 { color: #fca5a5; margin: 0; }
+  .rm p { margin: 0.25rem 0; }
+  .keep { background: #14532d; border-left: 4px solid #22c55e; padding: 0.5rem 1rem; margin: 1rem 0; }
+  .keep h4 { color: #86efac; margin: 0; }
+  .migrate { background: #713f12; border-left: 4px solid #f59e0b; padding: 0.5rem 1rem; margin: 1rem 0; }
+  .migrate h4 { color: #fde68a; margin: 0; }
+  ul.rm-list { list-style: none; padding-left: 0; }
+  ul.rm-list li::before { content: "🗑️ "; }
+  ul.keep-list { list-style: none; padding-left: 0; }
+  ul.keep-list li::before { content: "✅ "; }
+  pre { background: #1e293b; padding: 1rem; border-radius: 6px; overflow-x: auto; }
+  .mermaid { background: #1e293b; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0; }
+  .summary-box { border: 1px solid #334155; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0; }
+  .badge-rm { display: inline-block; background: #ef4444; color: white; padding: 0.15rem 0.5rem; border-radius: 3px; font-size: 0.75rem; font-weight: bold; margin-left: 0.5rem; vertical-align: middle; }
+  .badge-keep { display: inline-block; background: #22c55e; color: white; padding: 0.15rem 0.5rem; border-radius: 3px; font-size: 0.75rem; font-weight: bold; margin-left: 0.5rem; vertical-align: middle; }
+  .badge-done { display: inline-block; background: #6366f1; color: white; padding: 0.15rem 0.5rem; border-radius: 3px; font-size: 0.75rem; font-weight: bold; margin-left: 0.5rem; vertical-align: middle; }
+  .badge-gb { display: inline-block; background: #f59e0b; color: white; padding: 0.15rem 0.5rem; border-radius: 3px; font-size: 0.75rem; font-weight: bold; margin-left: 0.5rem; vertical-align: middle; }
+  hr { border: none; border-top: 1px solid #334155; margin: 2rem 0; }
+  .callout { border: 1px solid #6366f1; border-left: 4px solid #6366f1; padding: 1rem; margin: 1rem 0; border-radius: 4px; background: #1e1b4b; }
+  .callout h4 { color: #a5b4fc; margin: 0 0 0.5rem; }
+</style>
+</head>
+<body>
+
+<h1>serviceparadigm.com — Full Site Analysis</h1>
+<p><strong>Generated:</strong> 2026-06-11 (corrected)<br>
+<strong>Stack:</strong> Astro 6 + Vue 3 + Tailwind v4 + Bun + Cloudflare Pages<br>
+<strong>Repo:</strong> <code>~/lab/serviceparadigm.com/</code></p>
+
+<div class="callout">
+<h4> Key Correction From Previous Report</h4>
+<p><strong>CMS ≠ Experiments.</strong> They are <strong>orthogonal layers</strong> that serve fundamentally different purposes and do not compete:</p>
+<ul>
+  <li><strong>CMS (MD-based, file system)</strong> → authoring, structure, metadata, versioning, portability. <span class="badge-keep">KEEP</span></li>
+  <li><strong>GrowthBook</strong> → feature flags, A/B testing, targeting, rollouts, statistical analysis. <span class="badge-done">ALREADY INTEGRATED</span></li>
+</ul>
+<p>The previous report incorrectly framed the Vue + SQLite experiment tool as a "custom CMS." It was an A/B test harness with a stats engine — <strong>not a content management system.</strong> The CMS has always been the flat-file / Markdown-based content approach. GrowthBook was never a CMS replacement; it replaces the delivery infrastructure around <em>who sees what</em> and <em>measuring impact</em>.</p>
+</div>
+
+<hr>
+
+<h2>1. Orthogonal Layers — The Architecture</h2>
+
+<div class="mermaid">
+graph TB
+    subgraph "Content Layer — CMS"
+        CMS_FILES["src/content/*<br/>Markdown / JSON / MDX<br/>Content authoring & structure"]
+        CMS_FM["Frontmatter<br/>SEO, titles, metadata<br/>Per-page config"]
+        CMS_GIT["Git version history<br/>Branches, PRs, blame<br/>Rollback"]
+    end
+
+    subgraph "Delivery Layer — GrowthBook"
+        GB_FLAGS["Feature Flags<br/>Kill switches, boolean toggles"]
+        GB_EXP["Experiments<br/>A/B tests, multi-armed bandits"]
+        GB_TARGET["Targeting & Rollouts<br/>% rollouts, audience rules"]
+        GB_STATS["Stats Engine<br/>Bayesian analysis, CUPED"]
+    end
+
+    subgraph "Deprecated — Old Experiment Tool"
+        OLD_UI["Admin Vue SPA<br/>Variant CRUD grid + editor"]
+        OLD_DB["SQLite (variants.db)<br/>4 tables, localhost API :4322"]
+        OLD_STATS["Custom stats.ts<br/>Wilson score, z-test, p-value"]
+        OLD_GA4["ga4-api.ts<br/>Manual GA4 sync script"]
+        OLD_AUTH["Hardcoded password<br/>(paradigm2026)"]
+    end
+
+    subgraph "Build & Runtime"
+        ASTRO["Astro 6 build<br/>bun run build → dist/"]
+        CF["Cloudflare Pages<br/>Global edge network"]
+        SITE["11 static pages<br/>3 Vue interactive components"]
+    end
+
+    CMS_FILES --> ASTRO
+    CMS_FM --> ASTRO
+    ASTRO --> CF
+    CF --> SITE
+    GB_FLAGS -.-> SITE
+    GB_EXP -.-> SITE
+    GB_TARGET -.-> SITE
+
+    style OLD_UI fill:#7f1d1d,stroke:#ef4444
+    style OLD_DB fill:#7f1d1d,stroke:#ef4444
+    style OLD_STATS fill:#7f1d1d,stroke:#ef4444
+    style OLD_GA4 fill:#7f1d1d,stroke:#ef4444
+    style OLD_AUTH fill:#7f1d1d,stroke:#ef4444
+</div>
+
+<h3>What each system does</h3>
+
+<table>
+<tr><th>Need</th><th>CMS (file-based)</th><th>GrowthBook</th><th>Old Experiment Tool</th></tr>
+<tr><td>Authoring blog posts, service pages</td><td class="keep-list">✅ Markdown + frontmatter</td><td>❌ Not designed for</td><td>❌ JSON variants only</td></tr>
+<tr><td>Rich text, images, formatting</td><td>✅ Full Markdown/MDX</td><td>❌ Boolean/string/JSON values only</td><td>❌ Structured JSON fields</td></tr>
+<tr><td>SEO metadata (title, desc, OG)</td><td>✅ Per-page frontmatter</td><td>❌ No concept of pages</td><td>❌ No SEO support</td></tr>
+<tr><td>Version history, blame, rollback</td><td>✅ Git-native</td><td>❌ MongoDB — no content versioning</td><td>❌ SQLite audit_log table</td></tr>
+<tr><td>Content hierarchy (pages, nav ordering)</td><td>✅ File structure = sitemap</td><td>❌ Flat key-value store</td><td>❌ Flat variant list</td></tr>
+<tr><td>Draft + PR review workflow</td><td>✅ Git branches + PRs</td><td>❌ Publish directly from UI</td><td>❌ UI-only CRUD</td></tr>
+<tr><td>Portability (Plain MD → other SSG)</td><td>✅ Zero lock-in</td><td>❌ Tied to GB SDK</td><td>❌ Tied to SQLite + Bun</td></tr>
+<tr><td>Who sees which content</td><td>❌ Not its job</td><td>✅ Targeting, rollouts</td><td>❌ localStorage random assignment</td></tr>
+<tr><td>Measure which variant performs better</td><td>❌ Not its job</td><td>✅ Stats engine, experiments</td><td>✅ Wilson score + z-test (basic)</td></tr>
+<tr><td>Kill-switch a broken feature</td><td>❌ Not its job</td><td>✅ Boolean flag toggle</td><td>❌ Not designed for</td></tr>
+</table>
+
+<hr>
+
+<h2>2. Current State — What Actually Exists on Disk</h2>
+
+<p>All files verified on-disk at <code>~/lab/serviceparadigm.com/</code> as of this analysis.</p>
+
+<h3>2.1 GrowthBook SDK <span class="badge-done">INTEGRATED</span></h3>
+<ul class="keep-list">
+  <li><code>src/lib/growthbook.ts</code> — GrowthBook SDK init (<code>apiHost</code>, <code>clientKey</code>, <code>trackingCallback</code>, GA4 exposure logging)</li>
+  <li><code>src/lib/features.ts</code> — OpenFeature-compatible wrapper: <code>getStringValue()</code>, <code>getBooleanValue()</code>, <code>isOn()</code>, <code>isOff()</code></li>
+  <li><code>src/layouts/BaseLayout.astro</code> — imports features; triggers SDK load</li>
+  <li><code>@growthbook/growthbook@^1.6.5</code> in <code>package.json</code></li>
+  <li><code>PUBLIC_GROWTHBOOK_API_HOST</code> / <code>PUBLIC_GROWTHBOOK_CLIENT_KEY</code> in <code>.env.example</code></li>
+</ul>
+
+<h3>2.2 CMS (file-based) <span class="badge-keep">KEEP</span></h3>
+<p>Currently uses a flat JSON approach for the hero content. Not yet migrated to Astro Content Collections.</p>
+<ul class="keep-list">
+  <li><code>src/content/hero/variants.json</code> — 3 hero variants (v1-baseline, v2-editorial, v3-direct)</li>
+  <li><code>src/content/hero/metadata.json</code> — experiment metadata</li>
+  <li>11 public pages in <code>src/pages/</code> — all Astro + some Vue SFCs</li>
+  <li>No <code>src/content/config.ts</code> (Content Collection schemas not yet set up)</li>
+  <li>No MDX/Markdown content collections yet</li>
+</ul>
+
+<h3>2.3 Old Experiment Tool — Still on Disk <span class="badge-rm">TO DELETE</span></h3>
+<p>All old A/B experiment files still present. GrowthBook SDK was added alongside; the old system was never removed.</p>
+
+<div class="summary-box">
+<p><strong>29 files</strong> to remove across admin UI, API layer, client experiment code, GA4 sync, scripts, and data files. Full inventory in Section 4.</p>
+</div>
+
+<hr>
+
+<h2>3. Public Site Features</h2>
+
+<div class="mermaid">
+graph LR
+    HOME["/ — Homepage<br/>Hero + Mission + Services<br/>+ Elements + Insights"]
+    SERVICES["/services<br/>AI Strategy, Solutions<br/>Architecture, Cybersecurity"]
+    ELEMENTS["/elements<br/>Email, Zero Trust, Digital<br/>Presence, BC, Cloud, HA"]
+    INSIGHTS["/insights<br/>Blog / Content Marketing"]
+    ABOUT["/about<br/>Founder, Values<br/>Two-Tier Service Model"]
+    CONTACT["/contact<br/>Form + Contact Info"]
+    LANDINGS["/landings/*<br/>packaged-ai, element<br/>(Sales Landing Pages)"]
+    LEGAL["/privacy, /terms<br/>/accessibility"]
+
+    HOME --> SERVICES
+    HOME --> ELEMENTS
+    HOME --> INSIGHTS
+    HOME --> ABOUT
+    HOME --> CONTACT
+    SERVICES --> CONTACT
+    ELEMENTS --> CONTACT
+    LANDINGS --> CONTACT
+</div>
+
+<table>
+<tr><th>Page</th><th>Route</th><th>Type</th><th>Interactive Elements</th></tr>
+<tr><td>Home</td><td><code>/</code></td><td>Astro + Vue SFC</td><td>HeroClient (Vue), Newsletter (Vue)</td></tr>
+<tr><td>Services</td><td><code>/services</code></td><td>Astro static</td><td>None</td></tr>
+<tr><td>Elements</td><td><code>/elements</code></td><td>Astro static</td><td>Newsletter (Vue)</td></tr>
+<tr><td>Insights</td><td><code>/insights</code></td><td>Astro static</td><td>Newsletter (Vue)</td></tr>
+<tr><td>About</td><td><code>/about</code></td><td>Astro static</td><td>Newsletter (Vue)</td></tr>
+<tr><td>Contact</td><td><code>/contact</code></td><td>Astro + Vue SFC</td><td>ContactForm (Vue)</td></tr>
+<tr><td>Packaged AI</td><td><code>/landings/packaged-ai</code></td><td>Astro + Vue SFC</td><td>ContactForm (Vue)</td></tr>
+<tr><td>Element DP</td><td><code>/landings/element</code></td><td>Astro + Vue SFC</td><td>ContactForm (Vue)</td></tr>
+<tr><td>Privacy</td><td><code>/privacy</code></td><td>Astro</td><td>None</td></tr>
+<tr><td>Terms</td><td><code>/terms</code></td><td>Astro</td><td>None</td></tr>
+<tr><td>Accessibility</td><td><code>/accessibility</code></td><td>Astro</td><td>None</td></tr>
+</table>
+
+<hr>
+
+<h2>4. Things to Remove — Old Experiment Tool (29 files)</h2>
+
+<div class="rm">
+<h4> Decision already made. GrowthBook is cut over. These files are dead code.</h4>
+<p>No custom A/B test tool needed any more. GrowthBook handles experiments, targeting, rollouts, and analytics natively.</p>
+</div>
+
+<h3>4.1 Admin Vue SPA — 6 files</h3>
+
+<ul class="rm-list">
+  <li><code>src/cms/App.vue</code> — Vue Router root for admin SPA</li>
+  <li><code>src/cms/components/AdminLayout.vue</code> — Admin navigation shell</li>
+  <li><code>src/cms/lib/router.ts</code> — Vue Router config</li>
+  <li><code>src/cms/lib/auth.ts</code> — localStorage auth (hardcoded password)</li>
+  <li><code>src/cms/lib/content-api.ts</code> — Variant CRUD fetch</li>
+  <li><code>src/cms/pages/experiments/index.vue</code> — Experiment list</li>
+  <li><code>src/cms/pages/experiments/[key].vue</code> — Experiment detail</li>
+</ul>
+
+<h3>4.2 Admin Astro Pages — 5 files</h3>
+
+<ul class="rm-list">
+  <li><code>src/pages/admin/index.astro</code> — mounts Vue SPA (<code>#app</code>)</li>
+  <li><code>src/pages/admin/login.astro</code> — hardcoded password auth page</li>
+  <li><code>src/pages/admin/experiments/index.astro</code> — Variant CRUD grid (fetches localhost:4322)</li>
+  <li><code>src/pages/admin/experiments/[key].astro</code> — Inline editor page</li>
+  <li><code>src/pages/admin/experiments/results.astro</code> — Chart.js results dashboard</li>
+  <li><code>src/pages/admin/experiments/edit.astro</code> — Variant edit page</li>
+</ul>
+
+<h3>4.3 API + Database Layer — 5 files</h3>
+
+<ul class="rm-list">
+  <li><code>src/pages/api/cms/save-variants.ts</code> — Astro API endpoint (POST/GET variants)</li>
+  <li><code>scripts/api-server.ts</code> — Standalone Bun API server on :4322 (7 endpoints)</li>
+  <li><code>scripts/init-db.ts</code> — SQLite schema initialization (4 tables)</li>
+  <li><code>scripts/migrate-results-schema.ts</code> — Schema migration for results tables</li>
+  <li><code>scripts/migrate-variants.ts</code> — JSON → SQLite migration script</li>
+</ul>
+
+<h3>4.4 Client-Side Experiment Code — 3 files</h3>
+
+<ul class="rm-list">
+  <li><code>src/composables/useExperiment.ts</code> — localStorage A/B assignment + GA4 exposure logging</li>
+  <li><code>src/lib/features.ts</code> — OpenFeature wrapper (superseded by direct GB SDK usage)</li>
+  <li><code>src/lib/growthbook.ts</code> — GrowthBook SDK init (NOTE: <strong>retain</strong> or consolidate? See callout below)</li>
+</ul>
+
+<div class="migrate">
+<h4> Check: src/lib/growthbook.ts + src/lib/features.ts</h4>
+<p>Two GB wrappers exist. After cleanup, consolidate into one. Keep <code>src/lib/features.ts</code> as the public API (it re-exports <code>growthbook</code> from <code>growthbook.ts</code>). The <code>useExperiment.ts</code> composable is fully replaced by GB SDK's <code>getFeatureValue()</code>.</p>
+</div>
+
+<div class="migrate">
+<h4> Check: HeroClient.vue</h4>
+<p>HeroClient.vue takes a <code>copy</code> prop (defaults to hardcoded values). Was designed for experiment variant injection but the wiring was never completed. After deleting the old system, the <code>copy</code> prop can be removed and content hardcoded, or wired to a GrowthBook feature flag.</p>
+<p><strong>Current state:</strong> <code>src/pages/index.astro</code> renders <code>&lt;HeroClient client:load /&gt;</code> — no <code>copy</code> prop passed. Component uses defaults. No action needed immediately.</p>
+</div>
+
+<h3>4.5 GA4 Experiment Sync — 3 files</h3>
+
+<ul class="rm-list">
+  <li><code>src/cms/lib/ga4-api.ts</code> — GA4 Data API client for experiment results</li>
+  <li><code>src/cms/lib/ga4-diagnose.ts</code> — GA4 access diagnostics tool</li>
+  <li><code>src/cms/lib/stats.ts</code> — Wilson score, z-test, p-value calculator</li>
+</ul>
+
+<h3>4.6 Sync/Migration Scripts — 3 files</h3>
+
+<ul class="rm-list">
+  <li><code>scripts/sync-variants.ts</code> — SQLite → JSON sync</li>
+  <li><code>scripts/update-variants.ts</code> — Direct JSON variant updater</li>
+  <li><code>scripts/form-handler/</code> — Google Apps Script form handler (verify if still needed separately)</li>
+</ul>
+
+<h3>4.7 Data Files — 4 files</h3>
+
+<ul class="rm-list">
+  <li><code>variants.db</code> — SQLite database (experiment data)</li>
+  <li><code>crumbs.db</code> — SQLite database (kanban data — verify if still needed outside this project)</li>
+  <li><code>src/content/hero/variants.json</code> — Hero variant definitions</li>
+  <li><code>src/content/hero/metadata.json</code> — Experiment metadata</li>
+</ul>
+
+<h3>4.8 Secrets — 1 file</h3>
+
+<ul class="rm-list">
+  <li><code>secrets/ga4-credentials.json</code> — GA4 service account (only used by deprecated ga4-api.ts)</li>
+</ul>
+
+<h3>Deletion Totals</h3>
+
+<table>
+<tr><th>Category</th><th>Count</th></tr>
+<tr><td>Admin Vue SPA</td><td>7 files</td></tr>
+<tr><td>Admin Astro pages</td><td>6 files</td></tr>
+<tr><td>API + DB layer</td><td>5 files</td></tr>
+<tr><td>Client experiment code</td><td>3 files</td></tr>
+<tr><td>GA4 experiment sync</td><td>3 files</td></tr>
+<tr><td>Sync/migration scripts</td><td>3 files + 1 directory</td></tr>
+<tr><td>Data files</td><td>4 files</td></tr>
+<tr><td>Secrets</td><td>1 file</td></tr>
+<tr><td><strong>Total</strong></td><td><strong>32 items</strong></td></tr>
+</table>
+
+<hr>
+
+<h2>5. Cleanup Execution Plan</h2>
+
+<div class="mermaid">
+sequenceDiagram
+    participant Clean as Cleanup Agent
+    participant Git as Git
+    participant Pkg as package.json
+    participant Site as Live Site
+
+    Note over Clean: Phase 1 — Remove old experiment system
+    Clean->>Clean: Delete src/cms/ (7 files)
+    Clean->>Clean: Delete src/pages/admin/ (6 files)
+    Clean->>Clean: Delete src/composables/useExperiment.ts
+    Clean->>Clean: Delete src/pages/api/cms/save-variants.ts
+    Clean->>Clean: Delete scripts/{api-server,init-db,sync-variants,...}.ts
+    Clean->>Clean: Delete variants.db, crumbs.db
+    Clean->>Clean: Delete src/content/hero/variants.json + metadata.json
+    Clean->>Clean: Delete secrets/ga4-credentials.json
+
+    Note over Clean: Phase 2 — Consolidate GB wrappers
+    Clean->>Clean: Merge features.ts + growthbook.ts into one
+    Clean->>Clean: Remove googleapis from package.json
+    Clean->>Clean: Remove vue-router from package.json
+
+    Note over Clean: Phase 3 — Verify
+    Clean->>Clean: bun run build
+    Clean->>Clean: bun run test:unit
+    Clean->>Clean: bun run lint
+    Clean->>Site: bun run dev — verify no 404s or broken imports
+</div>
+
+<div class="keep">
+<h4> What the plan does NOT include (already done)</h4>
+<ul>
+  <li>✅ GrowthBook SDK integration — code exists, imports work, tracking callbacks configured</li>
+  <li>✅ Decision to cut over to GrowthBook — made and executed</li>
+  <li>✅ Site builds and deploys — CI pipeline operational</li>
+</ul>
+</div>
+
+<hr>
+
+<h2>6. GrowthBook Integration — Current State</h2>
+
+<table>
+<tr><th>Component</th><th>Status</th><th>Details</th></tr>
+<tr><td>SDK code</td><td class="keep-list">✅ Done</td><td><code>src/lib/growthbook.ts</code> — GrowthBook SDK with apiHost, clientKey, trackingCallback</td></tr>
+<tr><td>OpenFeature wrapper</td><td class="keep-list">✅ Done</td><td><code>src/lib/features.ts</code> — getStringValue, getBooleanValue, isOn, isOff</td></tr>
+<tr><td>SDK bootstrap</td><td class="keep-list">✅ Done</td><td>BaseLayout.astro imports <code>features.ts</code>; triggers <code>loadFeatures()</code></td></tr>
+<tr><td>Package dependency</td><td class="keep-list">✅ Done</td><td><code>@growthbook/growthbook@^1.6.5</code> in package.json</td></tr>
+<tr><td>Environment config</td><td class="keep-list">✅ Done</td><td><code>PUBLIC_GROWTHBOOK_API_HOST</code> and <code>PUBLIC_GROWTHBOOK_CLIENT_KEY</code> in .env.example</td></tr>
+<tr><td>Feature flags created</td><td class="keep">🔶 In Progress</td><td>Need to validate/create actual flags in GB UI matching <code>getFlag('hero-copy-test', 'v1-baseline')</code> calls</td></tr>
+<tr><td>Old system removed</td><td class="badge-rm">❌ Pending</td><td>29 files still on disk — cleanup Phase 1</td></tr>
+<tr><td>self-hosted GB infra</td><td class="migrate">🔶 Not started</td><td>Using cloud CDN currently. No Podman container running for self-hosted GB.</td></tr>
+</table>
+
+<hr>
+
+<h2>7. Post-Cleanup Architecture</h2>
+
+<div class="mermaid">
+graph TB
+    subgraph "Content Layer (CMS — file-based)"
+        CONTENT["src/content/*<br/>Markdown/MDX + JSON<br/>Content authoring & structure"]
+        PAGES["src/pages/*<br/>Astro templates"]
+        COMPONENTS["src/components/*<br/>Astro + Vue 3 SFC"]
+    end
+
+    subgraph "Experimentation Layer (GrowthBook)"
+        GB_SDK["@growthbook/growthbook SDK<br/>Client-side flag evaluation"]
+        GB_CLOUD["GrowthBook Cloud<br/>(or self-hosted)<br/>Flag config + stats"]
+        FEATURES["src/lib/features.ts<br/>OpenFeature API surface"]
+    end
+
+    subgraph "Build & Deploy"
+        BUILD["bun run build → dist/"]
+        DEPLOY["scripts/deploy-cf.py<br/>Cloudflare REST API"]
+    end
+
+    subgraph "Quality"
+        CI["Forgejo Actions<br/>typecheck + lint + test + build + deploy"]
+        E2E["Playwright + Cucumber<br/>E2E + visual + a11y + BDD"]
+        UNIT["Vitest<br/>Unit tests"]
+    end
+
+    CONTENT --> BUILD
+    PAGES --> BUILD
+    COMPONENTS --> BUILD
+    BUILD --> DEPLOY
+    GB_SDK --> FEATURES
+    FEATURES --> COMPONENTS
+    CI --> BUILD
+</div>
+
+<h3>7.1 Retained Architecture</h3>
+
+<ul class="keep-list">
+  <li><strong>11 public pages</strong> — Home, Services, Elements, Insights, About, Contact, Privacy, Terms, Accessibility, 2 Landings</li>
+  <li><strong>File-based CMS</strong> — flat-file content (JSON currently; MD/Content Collections aspirational)</li>
+  <li><strong>GrowthBook SDK</strong> — feature flags, experiments, rollouts, kill switches</li>
+  <li><strong>Tailwind v4 + custom fonts</strong> — Switzer (body), Instrument Serif (headline), Space Grotesk (label)</li>
+  <li><strong>3 Vue interactive components</strong> — HeroClient (client:load), ContactForm (client:load), Newsletter (client:visible)</li>
+  <li><strong>All dev tooling</strong> — ESLint, Vitest, Playwright, Cucumber, CI pipeline</li>
+  <li><strong>Cloudflare Pages deploy</strong> — custom Python deploy script</li>
+</ul>
+
+<hr>
+
+<h2>8. Dependencies</h2>
+
+<h3>Dependencies to keep</h3>
+<table>
+<tr><th>Package</th><th>Purpose</th><th>Notes</th></tr>
+<tr><td><code>astro@^6.2.1</code></td><td>Static site generator</td><td>Vite pinned to ^7 via overrides</td></tr>
+<tr><td><code>vue@^3.5.33</code></td><td>Client-side interactivity</td><td></td></tr>
+<tr><td><code>tailwindcss@^4.3.0</code></td><td>CSS framework</td><td></td></tr>
+<tr><td><code>@tailwindcss/postcss</code></td><td>PostCSS plugin</td><td></td></tr>
+<tr><td><code>@growthbook/growthbook@^1.6.5</code></td><td>Feature flags / A/B testing</td><td>Core experiment platform</td></tr>
+<tr><td><code>@astrojs/vue</code></td><td>Vue integration</td><td></td></tr>
+<tr><td><code>@astrojs/sitemap</code></td><td>Sitemap generation</td><td></td></tr>
+<tr><td><code>@fontsource/*</code></td><td>Self-hosted fonts</td><td>Instrument Serif, Space Grotesk</td></tr>
+<tr><td><code>lucide-vue-next</code></td><td>Icons</td><td></td></tr>
+<tr><td><code>sharp</code></td><td>Image optimization</td><td></td></tr>
+</table>
+
+<h3>Dependencies to remove</h3>
+
+<div class="rm">
+<ul>
+  <li><code>googleapis@^171.4.0</code> — only used by deprecated ga4-api.ts (GA4 experiment sync)</li>
+  <li><code>vue-router@4</code> — only used by deprecated admin Vue SPA</li>
+  <li><code>@openfeature/web-sdk@^1.8.0</code> — referenced by features.ts but GrowthBook SDK already provides the API</li>
+  <li><code>@openfeature/growthbook-provider@^0.1.2</code> — server-only, unused client-side</li>
+</ul>
+</div>
+
+<h3>Dev dependencies — all keep</h3>
+
+<hr>
+
+<h2>9. Audit Trail</h2>
+
+<table>
+<tr><th>File</th><th>Reason for correction</th></tr>
+<tr><td><code>docs/SITE-ANALYSIS-CLEAN.html</code></td><td>Previous version misidentified the Vue+SQLite app as a "custom CMS." It was an A/B experiment harness — not a content management system. GB and CMS are orthogonal, not competing. GrowthBook cutover is already done; this report now reflects post-decision reality.</td></tr>
+</table>
+
+</body>
+</html>

@@ -1,0 +1,11 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import ZeroTrust from '../../components/elements/ZeroTrust.vue';
+---
+<BaseLayout title="Zero Trust Element | Paradigm IT Services" description="Identity and access management built on zero trust principles.">
+  <Header logoVariant="mono-white" />
+  <ZeroTrust client:load />
+  <Footer />
+</BaseLayout>

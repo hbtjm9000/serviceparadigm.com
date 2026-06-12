@@ -47,7 +47,7 @@
 
     <!-- Decorative background text -->
     <div class="absolute -bottom-10 -right-20 text-[20rem] font-black text-white/5 font-serif pointer-events-none select-none" aria-hidden="true">
-      LEDGER
+      Newsletter
     </div>
   </section>
 </template>

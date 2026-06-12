@@ -1,5 +1,6 @@
 ---
 interface Service {
+  id: string;
   label: string;
   title: string;
   description: string;
@@ -8,18 +9,21 @@ interface Service {
 
 const services: Service[] = [
   {
+    id: "ai-strategy",
     label: "AI Architecture",
     title: "AI Strategy",
     description: "We map your organisation's readiness, identify high-impact automation opportunities, and design the architecture to execute. Not a chatbot. A system that works.",
     tags: ["[Em:AIReadiness]", "[Em:ArchitectureDesign]"]
   },
   {
+    id: "solutions-architecture",
     label: "Solutions",
     title: "Solutions Architecture",
     description: "From legacy modernisation to cloud-native builds — we design systems that scale, adapt, and don't create the next round of technical debt.",
     tags: ["[Cd:Cloud]", "[Zt:ModerniseElement]"]
   },
   {
+    id: "cybersecurity",
     label: "Security",
     title: "Cybersecurity Architecture",
     description: "Security designed in from the start, not bolted on after a breach. We build postures that hold under pressure.",
@@ -29,7 +33,7 @@ const services: Service[] = [
 ---
 
 <section class="bg-surface-container-low py-32">
-  <div class="max-w-7xl mx-auto px-12">
+  <div class="max-w-7xl mx-auto px-12 relative z-10">
     <!-- Section Header -->
     <div class="flex justify-between items-end mb-20">
       <div>
@@ -59,15 +63,15 @@ const services: Service[] = [
             {service.description}
           </p>
 
-          <div class="flex flex-wrap gap-2">
-            {service.tags.map((tag) => (
-              <span
-                class="px-3 py-1 bg-surface-container text-[10px] font-label font-bold text-secondary group-hover:bg-white/10 group-hover:text-secondary-fixed"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
+          <a
+            href={`/services/${service.id}`}
+            class="inline-flex items-center gap-2 font-label font-bold uppercase tracking-widest text-sm px-6 py-3 bg-secondary-fixed text-on-secondary-fixed hover:bg-white hover:text-on-surface transition-all duration-300 group"
+          >
+            <span>Read More</span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </a>
         </article>
       ))}
     </div>

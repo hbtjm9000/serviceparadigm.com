@@ -81,8 +81,12 @@ const articles: Article[] = [
   <Header logoVariant="mono-white" />
   <main id="main">
     <!-- Hero Section -->
-    <section class="bg-tertiary text-on-tertiary py-20 lg:py-28">
-      <div class="max-w-7xl mx-auto px-6 lg:px-8">
+    <section class="bg-tertiary text-on-tertiary py-20 lg:py-28 relative overflow-hidden">
+      <!-- Background text effect -->
+      <div class="absolute -bottom-10 -right-20 text-[20rem] font-black text-white/5 font-serif pointer-events-none select-none" aria-hidden="true">
+        Insights
+      </div>
+      <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
         <span class="font-sans text-xs tracking-[0.2em] text-secondary-fixed-dim uppercase">Knowledge Base</span>
         <h1 class="font-serif text-5xl md:text-6xl lg:text-7xl text-white leading-[1.05] mt-4 max-w-4xl text-balance italic">
           Latest Insights & Documentation
