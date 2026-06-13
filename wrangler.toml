@@ -1,0 +1,14 @@
+name = "serviceparadigm-com"
+main = "src/worker.js"
+compatibility_date = "2026-06-12"
+workers_dev = true
+
+# Static assets from the Astro build output
+assets = { directory = "./dist", binding = "ASSETS" }
+
+# Route the custom domain to this Worker
+routes = [
+  { pattern = "serviceparadigm.com", zone_id = "473ebebb4b53769217fa9f7767b8d423" },
+  { pattern = "serviceparadigm.com/*", zone_id = "473ebebb4b53769217fa9f7767b8d423" },
+  { pattern = "www.serviceparadigm.com/*", zone_id = "473ebebb4b53769217fa9f7767b8d423" }
+]
