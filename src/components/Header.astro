@@ -143,15 +143,3 @@ const navItems: NavItem[] = [
   </div>
 </header>
 
-<script is:inline data-astro-rerun>
-  const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-  const mobileMenu = document.getElementById('mobile-menu');
-
-  mobileMenuBtn?.addEventListener('click', () => {
-    const isExpanded = mobileMenuBtn.getAttribute('aria-expanded') === 'true';
-    mobileMenu?.classList.toggle('hidden');
-    mobileMenu?.classList.toggle('opacity-0');
-    mobileMenu?.classList.toggle('opacity-100');
-    mobileMenuBtn.setAttribute('aria-expanded', String(!isExpanded));
-  });
-</script>

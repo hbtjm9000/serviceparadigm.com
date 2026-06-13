@@ -55,3 +55,20 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <slot />
   </body>
 </html>
+
+<script>
+  /* Mobile menu toggle — event delegation for View Transitions durability.
+     Single listener on document survives all client-side navigations.
+     Dynamically queries DOM on each click — no re-execution needed. */
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('#mobile-menu-btn');
+    if (!btn) return;
+    const menu = document.getElementById('mobile-menu');
+    if (!menu) return;
+    const isExpanded = btn.getAttribute('aria-expanded') === 'true';
+    menu.classList.toggle('hidden');
+    menu.classList.toggle('opacity-0');
+    menu.classList.toggle('opacity-100');
+    btn.setAttribute('aria-expanded', String(!isExpanded));
+  });
+</script>
