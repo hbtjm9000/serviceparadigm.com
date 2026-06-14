@@ -47,7 +47,34 @@ jobs:
       - name: Build
         run: bun run build
 
-      # ── AGY self-correct gate ────────────────────────────────
+      # ── Staging deploy ─────────────────────────────────────────
+      - name: Deploy to staging
+        run: |
+          echo "$GITHUB_SHA" > dist/REVISION
+          rsync -a --delete dist/ /var/www/serviceparadigm.stage.paradigm.local/dist/
+          echo "Deployed $(cat /var/www/serviceparadigm.stage.paradigm.local/dist/REVISION) to staging"
+
+      - name: Staging health check
+        run: |
+          for i in 1 2 3 4 5; do
+            STATUS=$(curl -so /dev/null -w '%{http_code}' --max-time 3 \
+              http://serviceparadigm.stage.paradigm.local/ 2>/dev/null || echo "000")
+            if [ "$STATUS" = "200" ]; then
+              echo "Staging is UP (HTTP $STATUS)"
+              exit 0
+            fi
+            echo "Attempt $i: HTTP $STATUS — waiting 3s..."
+            sleep 3
+          done
+          echo "Staging health check FAILED after 5 attempts"
+          exit 1
+
+      - name: Staging content check
+        run: |
+          curl -s --max-time 5 http://serviceparadigm.stage.paradigm.local/ | \
+            grep -q 'Paradigm IT Services' && echo "Content check PASS" || { echo "Content check FAIL"; exit 1; }
+
+      # ── AGY self-correct gate ────────────────────────────────────────
       - name: AGY Review
         id: review
         run: |
