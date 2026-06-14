@@ -35,34 +35,14 @@
                 'p-6 cursor-pointer transition-colors duration-300 group text-center',
                 i % 2 === 0
                   ? 'bg-surface-container hover:bg-primary'
-                  : 'bg-surface-container-highest hover:bg-secondary-fixed'
+                  : 'bg-surface-container-highest hover:bg-tertiary'
               ]"
             >
-              <div :class="[
-                'inline-block border p-3 mb-3 transition-colors',
-                i % 2 === 0
-                  ? 'border-on-surface/20 group-hover:border-white/30'
-                  : 'border-on-surface/20 group-hover:border-on-secondary-fixed/30'
-              ]">
-                <span :class="[
-                  'font-serif text-2xl transition-colors',
-                  i % 2 === 0
-                    ? 'text-on-surface group-hover:text-white'
-                    : 'text-on-surface group-hover:text-on-secondary-fixed'
-                ]">{{ el.symbol }}</span>
+              <div class="inline-block border border-on-surface/20 group-hover:border-white/30 p-3 mb-3 transition-colors">
+                <span class="font-serif text-2xl text-on-surface group-hover:text-white transition-colors">{{ el.symbol }}</span>
               </div>
-              <h3 :class="[
-                'font-sans text-sm tracking-wide uppercase transition-colors',
-                i % 2 === 0
-                  ? 'text-on-surface group-hover:text-white'
-                  : 'text-on-surface group-hover:text-on-secondary-fixed'
-              ]">{{ el.name }}</h3>
-              <p :class="[
-                'font-body text-xs mt-2 leading-relaxed max-w-[200px] mx-auto transition-colors',
-                i % 2 === 0
-                  ? 'text-on-surface-variant group-hover:text-white/70'
-                  : 'text-on-surface-variant group-hover:text-on-secondary-fixed/70'
-              ]">{{ el.short }}</p>
+              <h3 class="font-sans text-sm tracking-wide text-on-surface group-hover:text-white uppercase transition-colors">{{ el.name }}</h3>
+              <p class="font-body text-xs text-on-surface-variant group-hover:text-white/70 mt-2 leading-relaxed max-w-[200px] mx-auto transition-colors">{{ el.short }}</p>
             </div>
           </div>
         </div>
