@@ -19,7 +19,7 @@
       @mouseenter="cancelClose"
       @mouseleave="close"
     >
-      <div class="bg-surface border-t border-outline-variant/20 shadow-2xl">
+      <div class="bg-surface text-on-surface border-t border-outline-variant/20 shadow-2xl">
         <div class="max-w-7xl mx-auto px-6 lg:px-8 py-10">
           <div class="flex items-center gap-3 mb-8">
             <span class="font-body text-xs text-primary uppercase tracking-[0.4em]">Core Paradigms</span>
@@ -33,9 +33,9 @@
               tabindex="0" role="menuitem"
               :class="[
                 'p-8 cursor-pointer transition-colors duration-300 group',
-                i === 0 ? 'bg-surface-container-lowest hover:bg-tertiary' :
+                i === 0 ? 'bg-surface-container hover:bg-tertiary' :
                 i === 1 ? 'bg-surface-container-high hover:bg-primary' :
-                'bg-surface-container-lowest hover:bg-slate-900'
+                'bg-surface-container hover:bg-slate-900'
               ]"
             >
               <span :class="['font-body text-xs block mb-8 opacity-50 group-hover:opacity-80']">{{ s.label }}</span>
