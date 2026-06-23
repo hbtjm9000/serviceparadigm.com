@@ -1,6 +1,7 @@
 ---
 import '../styles/globals.css';
 import SEOMeta from '../components/SEOMeta.astro';
+import ScrollToTop from '../components/ScrollToTop.astro';
 import { ClientRouter } from 'astro:transitions';
 
 interface Props {
@@ -53,5 +54,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
       Skip to content
     </a>
     <slot />
+    <ScrollToTop />
   </body>
 </html>

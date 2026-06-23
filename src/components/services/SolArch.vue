@@ -94,7 +94,6 @@ const features = [
   'Cloud Architecture',
   'Platform Modernization',
   'Integration Architecture',
-  'Microservices Design',
   'API Strategy',
   'Data Architecture',
 ]
