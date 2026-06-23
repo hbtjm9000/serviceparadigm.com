@@ -50,4 +50,3 @@ bun.lock
 
 # Wrangler / Cloudflare dev state
 .wrangler/
-migrations/

@@ -13,7 +13,7 @@ layout: null
   <script>
     // Check authentication on page load
     if (typeof window !== 'undefined' && localStorage.getItem('admin_auth_token') !== 'paradigm2026') {
-      window.location.href = '/admin/login';
+      window.location.href = '/internala/login';
     }
   </script>
   <div class="min-h-screen p-8">
@@ -35,7 +35,7 @@ layout: null
             Logout
           </button>
           <a
-            href="/admin/experiments/results"
+            href="/internala/experiments/results"
             class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
           >
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -254,7 +254,7 @@ layout: null
     }
 
     function handleEdit(key) {
-      window.location.href = '/admin/experiments/edit?key=' + encodeURIComponent(key);
+      window.location.href = '/internala/experiments/edit?key=' + encodeURIComponent(key);
     }
 
     function handlePreview(key) {

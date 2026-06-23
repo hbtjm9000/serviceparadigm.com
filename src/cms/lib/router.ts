@@ -1,20 +1,21 @@
 /**
  * Vue Router configuration for CMS Admin
  * 
- * Add this to your main Astro Vue integration
+ * Hash-based history for static hosting compatibility.
+ * Prefix: /internala for obscurity.
  */
 
-import { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHashHistory } from 'vue-router';
 import AdminLayout from '../components/AdminLayout.vue';
 
 const routes = [
   {
-    path: '/admin',
+    path: '/',
     component: AdminLayout,
     children: [
       {
         path: '',
-        redirect: '/admin/experiments',
+        redirect: '/experiments',
       },
       {
         path: 'experiments',
@@ -33,6 +34,6 @@ const routes = [
 ];
 
 export const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHashHistory('/internala/'),
   routes,
 });
