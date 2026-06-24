@@ -5,17 +5,17 @@
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-16">
           <div class="flex items-center space-x-4">
-            <h1 class="text-2xl font-bold text-gray-900">Paradigm CMS</h1>
+            <h1 class="text-2xl font-bold text-gray-900">ParaIT CMS</h1>
             <nav class="flex space-x-4">
               <a 
-                href="/admin/experiments" 
+                href="/internala/experiments" 
                 class="px-3 py-2 rounded-md text-sm font-medium"
                 :class="currentRoute === 'experiments' ? 'bg-blue-100 text-blue-700' : 'text-gray-600 hover:text-gray-900'"
               >
                 Experiments
               </a>
               <a 
-                href="/admin/content" 
+                href="/internala/content" 
                 class="px-3 py-2 rounded-md text-sm font-medium"
                 :class="currentRoute === 'content' ? 'bg-blue-100 text-blue-700' : 'text-gray-600 hover:text-gray-900'"
               >
@@ -44,8 +44,8 @@ import { useRoute } from 'vue-router';
 const route = useRoute();
 
 const currentRoute = computed(() => {
-  if (route.path.startsWith('/admin/experiments')) return 'experiments';
-  if (route.path.startsWith('/admin/content')) return 'content';
+  if (route.path.startsWith('/internala/experiments')) return 'experiments';
+  if (route.path.startsWith('/internala/content')) return 'content';
   return 'unknown';
 });
 </script>

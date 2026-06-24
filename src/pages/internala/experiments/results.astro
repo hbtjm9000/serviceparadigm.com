@@ -14,7 +14,7 @@ layout: null
   <script>
     // Check authentication on page load
     if (typeof window !== 'undefined' && localStorage.getItem('admin_auth_token') !== 'paradigm2026') {
-      window.location.href = '/admin/login';
+      window.location.href = '/internala/login';
     }
   </script>
   <div class="min-h-screen p-8">
@@ -23,7 +23,7 @@ layout: null
       <div class="flex justify-between items-center mb-8">
         <div>
           <div class="flex items-center gap-3">
-            <a href="/admin/experiments" class="text-gray-400 hover:text-gray-600">
+            <a href="/internala/experiments" class="text-gray-400 hover:text-gray-600">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
               </svg>
@@ -541,7 +541,7 @@ layout: null
 
     function logout() {
       localStorage.removeItem('admin_auth_token');
-      window.location.href = '/admin/login';
+      window.location.href = '/internala/login';
     }
 
     // Initialize

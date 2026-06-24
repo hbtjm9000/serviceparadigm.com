@@ -1,6 +1,9 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 describe('Feature flag client (features.ts)', () => {
+  beforeEach(() => {
+    vi.stubEnv('DEV', false);
+  });
   it('exports getStringValue function', async () => {
     const { getStringValue } = await import('../../src/lib/features');
     expect(typeof getStringValue).toBe('function');

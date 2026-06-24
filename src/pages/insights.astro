@@ -2,79 +2,8 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import ArticlesList from '../components/ArticlesList.vue';
 import Newsletter from '../components/Newsletter.vue';
-import { Image } from 'astro:assets';
-import cloudEngineering from '../assets/images/cloud-engineering.jpg';
-import securityProtocol from '../assets/images/security-protocol.jpg';
-import privacyPaper from '../assets/images/privacy-paper.jpg';
-import summitEvent from '../assets/images/summit-event.jpg';
-import strategicLeader from '../assets/images/strategic-leader.jpg';
-
-const pagesImageMap: Record<string, ImageMetadata> = {
-  '/images/cloud-engineering.jpg': cloudEngineering,
-  '/images/security-protocol.jpg': securityProtocol,
-  '/images/privacy-paper.jpg': privacyPaper,
-  '/images/summit-event.jpg': summitEvent,
-  '/images/strategic-leader.jpg': strategicLeader,
-};
-
-interface Article {
-  category: string;
-  title: string;
-  excerpt: string;
-  image: string;
-  date: string;
-  readTime: string;
-  slug: string;
-}
-
-const articles: Article[] = [
-  {
-    category: "Systems Engineering",
-    title: "Cloud Arrays & Edge Logic: Powering the Modern Economy",
-    excerpt: "Examining the deployment of integrated cloud computing units in enterprise facilities across the technology landscape. Understanding how edge computing transforms traditional infrastructure.",
-    image: "/images/cloud-engineering.jpg",
-    date: "March 15, 2024",
-    readTime: "8 min read",
-    slug: "cloud-arrays-edge-logic"
-  },
-  {
-    category: "Security Protocol",
-    title: "The Zero Trust Protocol: A New Security Paradigm",
-    excerpt: "Technical audit of enterprise security architecture and its impact on regulated industries. How zero trust principles are reshaping cybersecurity strategies.",
-    image: "/images/security-protocol.jpg",
-    date: "March 10, 2024",
-    readTime: "12 min read",
-    slug: "zero-trust-protocol"
-  },
-  {
-    category: "White Paper",
-    title: "Privacy in the Public Square",
-    excerpt: "A philosophical dive into biometric data collection and civil liberties within the enterprise framework. Balancing innovation with privacy rights.",
-    image: "/images/privacy-paper.jpg",
-    date: "March 5, 2024",
-    readTime: "15 min read",
-    slug: "privacy-public-square"
-  },
-  {
-    category: "Event Recap",
-    title: "The Paradigm Summit 2024: Key Takeaways",
-    excerpt: "Key takeaways from the gathering of the top 100 technical leads from the enterprise technology landscape. Emerging trends and strategic insights.",
-    image: "/images/summit-event.jpg",
-    date: "February 28, 2024",
-    readTime: "6 min read",
-    slug: "paradigm-summit-2024"
-  },
-  {
-    category: "AI Strategy",
-    title: "Preparing Your Organization for AI Adoption",
-    excerpt: "A comprehensive guide to AI readiness assessment and implementation strategy. From pilot projects to enterprise-wide transformation.",
-    image: "/images/strategic-leader.jpg",
-    date: "February 20, 2024",
-    readTime: "10 min read",
-    slug: "ai-adoption-guide"
-  }
-];
 ---
 
 <BaseLayout title="Insights | Paradigm IT Services" description="Technical insights, thought leadership, and industry perspectives from Paradigm IT Services. AI strategy, cloud architecture, and cybersecurity for Caribbean enterprises.">
@@ -92,94 +21,14 @@ const articles: Article[] = [
           Latest Insights & Documentation
         </h1>
         <p class="mt-8 max-w-xl text-white/70 font-body leading-relaxed text-lg">
-          Technical briefs, white papers, and strategic analysis from the 
+          Technical briefs, white papers, and strategic analysis from the
           Paradigm research team.
         </p>
       </div>
     </section>
 
-    <!-- Featured Article -->
-    <section class="bg-surface py-20 lg:py-24">
-      <div class="max-w-7xl mx-auto px-6 lg:px-8">
-        <article class="grid lg:grid-cols-2 gap-12 items-center group">
-          <div class="aspect-[16/10] bg-surface-container overflow-hidden">
-            <Image
-              src={pagesImageMap[articles[0].image]}
-              alt={articles[0].title}
-              width="800" height="500"
-              loading="lazy"
-              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            />
-          </div>
-          <div>
-            <div class="flex items-center gap-4 mb-4">
-              <span class="font-sans text-xs tracking-[0.15em] text-primary uppercase">{articles[0].category}</span>
-              <span class="text-outline">•</span>
-              <span class="font-sans text-xs text-on-surface-variant">{articles[0].date}</span>
-            </div>
-            <h2 class="font-serif text-3xl lg:text-4xl text-on-surface leading-tight group-hover:text-primary transition-colors">
-              <a href={`/insights/${articles[0].slug}`}>{articles[0].title}</a>
-            </h2>
-            <p class="font-body text-on-surface-variant mt-4 leading-relaxed text-lg">
-              {articles[0].excerpt}
-            </p>
-            <div class="flex items-center gap-6 mt-6">
-              <span class="font-sans text-xs text-on-surface-variant">{articles[0].readTime}</span>
-              <a 
-                href={`/insights/${articles[0].slug}`}
-                class="inline-flex items-center gap-2 font-sans text-sm text-primary hover:gap-3 transition-all tracking-wide"
-              >
-                Read Article
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
-              </a>
-            </div>
-          </div>
-        </article>
-      </div>
-    </section>
-
-    <!-- Article Grid -->
-    <section class="bg-surface-container-low py-20 lg:py-24">
-      <div class="max-w-7xl mx-auto px-6 lg:px-8">
-        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {articles.slice(1).map((article) => (
-            <article class="group">
-              <div class="aspect-[16/10] bg-surface-container overflow-hidden mb-6">
-                <Image
-                  src={pagesImageMap[article.image]}
-                  alt={article.title}
-                  width="600" height="375"
-                  loading="lazy"
-                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-              </div>
-              <div class="flex items-center gap-4 mb-3">
-                <span class="font-sans text-xs tracking-[0.15em] text-primary uppercase">{article.category}</span>
-                <span class="text-outline">•</span>
-                <span class="font-sans text-xs text-on-surface-variant">{article.date}</span>
-              </div>
-              <h3 class="font-serif text-xl lg:text-2xl text-on-surface leading-tight group-hover:text-primary transition-colors">
-                <a href={`/insights/${article.slug}`}>{article.title}</a>
-              </h3>
-              <p class="font-body text-on-surface-variant mt-3 leading-relaxed line-clamp-3">
-                {article.excerpt}
-              </p>
-              <div class="flex items-center justify-between mt-4">
-                <span class="font-sans text-xs text-on-surface-variant">{article.readTime}</span>
-                <a 
-                  href={`/insights/${article.slug}`}
-                  class="font-sans text-sm text-primary hover:text-secondary transition-colors tracking-wide"
-                >
-                  Read →
-                </a>
-              </div>
-            </article>
-          ))}
-        </div>
-      </div>
-    </section>
+    <!-- Dynamic Articles (fetched from API) -->
+    <ArticlesList client:load />
 
     <!-- Newsletter -->
     <Newsletter client:visible />

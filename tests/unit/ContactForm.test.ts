@@ -82,7 +82,7 @@ describe('ContactForm.vue', () => {
     expect(values).toContain('ai-strategy');
     expect(values).toContain('solutions-architecture');
     expect(values).toContain('cybersecurity');
-    expect(values).toContain('elements');
+    expect(values).toContain('digital-presence');
     expect(values).toContain('other');
   });
 });

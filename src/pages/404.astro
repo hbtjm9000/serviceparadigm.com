@@ -1,0 +1,104 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<BaseLayout
+  title="Page Not Found | Paradigm IT Services (ParaIT)"
+  description="The page you're looking for doesn't exist. Let us help you find what you need."
+>
+  <Header logoVariant="mono-white" />
+  <main id="main">
+    <!-- 404 Hero -->
+    <section class="bg-tertiary text-on-tertiary py-20 lg:py-28 relative overflow-hidden">
+      <div class="absolute -bottom-10 -right-20 text-[20rem] font-black text-white/5 font-headline pointer-events-none select-none" aria-hidden="true">
+        404
+      </div>
+      <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+        <span class="font-label text-xs tracking-[0.2em] text-secondary-fixed-dim uppercase">Lost?</span>
+        <h1 class="font-headline text-5xl md:text-6xl lg:text-7xl text-white leading-[1.05] mt-4 max-w-3xl text-balance">
+          Page Not
+          <br />
+          <span class="italic text-secondary-fixed-dim">Found.</span>
+        </h1>
+        <p class="mt-8 max-w-xl text-white/70 font-body leading-relaxed text-lg">
+          The page you're looking for doesn't exist or has been moved. 
+          Let's get you back on track.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 mt-10">
+          <a href="/" class="inline-flex items-center gap-2 bg-secondary-fixed text-on-secondary-fixed font-label text-sm px-8 py-4 hover:bg-white hover:text-on-surface transition-colors tracking-wide group">
+            <span>Go Home</span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </a>
+          <a href="/contact" class="inline-flex items-center gap-2 border border-secondary-fixed-dim text-secondary-fixed-dim font-label text-sm px-8 py-4 hover:bg-white/10 transition-colors tracking-wide">
+            <span>Contact Us</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Current Promotions -->
+    <section class="bg-surface py-16 lg:py-20">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="max-w-3xl mb-12">
+          <span class="font-label text-xs text-primary uppercase tracking-[0.4em] mb-4 block">Current Promotions</span>
+          <h2 class="font-headline text-3xl lg:text-4xl text-on-surface leading-[1.1]">
+            While You're Here —
+            <span class="italic text-primary">Special Offers.</span>
+          </h2>
+        </div>
+        <div class="grid md:grid-cols-3 gap-6">
+          <!-- Digital Employee Card -->
+          <a href="/landings/digital-employee" class="bg-surface-container p-8 hover:bg-primary hover:text-white transition-colors duration-300 group block">
+            <span class="font-label text-xs tracking-wider text-primary group-hover:text-primary-fixed block mb-2">Limited — 10 Spaces</span>
+            <h3 class="font-headline text-xl mb-3 group-hover:italic">Digital Employees</h3>
+            <p class="font-body text-sm text-on-surface-variant group-hover:text-white/70 leading-relaxed">
+              AI workers that handle invoicing, scheduling, procurement — built for Jamaican SMEs. First month free.
+            </p>
+            <span class="inline-block mt-4 font-label text-xs tracking-widest text-primary group-hover:text-primary-fixed uppercase">Learn More →</span>
+          </a>
+
+          <!-- Packaged AI Card -->
+          <a href="/landings/packaged-ai" class="bg-surface-container p-8 hover:bg-secondary hover:text-white transition-colors duration-300 group block">
+            <span class="font-label text-xs tracking-wider text-secondary group-hover:text-secondary-fixed block mb-2">Fixed Price</span>
+            <h3 class="font-headline text-xl mb-3 group-hover:italic">Packaged AI Solutions</h3>
+            <p class="font-body text-sm text-on-surface-variant group-hover:text-white/70 leading-relaxed">
+              Everything you need to leverage AI in your business — strategy, implementation, training. $4,999 one-time.
+            </p>
+            <span class="inline-block mt-4 font-label text-xs tracking-widest text-secondary group-hover:text-secondary-fixed uppercase">Learn More →</span>
+          </a>
+
+          <!-- Element Card -->
+          <a href="/landings/element" class="bg-surface-container p-8 hover:bg-slate-900 hover:text-white transition-colors duration-300 group block">
+            <span class="font-label text-xs tracking-wider text-on-surface-variant group-hover:text-white/70 block mb-2">Starter</span>
+            <h3 class="font-headline text-xl mb-3 group-hover:italic">Digital Presence Starter</h3>
+            <p class="font-body text-sm text-on-surface-variant group-hover:text-white/70 leading-relaxed">
+              Professional website, custom domain, business email — everything you need to establish your digital presence.
+            </p>
+            <span class="inline-block mt-4 font-label text-xs tracking-widest text-on-surface-variant group-hover:text-white/70 uppercase">Learn More →</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick Links -->
+    <section class="bg-surface-container-low py-16">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8 text-center">
+        <h2 class="font-headline text-2xl text-on-surface mb-8">Quick Links</h2>
+        <div class="flex flex-wrap justify-center gap-6">
+          <a href="/" class="font-body text-on-surface-variant hover:text-primary transition-colors underline underline-offset-4">Home</a>
+          <a href="/services/ai-strategy" class="font-body text-on-surface-variant hover:text-primary transition-colors underline underline-offset-4">AI Strategy</a>
+          <a href="/services/solutions-architecture" class="font-body text-on-surface-variant hover:text-primary transition-colors underline underline-offset-4">Solutions Architecture</a>
+          <a href="/services/cybersecurity" class="font-body text-on-surface-variant hover:text-primary transition-colors underline underline-offset-4">Cybersecurity</a>
+          <a href="/about" class="font-body text-on-surface-variant hover:text-primary transition-colors underline underline-offset-4">About</a>
+          <a href="/insights" class="font-body text-on-surface-variant hover:text-primary transition-colors underline underline-offset-4">Insights</a>
+          <a href="/contact" class="font-body text-on-surface-variant hover:text-primary transition-colors underline underline-offset-4">Contact</a>
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</BaseLayout>

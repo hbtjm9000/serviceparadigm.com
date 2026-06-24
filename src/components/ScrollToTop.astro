@@ -1,0 +1,88 @@
+<style>
+  .scroll-top-btn {
+    position: fixed;
+    bottom: 2rem;
+    right: 1.5rem;
+    width: 48px;
+    height: 48px;
+    border-radius: 0;
+    background: var(--color-primary);
+    color: var(--color-on-primary);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.2s ease;
+    z-index: 999;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+  }
+  .scroll-top-btn.visible {
+    opacity: 1;
+    visibility: visible;
+  }
+  .scroll-top-btn:hover {
+    transform: translateY(-2px);
+    background: var(--color-secondary);
+  }
+  .scroll-top-btn:active {
+    transform: translateY(0);
+  }
+  @media (max-width: 768px) {
+    .scroll-top-btn {
+      bottom: 2rem;
+      right: 1rem;
+      width: 52px;
+      height: 52px;
+    }
+  }
+</style>
+
+<button id="scroll-top-btn" class="scroll-top-btn" aria-label="Scroll to top">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M18 15l-6-6-6 6"/>
+  </svg>
+</button>
+
+<script>
+  (function() {
+    const btn = document.getElementById('scroll-top-btn');
+    if (!btn) return;
+
+    function checkVisibility() {
+      const fold = window.innerHeight;
+      const scrollY = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight;
+      const footerTop = docHeight - document.querySelector('footer')?.offsetHeight - 300 || docHeight;
+      const nearFooter = scrollY + window.innerHeight >= footerTop;
+
+      if (scrollY > fold || nearFooter) {
+        btn.classList.add('visible');
+      } else {
+        btn.classList.remove('visible');
+      }
+    }
+
+    // Throttled scroll handler
+    let ticking = false;
+    window.addEventListener('scroll', function() {
+      if (!ticking) {
+        window.requestAnimationFrame(function() {
+          checkVisibility();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    });
+
+    // Initial check
+    checkVisibility();
+
+    // Click to scroll top
+    btn.addEventListener('click', function() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  })();
+</script>

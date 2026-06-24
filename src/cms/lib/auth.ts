@@ -34,7 +34,7 @@ export function requireAuth(): boolean {
   if (typeof window === 'undefined') return true;
   
   if (!isAuthenticated()) {
-    window.location.href = '/admin/login';
+    window.location.href = '/internala/login';
     return false;
   }
   return true;
@@ -103,9 +103,9 @@ export function createLoginPage(error?: string): string {
       
       // Store token in localStorage
       localStorage.setItem('admin_auth_token', password);
-      
+    
       // Redirect to admin dashboard
-      window.location.href = '/admin/experiments';
+      window.location.href = '/internala';
     });
   </script>
 </body>

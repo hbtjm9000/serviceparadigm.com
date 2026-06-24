@@ -161,9 +161,7 @@ const capabilities = [
   { symbol: '01', title: 'AI Readiness', description: 'Assess your organization\'s AI maturity, data infrastructure, and team readiness. Get a prioritized roadmap.' },
   { symbol: '02', title: 'Architecture Design', description: 'Design scalable AI architectures that integrate with your existing systems. No rip-and-replace.' },
   { symbol: '03', title: 'Automation Systems', description: 'Identify and implement high-ROI automation opportunities. From workflow automation to autonomous operations.' },
-  { symbol: '04', title: 'ML Operations', description: 'Production ML pipelines, model monitoring, and continuous retraining. Your models stay accurate in production.' },
-  { symbol: '05', title: 'NLP Solutions', description: 'Natural language processing for document intelligence, search, classification, and conversational interfaces.' },
-  { symbol: '06', title: 'Computer Vision', description: 'Visual inspection, object detection, document digitization, and image-based automation at scale.' },
+  { symbol: '04', title: 'Computer Vision', description: 'Visual inspection, object detection, document digitization, and image-based automation at scale.' },
 ]
 
 const consultFeatures = [
