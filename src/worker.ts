@@ -424,6 +424,244 @@ async function handleReplay(request: Request, env: Env): Promise<Response> {
   })
 }
 
+// ── Article Interfaces ─────────────────────────────────────────────────────
+
+interface Article {
+  id?: number
+  slug: string
+  title: string
+  excerpt?: string
+  body?: string
+  category?: string
+  image_url?: string
+  author_id: string
+  read_time_minutes?: number
+  status?: 'draft' | 'published' | 'archived'
+  published_at?: string
+  created_at?: string
+  updated_at?: string
+}
+
+// ── Public Article Handlers ────────────────────────────────────────────────
+
+async function handleGetArticles(request: Request, env: Env): Promise<Response> {
+  const url = new URL(request.url)
+
+  // Single article by slug
+  const slugMatch = url.pathname.match(/^\/api\/articles\/([^/]+)$/)
+  if (slugMatch) {
+    const slug = slugMatch[1]
+    const { results } = await env.DB.prepare(`
+      SELECT * FROM articles
+      WHERE slug = ? AND status = 'published'
+      LIMIT 1
+    `).bind(slug).all()
+
+    const rows = results as unknown as Article[]
+    if (!rows || rows.length === 0) {
+      return json({ ok: false, error: 'Article not found' }, 404)
+    }
+    return json({ ok: true, article: rows[0] })
+  }
+
+  // List all published articles
+  const { results } = await env.DB.prepare(`
+    SELECT id, slug, title, excerpt, category, image_url, author_id,
+           read_time_minutes, published_at
+    FROM articles
+    WHERE status = 'published'
+    ORDER BY published_at DESC
+  `).all()
+
+  return json({ ok: true, articles: results as unknown as Article[] })
+}
+
+// ── Admin Article Handlers ─────────────────────────────────────────────────
+
+async function handleAdminGetArticles(request: Request, env: Env): Promise<Response> {
+  const url = new URL(request.url)
+
+  // Single article by ID
+  const idMatch = url.pathname.match(/^\/api\/admin\/articles\/(\d+)$/)
+  if (idMatch) {
+    const id = parseInt(idMatch[1], 10)
+    const { results } = await env.DB.prepare(
+      'SELECT * FROM articles WHERE id = ?'
+    ).bind(id).all()
+
+    const rows = results as unknown as Article[]
+    if (!rows || rows.length === 0) {
+      return json({ ok: false, error: 'Article not found' }, 404)
+    }
+    return json({ ok: true, article: rows[0] })
+  }
+
+  // List all articles (all statuses)
+  const statusFilter = url.searchParams.get('status') ?? ''
+  let rows: unknown[]
+
+  if (statusFilter) {
+    const { results } = await env.DB.prepare(`
+      SELECT * FROM articles WHERE status = ? ORDER BY updated_at DESC
+    `).bind(statusFilter).all()
+    rows = results
+  } else {
+    const { results } = await env.DB.prepare(`
+      SELECT * FROM articles ORDER BY updated_at DESC
+    `).all()
+    rows = results
+  }
+
+  return json({ ok: true, articles: rows as unknown as Article[] })
+}
+
+async function handleAdminCreateArticle(request: Request, env: Env): Promise<Response> {
+  try {
+    const body: Article = await request.json()
+
+    if (!body.slug || !body.title) {
+      return json({ ok: false, error: 'slug and title are required' }, 400)
+    }
+
+    // Check slug uniqueness
+    const { results: existing } = await env.DB.prepare(
+      'SELECT 1 FROM articles WHERE slug = ?'
+    ).bind(body.slug).all()
+
+    if (existing && (existing as unknown[]).length > 0) {
+      return json({ ok: false, error: 'Slug already exists' }, 409)
+    }
+
+    const now = new Date().toISOString().replace('T', ' ').slice(0, 19)
+    const publishedAt = body.status === 'published' ? now : null
+
+    const { meta } = await env.DB.prepare(`
+      INSERT INTO articles (slug, title, excerpt, body, category, image_url,
+                            author_id, read_time_minutes, status, published_at,
+                            created_at, updated_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).bind(
+      body.slug,
+      body.title,
+      body.excerpt ?? null,
+      body.body ?? null,
+      body.category ?? null,
+      body.image_url ?? null,
+      body.author_id ?? 'hal',
+      body.read_time_minutes ?? 5,
+      body.status ?? 'draft',
+      publishedAt,
+      now,
+      now,
+    ).run()
+
+    // Fetch and return the created article
+    const { results } = await env.DB.prepare(
+      'SELECT * FROM articles WHERE id = ?'
+    ).bind(meta.last_row_id).all()
+
+    return json({ ok: true, article: (results as unknown[])[0] }, 201)
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err)
+    return json({ ok: false, error: msg }, 400)
+  }
+}
+
+async function handleAdminUpdateArticle(request: Request, env: Env): Promise<Response> {
+  const url = new URL(request.url)
+  const idMatch = url.pathname.match(/^\/api\/admin\/articles\/(\d+)$/)
+  if (!idMatch) {
+    return json({ ok: false, error: 'Article ID required' }, 400)
+  }
+
+  const id = parseInt(idMatch[1], 10)
+
+  try {
+    const body: Partial<Article> = await request.json()
+
+    // Fetch current article
+    const { results: existing } = await env.DB.prepare(
+      'SELECT * FROM articles WHERE id = ?'
+    ).bind(id).all()
+
+    const rows = existing as unknown as Article[]
+    if (!rows || rows.length === 0) {
+      return json({ ok: false, error: 'Article not found' }, 404)
+    }
+
+    const current = rows[0]
+
+    // If changing slug, check uniqueness
+    if (body.slug && body.slug !== current.slug) {
+      const { results: dupes } = await env.DB.prepare(
+        'SELECT 1 FROM articles WHERE slug = ? AND id != ?'
+      ).bind(body.slug, id).all()
+      if (dupes && (dupes as unknown[]).length > 0) {
+        return json({ ok: false, error: 'Slug already exists' }, 409)
+      }
+    }
+
+    const now = new Date().toISOString().replace('T', ' ').slice(0, 19)
+    let publishedAt = current.published_at
+
+    // Auto-set published_at when transitioning to published
+    if (body.status === 'published' && !publishedAt) {
+      publishedAt = now
+    }
+
+    await env.DB.prepare(`
+      UPDATE articles SET
+        slug = ?, title = ?, excerpt = ?, body = ?, category = ?,
+        image_url = ?, author_id = ?, read_time_minutes = ?,
+        status = ?, published_at = ?, updated_at = ?
+      WHERE id = ?
+    `).bind(
+      body.slug ?? current.slug,
+      body.title ?? current.title,
+      body.excerpt ?? current.excerpt ?? null,
+      body.body ?? current.body ?? null,
+      body.category ?? current.category ?? null,
+      body.image_url ?? current.image_url ?? null,
+      body.author_id ?? current.author_id,
+      body.read_time_minutes ?? current.read_time_minutes ?? 5,
+      body.status ?? current.status,
+      publishedAt,
+      now,
+      id,
+    ).run()
+
+    // Fetch and return updated article
+    const { results } = await env.DB.prepare(
+      'SELECT * FROM articles WHERE id = ?'
+    ).bind(id).all()
+
+    return json({ ok: true, article: (results as unknown[])[0] })
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err)
+    return json({ ok: false, error: msg }, 400)
+  }
+}
+
+async function handleAdminDeleteArticle(request: Request, env: Env): Promise<Response> {
+  const url = new URL(request.url)
+  const idMatch = url.pathname.match(/^\/api\/admin\/articles\/(\d+)$/)
+  if (!idMatch) {
+    return json({ ok: false, error: 'Article ID required' }, 400)
+  }
+
+  const id = parseInt(idMatch[1], 10)
+
+  const { meta } = await env.DB.prepare(
+    'DELETE FROM articles WHERE id = ?'
+  ).bind(id).run()
+
+  if (meta.changes === 0) {
+    return json({ ok: false, error: 'Article not found' }, 404)
+  }
+
+  return json({ ok: true })
+}
+
 // ── Router ───────────────────────────────────────────────────────────────
 
 async function handleApi(request: Request, env: Env): Promise<Response | null> {
@@ -441,6 +679,16 @@ async function handleApi(request: Request, env: Env): Promise<Response | null> {
   }
 
   if (request.method === 'GET') {
+    // Public articles
+    if (path.startsWith('/api/articles')) {
+      return handleGetArticles(request, env)
+    }
+
+    // Admin articles
+    if (path.startsWith('/api/admin/articles')) {
+      return handleAdminGetArticles(request, env)
+    }
+
     switch (path) {
       case '/api/health':
         return json({ ok: true, env: 'production', ts: new Date().toISOString() })
@@ -451,6 +699,13 @@ async function handleApi(request: Request, env: Env): Promise<Response | null> {
       case '/api/admin/check':
         return handleAuthCheck(request, env)
     }
+  }
+
+  // Admin article mutations (POST/PUT/DELETE)
+  if (path.startsWith('/api/admin/articles')) {
+    if (request.method === 'POST') return handleAdminCreateArticle(request, env)
+    if (request.method === 'PUT') return handleAdminUpdateArticle(request, env)
+    if (request.method === 'DELETE') return handleAdminDeleteArticle(request, env)
   }
 
   return null
@@ -477,9 +732,21 @@ export interface Env {
   ADMIN_PIN?: string
 }
 
+// ── Main entry ───────────────────────────────────────────────────────────
+
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     try {
+      const url = new URL(request.url)
+
+      // Route `/insights/:slug/` → `/insights/article/` for dynamic article detail
+      const insightsMatch = url.pathname.match(/^\/insights\/([^/]+)\/$/)
+      if (insightsMatch && insightsMatch[1] !== 'article') {
+        // Rewrite to the static article page — Vue component reads slug from URL
+        url.pathname = '/insights/article/'
+        return env.ASSETS.fetch(new Request(url.toString(), request))
+      }
+
       // Protect internal routes (redirect to login if no session)
       const protectResponse = await protectInternalRoute(request, env)
       if (protectResponse) return protectResponse

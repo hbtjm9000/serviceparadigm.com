@@ -208,3 +208,94 @@ Hal suggests **ParaIT** as abbreviation to avoid PITS. Need 4+ options scored.
 7. Task 9: Promo metrics + A/B testing
 
 **Dependencies:** Task 8 (branding) may affect copy in Tasks 1-3 (re-check after abbreviation decision).
+
+---
+
+## Task 9: Promo Metrics + A/B Testing Plan
+
+### Current Landing Pages
+
+| Landing | URL | Purpose |
+|---------|-----|---------|
+| Packaged AI | `/landings/packaged-ai` | Fixed-price AI integration ($4,999) |
+| Element | `/landings/element` | Digital Presence Starter ($997) |
+| Digital Employee | `/landings/digital-employee` | AI workers for SMEs (launch offer) |
+
+### Promo Metrics Mechanisms
+
+**1. UTM Parameter Convention**
+
+Document and enforce a standard UTM scheme so all campaign traffic is trackable:
+
+| Parameter | Convention | Example |
+|-----------|-----------|---------|
+| `utm_source` | Platform name | `linkedin`, `google`, `email`, `whatsapp` |
+| `utm_medium` | Traffic type | `social`, `cpc`, `email`, `direct` |
+| `utm_campaign` | Campaign slug | `digital-employee-launch`, `packaged-ai-q3` |
+| `utm_content` | Specific creative | `hero-cta-v1`, `sidebar-banner` |
+
+Store in a `docs/utm-convention.md` reference doc.
+
+**2. Promo Codes**
+
+Add a `promo_code` field to:
+- `src/components/ContactForm.vue` — promo code input on the consultation form
+- `src/components/OrderCart.vue` — promo code on the order page
+
+The promo code is submitted alongside the form data and logged in the transaction log (D1). Reports can then be queried: `SELECT promo_code, COUNT(*) FROM orders GROUP BY promo_code`.
+
+**Implementation:**
+- Add `promo_code` column to the orders and contact transaction tables (D1 migration 0003)
+- Update ContactForm.vue to capture and submit promo_code
+- Update OrderCart.vue to capture and submit promo_code
+- Update worker.ts to persist promo_code in the transaction log
+
+**3. Campaign Email Aliases**
+
+Create per-campaign email aliases that forward to hello@serviceparadigm.com:
+- `packaged-ai@serviceparadigm.com`
+- `element@serviceparadigm.com`
+- `digital-employee@serviceparadigm.com`
+- `consult@serviceparadigm.com`
+
+These can be set up in the domain's email provider (Google Workspace / MX forwarding). Each alias is unique to a campaign — when an inquiry comes in, you know which campaign drove it.
+
+**4. GrowthBook A/B Testing**
+
+GrowthBook is already wired into the site (BaseLayout bootstraps it). The experiments system at `/internala` is ready for managing variants.
+
+**Proposed experiments for current landing pages:**
+
+| Page | Variants to Test | Metric |
+|------|-----------------|--------|
+| `/landings/digital-employee` | Hero CTA: "See Pricing" vs "Book a Fit Call" vs "Start Free Trial" | CTA click rate |
+| `/landings/packaged-ai` | Hero: headline focus on "cost savings" vs "capability" vs "speed" | Form submission rate |
+| `/landings/element` | Pricing display: $997 setup+first-year vs $997 one-time vs monthly $29/mo | CTA click rate |
+| Homepage hero | Headline variant: current vs "AI-Powered Infrastructure" vs "Digital Employees for Jamaica" | Hero CTA click rate (tracking via `experiment_hero_variant` localStorage key) |
+| `/services/ai-strategy` | CTA: "Schedule Your Assessment" vs "Book a Discovery Call" vs "Start Your AI Journey" | CTA click rate |
+
+**A/B testing workflow:**
+1. Define experiment in GrowthBook dashboard (or via the admin experiments UI at `/internala`)
+2. Configure variants with copy/content changes
+3. Set traffic split (e.g., 50/50 or 70/30)
+4. Run for minimum 2 weeks or 200 conversions per variant
+5. Analyze results in GrowthBook stats engine
+6. Declare winner, update page, archive experiment
+
+### Implementation Phases
+
+**Phase 1 — Foundation (1 day)**
+- Create UTM convention doc at `docs/utm-convention.md`
+- Add promo_code field to ContactForm.vue + OrderCart.vue
+- Add promo_code to D1 schema (migration 0003)
+- Set up campaign email aliases
+
+**Phase 2 — A/B Experiments (2 days)**
+- Set up GrowthBook experiments for top 2 landing pages
+- Deploy variant tracking
+- Run for 2 weeks minimum
+
+**Phase 3 — Analytics (1 day)**
+- Build a simple promotion effectiveness dashboard page under `/internala`
+- Query promo code usage, experiment results, landing page conversion
+

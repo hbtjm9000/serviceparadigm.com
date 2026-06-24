@@ -27,7 +27,7 @@ const routes = [
       },
       {
         path: 'content',
-        component: () => import('../pages/content/variants.vue'),
+        component: () => import('../pages/content/articles.vue'),
       },
     ],
   },

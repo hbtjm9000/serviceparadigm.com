@@ -1,0 +1,16 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import ArticleDetail from '../../components/ArticleDetail.vue';
+import Newsletter from '../../components/Newsletter.vue';
+---
+
+<BaseLayout title="Article | Paradigm IT Services">
+  <Header logoVariant="mono-white" />
+  <main id="main">
+    <ArticleDetail client:load />
+    <Newsletter client:visible />
+  </main>
+  <Footer />
+</BaseLayout>
