@@ -24,20 +24,19 @@ interface Transaction {
 }
 
 async function logBegin(db: D1Database, tx: Transaction): Promise<number> {
-  const { meta } = await db.prepare(`
+  // D1 run() returns meta.last_row_id at runtime; cast for TS
+  type D1RunResult = { meta: { last_row_id: number } }
+  const { meta } = await (db.prepare(`
     INSERT INTO transaction_log
       (request_id, endpoint, method, request_body, request_headers,
        cf_country, cf_ip, status, created_at)
     VALUES (?, ?, ?, ?, ?, ?, ?, 'pending', datetime('now'))
   `).bind(
-    tx.requestId,
-    tx.endpoint,
-    tx.method,
-    JSON.stringify(tx.body),
-    JSON.stringify(tx.headers),
-    tx.cfCountry ?? null,
-    tx.cfIp ?? null,
-  ).run()
+    tx.requestId, tx.endpoint, tx.method,
+    JSON.stringify(tx.body || {}),
+    JSON.stringify(tx.headers || {}),
+    tx.cfCountry || null, tx.cfIp || null
+  ).run() as unknown as Promise<D1RunResult>)
   return meta.last_row_id
 }
 
@@ -535,7 +534,8 @@ async function handleAdminCreateArticle(request: Request, env: Env): Promise<Res
     const now = new Date().toISOString().replace('T', ' ').slice(0, 19)
     const publishedAt = body.status === 'published' ? now : null
 
-    const { meta } = await env.DB.prepare(`
+    type D1RunResult = { meta: { last_row_id: number } }
+    const { meta } = await (env.DB.prepare(`
       INSERT INTO articles (slug, title, excerpt, body, category, image_url,
                             author_id, read_time_minutes, status, published_at,
                             created_at, updated_at)
@@ -553,7 +553,7 @@ async function handleAdminCreateArticle(request: Request, env: Env): Promise<Res
       publishedAt,
       now,
       now,
-    ).run()
+    ).run() as unknown as Promise<D1RunResult>)
 
     // Fetch and return the created article
     const { results } = await env.DB.prepare(
@@ -651,9 +651,10 @@ async function handleAdminDeleteArticle(request: Request, env: Env): Promise<Res
 
   const id = parseInt(idMatch[1], 10)
 
-  const { meta } = await env.DB.prepare(
+  type D1RunResult = { meta: { changes: number } }
+  const { meta } = await (env.DB.prepare(
     'DELETE FROM articles WHERE id = ?'
-  ).bind(id).run()
+  ).bind(id).run() as unknown as Promise<D1RunResult>)
 
   if (meta.changes === 0) {
     return json({ ok: false, error: 'Article not found' }, 404)
