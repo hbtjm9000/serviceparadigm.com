@@ -53,7 +53,7 @@ export async function saveVariants(
       throw new Error(`Save failed: ${response.statusText}`);
     }
 
-    const result = await response.json();
+    const result = await response.json() as { success: boolean; error?: string; [key: string]: unknown };
     return result;
   } catch (error) {
     console.error('Error saving variants:', error);
