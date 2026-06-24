@@ -757,7 +757,16 @@ export default {
       if (apiResponse) return apiResponse
 
       // Serve static assets (default — Astro build output)
-      return env.ASSETS.fetch(request)
+      const response = await env.ASSETS.fetch(request)
+      if (response.status === 404) {
+        const notFoundUrl = new URL('/404.html', request.url)
+        const notFound = await env.ASSETS.fetch(new Request(notFoundUrl, request))
+        return new Response(await notFound.text(), {
+          status: 404,
+          headers: { 'content-type': 'text/html' },
+        })
+      }
+      return response
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err)
       return json({ error: 'Internal error', detail: msg }, 500)
