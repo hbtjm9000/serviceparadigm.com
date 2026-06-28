@@ -1,161 +1,123 @@
----
-import { Image } from 'astro:assets';
-import cloudEngineering from '../assets/images/cloud-engineering.jpg';
-import securityProtocol from '../assets/images/security-protocol.jpg';
-import privacyPaper from '../assets/images/privacy-paper.jpg';
-import summitEvent from '../assets/images/summit-event.jpg';
-
-const imageMap: Record<string, ImageMetadata> = {
-  '/images/cloud-engineering.jpg': cloudEngineering,
-  '/images/security-protocol.jpg': securityProtocol,
-  '/images/privacy-paper.jpg': privacyPaper,
-  '/images/summit-event.jpg': summitEvent,
-};
-
-interface Article {
-  category: string;
-  title: string;
-  excerpt: string;
-  image: string;
-  link: string;
-  featured?: boolean;
-}
-
-const articles: Article[] = [
-  {
-    category: "Systems Engineering",
-    title: "Cloud Arrays & Edge Logic: Powering the Modern Economy",
-    excerpt: "Examining the deployment of integrated cloud computing units in enterprise facilities across the technology landscape.",
-    image: "/images/cloud-engineering.jpg",
-    link: "/insights/cloud-arrays-edge-logic",
-    featured: true
-  },
-  {
-    category: "Security Protocol",
-    title: "The Zero Trust Protocol",
-    excerpt: "Technical audit of enterprise security architecture and its impact on regulated industries.",
-    image: "/images/security-protocol.jpg",
-    link: "/insights/zero-trust-protocol"
-  },
-  {
-    category: "White Paper",
-    title: "Privacy in the Public Square",
-    excerpt: "A philosophical dive into biometric data collection and civil liberties within the enterprise framework.",
-    image: "/images/privacy-paper.jpg",
-    link: "/insights/privacy-public-square"
-  },
-  {
-    category: "Event Recap",
-    title: "The Paradigm Summit 2024",
-    excerpt: "Key takeaways from the gathering of the top 100 technical leads from the enterprise technology landscape.",
-    image: "/images/summit-event.jpg",
-    link: "/insights/paradigm-summit-2024"
-  }
-];
-
-const featuredArticle = articles.find(a => a.featured);
-const regularArticles = articles.filter(a => !a.featured);
----
-
 <section class="py-32 bg-surface">
   <div class="max-w-7xl mx-auto px-12">
     <!-- Section Header -->
-    <h2 class="font-headline text-4xl mb-16 italic border-b-2 border-primary w-fit pb-2">
-      Our Voice
-    </h2>
+    <div class="flex justify-between items-end mb-16">
+      <div>
+        <h2 class="font-headline text-4xl italic border-b-2 border-primary w-fit pb-2">
+          Our Voice
+        </h2>
+        <p class="font-body text-on-surface-variant mt-4 max-w-xl">
+          What we're saying, where we're showing up — recent talks, publications, and public research.
+        </p>
+      </div>
+      <a href="/insights" class="font-headline text-xs uppercase tracking-widest text-primary hover:text-secondary transition-colors whitespace-nowrap">
+        View All →
+      </a>
+    </div>
 
-    <!-- Bento Grid -->
     <div class="grid grid-cols-12 gap-8">
 
-      <!-- Featured Article - Large Card -->
-      {featuredArticle && (
-        <article class="col-span-12 lg:col-span-8 bg-surface-container relative group overflow-hidden">
-          <a href={featuredArticle.link} class="flex flex-col md:flex-row h-full">
-            <div class="w-full md:w-1/2 overflow-hidden">
-              <Image
-                src={imageMap[featuredArticle.image]}
-                alt={featuredArticle.title}
-                class="h-full w-full object-cover group-hover:scale-110 transition-transform duration-700"
-                width="800"
-                height="500"
-                loading="lazy"
-              />
-            </div>
-            <div class="w-full md:w-1/2 p-10 flex flex-col justify-between">
-              <div>
-                <span class="font-headline text-[10px] uppercase tracking-widest text-primary mb-4 block">{featuredArticle.category}</span>
-                <h3 class="font-headline text-3xl mb-4 leading-tight">{featuredArticle.title}</h3>
-                <p class="font-body text-on-surface-variant text-sm line-clamp-3 mb-6">{featuredArticle.excerpt}</p>
-              </div>
-              <span class="font-headline text-xs uppercase font-bold tracking-widest flex items-center gap-2 group-hover:gap-3 transition-all">
-                Read Specification
-              </span>
-            </div>
-          </a>
-        </article>
-      )}
-
-      <!-- Dark Technical Card -->
-      <article class="col-span-12 lg:col-span-4 bg-slate-900 p-10 flex flex-col justify-between text-white">
-        <div>
-          <div class="w-12 h-12 bg-secondary flex items-center justify-center mb-8">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
+      <!-- Event 1: JTDA Tech Talk Tuesday -->
+      <article class="col-span-12 lg:col-span-6 bg-surface-container p-8 relative group">
+        <div class="flex items-start gap-4 mb-6">
+          <div class="w-12 h-12 bg-secondary/20 flex items-center justify-center shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
             </svg>
           </div>
-          <h3 class="font-headline text-2xl mb-4">The Nassau Protocol</h3>
-          <p class="font-body text-slate-400 text-sm leading-relaxed">Technical audit of the region's first sovereign data center and its impact on regional latency.</p>
-        </div>
-        <div class="pt-8 border-t border-white/10">
-          <div class="flex justify-between items-center text-[10px] font-headline uppercase tracking-tighter text-secondary-fixed">
-            <span>Status: Published</span>
-            <span>Rev: 4.02</span>
+          <div>
+            <span class="font-headline text-[10px] uppercase tracking-widest text-secondary block">Event — June 30</span>
+            <h3 class="font-headline text-2xl mt-1 group-hover:text-primary transition-colors">
+              <a href="https://www.linkedin.com/events/chatbotstodigitalemployees-theri7262108414410727425/" target="_blank" rel="noopener noreferrer">
+                From Chatbots to Digital Employees
+              </a>
+            </h3>
           </div>
         </div>
-      </article>
-
-      <!-- Secondary Articles -->
-      <div class="col-span-12 lg:col-span-4 flex flex-col gap-8">
-        {regularArticles.slice(0, 2).map((article) => (
-          <article class="group">
-            <span class="font-headline text-[10px] uppercase tracking-widest text-primary mb-4 block">{article.category}</span>
-            <a href={article.link}>
-              <h3 class="font-headline text-2xl mb-4">{article.title}</h3>
-            </a>
-            <p class="font-body text-on-surface-variant text-sm mb-8">{article.excerpt}</p>
-            <Image
-              src={imageMap[article.image]}
-              alt={article.title}
-              class="w-full h-40 object-cover grayscale brightness-50"
-              width="400"
-              height="160"
-              loading="lazy"
-            />
-          </article>
-        ))}
-      </div>
-
-      <!-- Event Recap Card -->
-      <article class="col-span-12 lg:col-span-8 bg-surface-container-lowest p-10 flex flex-col md:flex-row gap-8 items-center">
-        <div class="w-full md:w-1/3">
-          <Image
-            src={summitEvent}
-            alt="Paradigm Summit 2024"
-            class="w-full h-48 object-cover"
-            width="300"
-            height="192"
-            loading="lazy"
-          />
-        </div>
-        <div class="w-full md:w-2/3">
-          <span class="font-headline text-[10px] uppercase tracking-widest text-secondary mb-4 block">Event Recap</span>
-          <h3 class="font-headline text-3xl mb-4">The Paradigm Summit 2024</h3>
-          <p class="font-body text-on-surface-variant text-sm mb-6">Key takeaways from the gathering of the top 100 technical leads from the enterprise technology landscape.</p>
-          <span class="border border-secondary text-secondary font-headline text-xs uppercase px-6 py-2 hover:bg-secondary hover:text-white transition-all inline-block cursor-pointer">
-            View Gallery
-          </span>
+        <p class="font-body text-sm text-on-surface-variant leading-relaxed mb-6">
+          JTDA Tech Talk Tuesday — the shift from simple prompts to autonomous digital workers.
+          Live on LinkedIn & YouTube. Hosted by the Jamaica Technology & Digital Alliance.
+        </p>
+        <div class="flex items-center gap-4 text-[10px] font-headline uppercase tracking-wider text-on-surface-variant">
+          <span>🎤 Panel</span>
+          <span>•</span>
+          <span>6:00 PM EST</span>
         </div>
       </article>
+
+      <!-- Event 2: Automata Launch -->
+      <article class="col-span-12 lg:col-span-6 bg-surface-container p-8 relative group">
+        <div class="flex items-start gap-4 mb-6">
+          <div class="w-12 h-12 bg-primary/20 flex items-center justify-center shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+            </svg>
+          </div>
+          <div>
+            <span class="font-headline text-[10px] uppercase tracking-widest text-primary block">Launch — Q3 2026</span>
+            <h3 class="font-headline text-2xl mt-1 group-hover:text-primary transition-colors">
+              <a href="/automata">
+                Automata for Jamaican SMEs
+              </a>
+            </h3>
+          </div>
+        </div>
+        <p class="font-body text-sm text-on-surface-variant leading-relaxed mb-6">
+          AI agents purpose-built for Caribbean businesses — invoicing, scheduling, procurement,
+          and customer resolution. Self-hosted on Jamaican infrastructure. The 7th Element — Ax.
+        </p>
+        <div class="flex items-center gap-4 text-[10px] font-headline uppercase tracking-wider text-on-surface-variant">
+          <span>🚀 10 Launch Spaces</span>
+          <span>•</span>
+          <span>From JMD 45,000/mo</span>
+        </div>
+      </article>
+
+      <!-- Blog 1: AI Agents & Engineering -->
+      <article class="col-span-12 lg:col-span-4 bg-surface-container-low p-8 group">
+        <span class="font-headline text-[10px] uppercase tracking-widest text-primary mb-4 block">Research Brief</span>
+        <h3 class="font-headline text-xl mb-4 group-hover:text-primary transition-colors">
+          <a href="/insights/ai-agents-engineering">
+            AI Agents & Engineering
+          </a>
+        </h3>
+        <p class="font-body text-sm text-on-surface-variant leading-relaxed mb-6">
+          How agentic workflows, multi-agent orchestration, and sovereign AI deployment
+          models are reshaping the engineering landscape for Caribbean enterprises.
+        </p>
+        <span class="font-headline text-[10px] uppercase tracking-wider text-on-surface-variant">Published June 22</span>
+      </article>
+
+      <!-- Blog 2: AI CEO Dashboards -->
+      <article class="col-span-12 lg:col-span-4 bg-surface-container-low p-8 group">
+        <span class="font-headline text-[10px] uppercase tracking-widest text-secondary mb-4 block">Product Research</span>
+        <h3 class="font-headline text-xl mb-4 group-hover:text-primary transition-colors">
+          <a href="/insights/ai-ceo-dashboards">
+            AI-Enhanced CEO Dashboards
+          </a>
+        </h3>
+        <p class="font-body text-sm text-on-surface-variant leading-relaxed mb-6">
+          A landscape analysis of AI-augmented executive dashboards — natural-language
+          querying, anomaly detection, and predictive forecasting for decision-makers.
+        </p>
+        <span class="font-headline text-[10px] uppercase tracking-wider text-on-surface-variant">Published June 22</span>
+      </article>
+
+      <!-- Blog 3: JTDA Research -->
+      <article class="col-span-12 lg:col-span-4 bg-surface-container-low p-8 group">
+        <span class="font-headline text-[10px] uppercase tracking-widest text-on-surface-variant mb-4 block">Industry Analysis</span>
+        <h3 class="font-headline text-xl mb-4 group-hover:text-primary transition-colors">
+          <a href="/insights/jtda-tech-talk-research">
+            JTDA & the Rise of AI Agents
+          </a>
+        </h3>
+        <p class="font-body text-sm text-on-surface-variant leading-relaxed mb-6">
+          Research and competitive analysis of the Jamaica Technology & Digital Alliance's
+          position on AI agents, digital workers, and Caribbean SME enablement.
+        </p>
+        <span class="font-headline text-[10px] uppercase tracking-wider text-on-surface-variant">Research — June 2026</span>
+      </article>
+
     </div>
   </div>
 </section>

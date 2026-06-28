@@ -1,3 +1,16 @@
+# Security headers
+# Strict Transport Security — enforce HTTPS for 1 year, include subdomains
+https:serviceparadigm.com
+https:*.serviceparadigm.com
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+
+# Frame protection + Content Security Policy
+/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), interest-cohort=()
+
 # Cache-Control headers for Cloudflare Pages deploy
 # Immutable content — never changes once deployed
 

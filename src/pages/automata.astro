@@ -1,0 +1,326 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import ContactForm from '../components/ContactForm.astro';
+
+const bureauDesks = [
+  {
+    title: 'Collections Desk',
+    description: 'Chase payments, send reminders, reconcile accounts — automatically. Your Collections Automata handles the follow-ups, reminders, and payment reconciliation end-to-end.',
+    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />`,
+  },
+  {
+    title: 'Resolution Desk',
+    description: 'Handle inquiries, escalate complex cases, learn from every interaction. Your customers get instant responses. You keep the relationship.',
+    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />`,
+  },
+  {
+    title: 'Procurement Desk',
+    description: 'Vendor selection, PO creation, delivery tracking — end to end. From request to delivery, your Procurement Automata manages the supply chain steps.',
+    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />`,
+  },
+  {
+    title: 'Schedule Desk',
+    description: 'Appointment booking, calendar management, reminders — no human needed for the back-and-forth. Your Schedule Automata handles the logistics.',
+    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />`,
+  },
+];
+
+const steps = [
+  { number: '01', title: 'Discovery', desc: 'We audit your business processes and identify the top 3 workflows ready for automation.' },
+  { number: '02', title: 'Build', desc: 'We build your Automata on open infrastructure — no lock-in, no per-seat fees.' },
+  { number: '03', title: 'Train', desc: 'We train the Automata on your data, your processes, and your way of doing business.' },
+  { number: '04', title: 'Go Live', desc: 'Your Automata is deployed. We monitor, tune, and support. You run the business.' },
+];
+---
+
+<BaseLayout
+  title="Automata (Ax) — AI Agents for Jamaican SMEs | Paradigm IT Services"
+  description="Deploy Automata — autonomous AI agents that handle invoicing, scheduling, procurement, and customer resolution. Self-hosted in Jamaica. First month free."
+>
+  <Header logoVariant="mono-white" />
+
+  <!-- Hero -->
+  <section class="bg-gradient-to-br from-secondary via-secondary to-primary/50 text-white py-28 lg:py-36 relative overflow-hidden">
+    <div class="absolute -bottom-10 -right-20 text-[20rem] font-black text-white/5 font-headline pointer-events-none select-none" aria-hidden="true">
+      Automata<br />Ax
+    </div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="max-w-4xl mx-auto text-center">
+        <span class="inline-block bg-primary/30 text-primary-fixed px-4 py-2 font-label tracking-widest text-sm mb-6">
+          Ax — The 7th Element
+        </span>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-headline font-black mb-6 ink-bleed">
+          AI Agents,<br /><span class="italic text-secondary-fixed-dim">Not Digital People.</span>
+        </h1>
+        <p class="text-xl text-white/90 mb-10 max-w-3xl mx-auto">
+          Deploy Automata that handle invoicing, scheduling, procurement, and customer resolution —
+          built for Jamaican SMEs. Self-hosted on local infrastructure. Your data never leaves Jamaica.
+        </p>
+        <div class="flex flex-wrap justify-center gap-4">
+          <a href="#bureau-desks" class="inline-block font-label uppercase tracking-widest text-sm font-bold px-8 py-4 bg-primary text-white hover:bg-primary/90 transition-colors">
+            Find Your Automata
+          </a>
+          <a href="#pricing" class="inline-block font-label uppercase tracking-widest text-sm font-bold px-8 py-4 border border-white/30 text-white hover:bg-white hover:text-secondary transition-all">
+            See Pricing
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- What is Automata -->
+  <section class="py-20 lg:py-28 bg-surface">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="max-w-4xl mx-auto text-center mb-16">
+        <span class="font-label text-primary tracking-widest text-sm">Non-Anthropomorphic AI</span>
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-headline font-bold text-secondary mt-4 mb-6">
+          What Is Automata?
+        </h2>
+        <p class="text-lg text-on-surface-variant max-w-3xl mx-auto">
+          Automata are autonomous AI agents that handle business processes end-to-end. They are not employees, not chatbots, not digital people —
+          they are machines built for work. Each Automata has a specific function, clear boundaries, and lives on Jamaican-hosted infrastructure.
+        </p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+        <div class="bg-surface-container p-8 text-center">
+          <span class="font-label text-primary text-xs tracking-widest">Chatbot</span>
+          <div class="text-4xl font-headline font-bold text-on-surface mt-2 mb-4">Answers</div>
+          <p class="text-on-surface-variant">Passive. Responds when asked. No memory of yesterday. No ability to act.</p>
+        </div>
+        <div class="bg-secondary text-on-secondary p-8 text-center">
+          <span class="font-label text-secondary-fixed text-xs tracking-widest">AI Agent</span>
+          <div class="text-4xl font-headline font-bold mt-2 mb-4">Executes</div>
+          <p class="text-white/80">Active. Follows instructions. Can use tools and make decisions within bounds.</p>
+        </div>
+        <div class="bg-primary text-on-primary p-8 text-center">
+          <span class="font-label text-primary-fixed-dim text-xs tracking-widest">Automata</span>
+          <div class="text-4xl font-headline font-bold mt-2 mb-4">Owns</div>
+          <p class="text-white/80">Autonomous. Owns a process end-to-end. Learns. Adapts. Reports. Never takes leave.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Architecture Overview -->
+  <section class="py-20 lg:py-28 bg-surface-container">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="max-w-4xl mx-auto text-center mb-16">
+        <span class="font-label text-primary tracking-widest text-sm">The Automata Framework</span>
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-headline font-bold text-secondary mt-4 mb-6">
+          Directorate, Bureau, and Beyond
+        </h2>
+        <p class="text-lg text-on-surface-variant max-w-3xl mx-auto">
+          Every Automata fits into a functional framework — a workshop model, not an org chart.
+        </p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
+        <div class="bg-surface p-8 text-center border-t-4 border-primary">
+          <span class="font-label text-primary text-xs tracking-widest">Coordination</span>
+          <h3 class="text-2xl font-headline font-bold text-secondary mt-2">Directorate</h3>
+          <p class="text-sm text-on-surface-variant mt-3">Strategic coordination automata. Sets direction, monitors operations, reports. Your Chief of Staff in machine form.</p>
+        </div>
+        <div class="bg-surface p-8 text-center border-t-4 border-secondary">
+          <span class="font-label text-secondary text-xs tracking-widest">Operations</span>
+          <h3 class="text-2xl font-headline font-bold text-secondary mt-2">Bureau</h3>
+          <p class="text-sm text-on-surface-variant mt-3">Back-office automata managing invoicing, scheduling, procurement, and customer resolution. The engine room.</p>
+        </div>
+        <div class="bg-surface p-8 text-center border-t-4 bg-primary/10">
+          <span class="font-label text-primary text-xs tracking-widest">Environment</span>
+          <h3 class="text-2xl font-headline font-bold text-secondary mt-2">Laboratory</h3>
+          <p class="text-sm text-on-surface-variant mt-3">Research, training, and validation environment. Automata are tested and refined before deployment.</p>
+        </div>
+        <div class="bg-surface p-8 text-center border-t-4 bg-secondary/10">
+          <span class="font-label text-secondary text-xs tracking-widest">Environment</span>
+          <h3 class="text-2xl font-headline font-bold text-secondary mt-2">Factory</h3>
+          <p class="text-sm text-on-surface-variant mt-3">Build and deploy pipelines. Automata are constructed, assembled, and shipped from the Factory to your workspace.</p>
+        </div>
+      </div>
+      <div class="text-center mt-8">
+        <p class="text-sm text-on-surface-variant">Plus <strong class="text-secondary">Assembly</strong> — orchestrate multiple Automata across workflows for end-to-end process automation.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Bureau Desks -->
+  <section id="bureau-desks" class="py-20 lg:py-28 bg-surface">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="max-w-4xl mx-auto text-center mb-16">
+        <span class="font-label text-primary tracking-widest text-sm">Bureau Automata</span>
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-headline font-bold text-secondary mt-4 mb-6">
+          Your Back Office, Automated
+        </h2>
+        <p class="text-lg text-on-surface-variant max-w-3xl mx-auto">
+          Start with one Desk. Add more as you grow. Each Bureau Desk handles a complete business process — from start to finish.
+        </p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+        {bureauDesks.map((desk) => (
+          <div class="bg-surface-container p-8 hover:shadow-lg transition-shadow border-l-4 border-primary">
+            <div class="w-12 h-12 bg-primary/10 flex items-center justify-center mb-4">
+              <svg class="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true" set:html={desk.icon} />
+            </div>
+            <h3 class="text-xl font-headline font-bold text-secondary mb-3">{desk.title}</h3>
+            <p class="text-on-surface-variant">{desk.description}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="py-20 lg:py-28 bg-surface-container">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="max-w-4xl mx-auto text-center mb-16">
+        <span class="font-label text-primary tracking-widest text-sm">How It Works</span>
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-headline font-bold text-secondary mt-4 mb-6">
+          From Zero to Automata in 2 Weeks
+        </h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 max-w-5xl mx-auto">
+        {steps.map((step) => (
+          <div class="text-center">
+            <div class="text-5xl font-headline font-black text-primary/20 mb-2">{step.number}</div>
+            <h3 class="text-lg font-headline font-bold text-secondary mb-2">{step.title}</h3>
+            <p class="text-sm text-on-surface-variant">{step.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing -->
+  <section id="pricing" class="py-20 lg:py-28 bg-secondary text-white relative overflow-hidden">
+    <div class="absolute -top-20 -left-20 text-[18rem] font-black text-white/5 font-headline pointer-events-none select-none" aria-hidden="true">Limited</div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="max-w-4xl mx-auto text-center mb-16">
+        <span class="inline-block bg-primary/30 text-primary-fixed px-4 py-2 font-label tracking-widest text-sm mb-6">Launch Offer — 10 Spaces Only</span>
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-headline font-bold mb-4">Less Than a Junior Admin. Works 24/7.</h2>
+        <p class="text-xl text-white/80 max-w-2xl mx-auto">Pay a one-time onboarding fee. Get your first month free. No long-term contract.</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <!-- Single Desk -->
+        <div class="bg-white/10 backdrop-blur-sm p-8 flex flex-col">
+          <span class="font-label text-secondary-fixed text-xs tracking-widest mb-2">Starter</span>
+          <h3 class="text-2xl font-headline font-bold mb-1">Single Desk Automata</h3>
+          <p class="text-sm text-white/70 mb-6">One workflow. One Bureau Desk.</p>
+          <div class="mb-4"><span class="text-sm text-white/70 block">Onboarding Fee</span><span class="text-4xl font-headline font-bold">JMD 49,000</span></div>
+          <div class="mb-6"><span class="text-sm text-white/70 block">Then per month</span><span class="text-3xl font-headline font-bold">JMD 45,000</span></div>
+          <div class="bg-primary/30 px-4 py-3 text-center mb-6"><span class="font-label text-primary-fixed text-sm tracking-wider">🎁 First Month Free</span></div>
+          <ul class="space-y-3 mb-8 flex-grow text-sm">
+            <li class="flex items-start gap-2"><svg class="h-4 w-4 text-secondary-fixed mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg><span>1 workflow (invoicing, scheduling, etc.)</span></li>
+            <li class="flex items-start gap-2"><svg class="h-4 w-4 text-secondary-fixed mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg><span>Up to 500 transactions/month</span></li>
+            <li class="flex items-start gap-2"><svg class="h-4 w-4 text-secondary-fixed mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg><span>Email + WhatsApp channel</span></li>
+            <li class="flex items-start gap-2"><svg class="h-4 w-4 text-secondary-fixed mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg><span>Self-hosted on Jamaican infra</span></li>
+          </ul>
+          <a href="#cta" class="inline-block bg-primary text-white text-center py-3 font-label uppercase tracking-widest text-sm">Book a Fit Call</a>
+        </div>
+        <!-- Multi-Desk -->
+        <div class="bg-primary p-8 flex flex-col scale-105 relative">
+          <span class="absolute -top-3 right-8 bg-secondary text-on-secondary font-label text-xs tracking-widest px-3 py-1">Popular</span>
+          <span class="font-label text-primary-fixed-dim text-xs tracking-widest mb-2">Growth</span>
+          <h3 class="text-2xl font-headline font-bold mb-1">Multi-Desk Automata</h3>
+          <p class="text-sm text-white/70 mb-6">Three workflows. One Bureau.</p>
+          <div class="mb-4"><span class="text-sm text-white/70 block">Onboarding Fee</span><span class="text-4xl font-headline font-bold">JMD 89,000</span></div>
+          <div class="mb-6"><span class="text-sm text-white/70 block">Then per month</span><span class="text-3xl font-headline font-bold">JMD 85,000</span></div>
+          <div class="bg-white/20 px-4 py-3 text-center mb-6"><span class="font-label text-white text-sm tracking-wider">🎁 First Month Free</span></div>
+          <ul class="space-y-3 mb-8 flex-grow text-sm">
+            <li class="flex items-start gap-2"><svg class="h-4 w-4 text-secondary-fixed mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg><span>Up to 3 workflows</span></li>
+            <li class="flex items-start gap-2"><svg class="h-4 w-4 text-secondary-fixed mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg><span>Up to 2,000 transactions/month</span></li>
+            <li class="flex items-start gap-2"><svg class="h-4 w-4 text-secondary-fixed mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg><span>Multi-channel (email, WhatsApp, SMS)</span></li>
+            <li class="flex items-start gap-2"><svg class="h-4 w-4 text-secondary-fixed mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg><span>Integration with existing tools</span></li>
+          </ul>
+          <a href="#cta" class="inline-block bg-secondary text-white text-center py-3 font-label uppercase tracking-widest text-sm">Book a Fit Call</a>
+        </div>
+        <!-- Full / Assembly -->
+        <div class="bg-white/10 backdrop-blur-sm p-8 flex flex-col">
+          <span class="font-label text-secondary-fixed text-xs tracking-widest mb-2">Enterprise</span>
+          <h3 class="text-2xl font-headline font-bold mb-1">Full Assembly</h3>
+          <p class="text-sm text-white/70 mb-6">Multiple Automata, orchestrated.</p>
+          <div class="mb-4"><span class="text-sm text-white/70 block">Onboarding</span><span class="text-4xl font-headline font-bold">Custom</span></div>
+          <div class="mb-6"><span class="text-sm text-white/70 block">Monthly</span><span class="text-3xl font-headline font-bold">Custom</span></div>
+          <div class="bg-primary/30 px-4 py-3 text-center mb-6"><span class="font-label text-primary-fixed text-sm tracking-wider">🎁 First Month Free</span></div>
+          <ul class="space-y-3 mb-8 flex-grow text-sm">
+            <li class="flex items-start gap-2"><svg class="h-4 w-4 text-secondary-fixed mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg><span>Unlimited workflows</span></li>
+            <li class="flex items-start gap-2"><svg class="h-4 w-4 text-secondary-fixed mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg><span>All channels + custom integrations</span></li>
+            <li class="flex items-start gap-2"><svg class="h-4 w-4 text-secondary-fixed mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg><span>Dedicated support + SLA</span></li>
+            <li class="flex items-start gap-2"><svg class="h-4 w-4 text-secondary-fixed mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg><span>On-premise available</span></li>
+          </ul>
+          <a href="#cta" class="inline-block text-center py-3 border border-white/30 text-white hover:bg-white hover:text-secondary font-label uppercase tracking-widest text-sm">Contact Us</a>
+        </div>
+      </div>
+      <p class="text-center text-white/60 text-sm mt-10 max-w-2xl mx-auto">
+        <strong class="text-white">Only 10 spaces available</strong> at launch pricing.
+        After that, standard onboarding fees apply. Self-hosted on Jamaican infrastructure.
+      </p>
+    </div>
+  </section>
+
+  <!-- Trust / Sovereignty -->
+  <section class="py-20 lg:py-28 bg-surface">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center max-w-5xl mx-auto">
+        <div>
+          <span class="font-label text-primary tracking-widest text-sm">Data Sovereignty</span>
+          <h2 class="text-3xl sm:text-4xl font-headline font-bold text-secondary mt-4 mb-6">Your Data Never Leaves Jamaica</h2>
+          <p class="text-lg text-on-surface-variant mb-4">Every Automata runs on Jamaican-hosted infrastructure. Unlike foreign SaaS platforms, there are no hidden data exports, no training on your business data, no reliance on overseas servers.</p>
+          <p class="text-lg text-on-surface-variant mb-6">Self-hosted or on-premise options available for regulated industries.</p>
+          <ul class="space-y-3">
+            <li class="flex items-center gap-3"><svg class="h-5 w-5 text-primary flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg><span class="text-on-surface">Self-hosted on Jamaican infrastructure</span></li>
+            <li class="flex items-center gap-3"><svg class="h-5 w-5 text-primary flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg><span class="text-on-surface">No training on your data</span></li>
+            <li class="flex items-center gap-3"><svg class="h-5 w-5 text-primary flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg><span class="text-on-surface">No per-seat SaaS fees</span></li>
+          </ul>
+        </div>
+        <div class="bg-surface-container p-12 text-center">
+          <div class="text-7xl font-headline font-black text-primary/20 mb-4">JA</div>
+          <p class="font-label text-primary text-sm tracking-widest">JAMAICAN HOSTED</p>
+          <p class="text-on-surface-variant mt-4 text-sm">Built in Jamaica. For Jamaica.<br />Sovereign infra. Sovereign data.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="py-20 lg:py-28 bg-surface-container">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl sm:text-4xl font-headline font-bold text-secondary mb-4">Quick Answers</h2>
+      </div>
+      <div class="space-y-6">
+        <div class="bg-surface p-6">
+          <h3 class="font-headline font-bold text-secondary mb-2">How is Automata different from ChatGPT?</h3>
+          <p class="text-on-surface-variant">ChatGPT answers questions. An Automata does tasks — it sends invoices, books appointments, chases payments. It owns a process end-to-end.</p>
+        </div>
+        <div class="bg-surface p-6">
+          <h3 class="font-headline font-bold text-secondary mb-2">How long does it take to set up?</h3>
+          <p class="text-on-surface-variant">2 weeks from discovery to go-live for a Single Desk Automata. Includes readiness assessment, workflow mapping, and training on your data.</p>
+        </div>
+        <div class="bg-surface p-6">
+          <h3 class="font-headline font-bold text-secondary mb-2">Do I need technical staff to manage it?</h3>
+          <p class="text-on-surface-variant">No. We manage the infrastructure. You interact with your Automata through email, WhatsApp, or your existing tools — just like a machine on your production line.</p>
+        </div>
+        <div class="bg-surface p-6">
+          <h3 class="font-headline font-bold text-secondary mb-2">What does "self-hosted on Jamaican infrastructure" mean?</h3>
+          <p class="text-on-surface-variant">Your Automata runs on servers physically located in Jamaica. Your business data never crosses international borders. No foreign cloud dependency. No US data privacy concerns.</p>
+        </div>
+        <div class="bg-surface p-6">
+          <h3 class="font-headline font-bold text-secondary mb-2">Is this AI?</h3>
+          <p class="text-on-surface-variant">Yes. Automata are powered by large language models and agentic frameworks — but we don't sell "AI." We sell outcomes: invoices sent, appointments booked, customers resolved, procurement managed. The technology is infrastructure, not identity.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section id="cta" class="py-20 lg:py-28 bg-primary text-white">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <span class="inline-block bg-secondary/50 text-secondary-fixed px-4 py-2 font-label tracking-widest text-sm mb-6">Only 10 Spaces Available</span>
+      <h2 class="text-3xl sm:text-4xl lg:text-5xl font-headline font-bold mb-6">Ready to Deploy Your First Automata?</h2>
+      <p class="text-xl text-white/80 mb-10 max-w-2xl mx-auto">Book a free 15-minute fit call. We'll identify the best workflow to automate first and tell you exactly what it costs.</p>
+      <div class="max-w-2xl mx-auto">
+        <ContactForm title="Book Your Automata Fit Call" />
+      </div>
+      <p class="text-white/60 text-sm mt-6">Limited to the first 10 businesses at launch pricing. No commitment for the fit call.</p>
+    </div>
+  </section>
+</BaseLayout>

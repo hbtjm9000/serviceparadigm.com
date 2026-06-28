@@ -58,6 +58,7 @@ const isOpen = ref(false)
 let timer = null
 
 const elements = [
+  { symbol: 'Ax', name: 'Automata', route: '/elements/automata', short: 'Autonomous AI agents for business processes — self-hosted in Jamaica.' },
   { symbol: 'Em', name: 'Email', route: '/elements/email', short: 'Enterprise business email with advanced security and compliance.' },
   { symbol: 'Zt', name: 'Zero Trust', route: '/elements/zero-trust', short: 'Identity and access management built on zero trust principles.' },
   { symbol: 'Dp', name: 'Digital Presence', route: '/elements/digital-presence', short: 'Websites and social media to establish your digital footprint.' },
