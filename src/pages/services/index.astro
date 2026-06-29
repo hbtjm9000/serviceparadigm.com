@@ -1,0 +1,101 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import Newsletter from '../../components/Newsletter.vue';
+---
+
+<BaseLayout
+  title="Our Services | Paradigm IT Services (ParaIT)"
+  description="AI strategy, solutions architecture, and cybersecurity for Caribbean enterprises. Architecture-first technology services built for regulatory compliance."
+>
+  <Header logoVariant="mono-white" />
+  <main id="main">
+    <!-- Hero -->
+    <section class="bg-tertiary text-on-tertiary py-20 lg:py-28 relative overflow-hidden">
+      <div class="absolute -bottom-10 -right-20 text-[20rem] font-black text-white/5 font-headline pointer-events-none select-none" aria-hidden="true">
+        Services
+      </div>
+      <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+        <span class="font-label text-xs tracking-[0.2em] text-secondary-fixed-dim uppercase">What We Do</span>
+        <h1 class="font-headline text-5xl md:text-6xl lg:text-7xl text-white leading-[1.05] mt-4 max-w-3xl text-balance">
+          Architecture-First<br />
+          <span class="italic text-secondary-fixed-dim">Technology Services.</span>
+        </h1>
+        <p class="mt-8 max-w-xl text-white/70 font-body leading-relaxed text-lg">
+          Every engagement begins with understanding your architecture. 
+          From strategy to implementation, we build for Caribbean enterprises 
+          that demand security, compliance, and durability.
+        </p>
+      </div>
+    </section>
+
+    <!-- Service Cards -->
+    <section class="bg-surface text-on-surface py-20 lg:py-28">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="grid md:grid-cols-3 gap-8">
+          <!-- AI Strategy -->
+          <a href="/services/ai-strategy" class="group block p-8 bg-surface-container-low hover:bg-surface-container-high transition-colors border border-outline/20">
+            <span class="font-label text-xs tracking-[0.2em] text-secondary uppercase">Service 01</span>
+            <h2 class="font-headline text-2xl mt-4 text-on-surface group-hover:text-primary transition-colors">AI Strategy &amp; Implementation</h2>
+            <p class="font-body text-sm text-on-surface-variant mt-4 leading-relaxed">
+              From readiness audits to deployment. We design AI strategy that fits your 
+              regulatory environment, data sovereignty requirements, and business objectives.
+            </p>
+            <span class="inline-flex items-center gap-2 mt-6 font-label text-xs tracking-[0.1em] text-secondary uppercase group-hover:gap-4 transition-all">
+              Learn More
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="square" stroke-width="2" d="M5 12h14M13 5l7 7-7 7"/></svg>
+            </span>
+          </a>
+
+          <!-- Solutions Architecture -->
+          <a href="/services/solutions-architecture" class="group block p-8 bg-surface-container-low hover:bg-surface-container-high transition-colors border border-outline/20">
+            <span class="font-label text-xs tracking-[0.2em] text-secondary uppercase">Service 02</span>
+            <h2 class="font-headline text-2xl mt-4 text-on-surface group-hover:text-primary transition-colors">Solutions Architecture</h2>
+            <p class="font-body text-sm text-on-surface-variant mt-4 leading-relaxed">
+              System design, cloud migration, and infrastructure architecture. 
+              We document decisions, map dependencies, and build for operational durability.
+            </p>
+            <span class="inline-flex items-center gap-2 mt-6 font-label text-xs tracking-[0.1em] text-secondary uppercase group-hover:gap-4 transition-all">
+              Learn More
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="square" stroke-width="2" d="M5 12h14M13 5l7 7-7 7"/></svg>
+            </span>
+          </a>
+
+          <!-- Cybersecurity -->
+          <a href="/services/cybersecurity" class="group block p-8 bg-surface-container-low hover:bg-surface-container-high transition-colors border border-outline/20">
+            <span class="font-label text-xs tracking-[0.2em] text-secondary uppercase">Service 03</span>
+            <h2 class="font-headline text-2xl mt-4 text-on-surface group-hover:text-primary transition-colors">Cybersecurity Architecture</h2>
+            <p class="font-body text-sm text-on-surface-variant mt-4 leading-relaxed">
+              Zero Trust, compliance frameworks, and security architecture. 
+              Aligned to regional regulations and international standards.
+            </p>
+            <span class="inline-flex items-center gap-2 mt-6 font-label text-xs tracking-[0.1em] text-secondary uppercase group-hover:gap-4 transition-all">
+              Learn More
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="square" stroke-width="2" d="M5 12h14M13 5l7 7-7 7"/></svg>
+            </span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="bg-primary text-white py-20">
+      <div class="max-w-3xl mx-auto px-6 lg:px-8 text-center">
+        <h2 class="font-headline text-4xl lg:text-5xl text-balance">
+          Not sure which service fits?
+        </h2>
+        <p class="mt-6 text-primary-fixed font-body text-lg max-w-xl mx-auto">
+          We start every engagement with a discovery call — no commitment, 
+          no sales pitch. Just architecture advice.
+        </p>
+        <a href="/contact" class="inline-flex items-center gap-2 mt-8 bg-slate-900 hover:bg-black text-white px-10 py-4 font-label font-bold uppercase tracking-widest text-sm transition-all duration-300">
+          Book a Discovery Call
+        </a>
+      </div>
+    </section>
+
+    <Newsletter client:visible />
+  </main>
+  <Footer />
+</BaseLayout>
