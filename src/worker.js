@@ -144,35 +144,6 @@ async function handleContact(request, env) {
   let logId = 0;
   try {
     logId = await logBegin(env.DB, tx);
-    if (env.RESEND_API_KEY && env.CONTACT_EMAIL_TO) {
-      const body = tx.body;
-      const emailBody = `
-        Name: ${body.name ?? ""}
-        Email: ${body.email ?? ""}
-        Company: ${body.company ?? ""}
-        Service: ${body.service ?? ""}
-        Message: ${body.message ?? ""}
-        ---
-        Request ID: ${tx.requestId}
-      `;
-      const res = await fetch("https://api.resend.com/emails", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${env.RESEND_API_KEY}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          from: "contact@serviceparadigm.com",
-          to: env.CONTACT_EMAIL_TO,
-          subject: `New Contact: ${body.name ?? "Unknown"}`,
-          text: emailBody
-        })
-      });
-      if (!res.ok) {
-        const errText = await res.text();
-        throw new Error(`Email send failed: ${res.status} ${errText}`);
-      }
-    }
     const response = { ok: true, request_id: tx.requestId };
     await logSuccess(env.DB, logId, response);
     return json(response);
