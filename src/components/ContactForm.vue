@@ -137,10 +137,8 @@ const isSubmitting = ref(false);
 const submitted = ref(false);
 const error = ref('');
 
-// Form submission endpoint - Google Apps Script Web App
-// Reads from PUBLIC_FORM_ENDPOINT env var at build time (set via wrangler.toml or CI),
-// falls back to the hardcoded URL for local dev.
-const FORM_ENDPOINT = import.meta.env.PUBLIC_FORM_ENDPOINT || 'https://script.google.com/macros/s/AKfycbzlnvrJOb4pQDjOegA6GIqUZ3NmEm8zH3xWZrlreVTGgAdjxukNByPxrAR42Y1WU0HL/exec';
+// Form submission endpoint — Worker API (deployed via @astrojs/cloudflare)
+const FORM_ENDPOINT = import.meta.env.PUBLIC_FORM_ENDPOINT || '/api/contact';
 
 const handleSubmit = async () => {
   isSubmitting.value = true;

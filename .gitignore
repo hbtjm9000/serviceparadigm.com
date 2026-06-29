@@ -50,3 +50,7 @@ bun.lock
 
 # Wrangler / Cloudflare dev state
 .wrangler/
+worker-bundle.js
+worker-served.js
+worker.mjs
+dist/server/
