@@ -1,35 +1,28 @@
-# Security headers
-# Strict Transport Security — enforce HTTPS for 1 year, include subdomains
-https:serviceparadigm.com
-https:*.serviceparadigm.com
-  Strict-Transport-Security: max-age=31536000; includeSubDomains
-
-# Frame protection + Content Security Policy
+# Security headers — Workers + Static Assets format 
+# (path-only patterns, no https: prefix — that's Pages-specific)
 /*
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=(), interest-cohort=()
 
-# Cache-Control headers for Cloudflare Pages deploy
-# Immutable content — never changes once deployed
-
+# Fonts — immutable cache
 /fonts/*
   Cache-Control: public, max-age=31536000, immutable
 
+# Images — immutable cache
 /images/*
   Cache-Control: public, max-age=31536000, immutable
 
-/assets/*
+# Astro build assets — immutable cache
+/_astro/*
   Cache-Control: public, max-age=31536000, immutable
 
-# HTML pages — short TTL since content updates
+# HTML pages — short TTL
 /*.html
   Cache-Control: public, max-age=0, s-maxage=3600
 
-/ /*.html
-  Cache-Control: public, max-age=0, s-maxage=3600
-
-# Favicon — rarely changes
+# Favicon
 /favicon.svg
   Cache-Control: public, max-age=86400
