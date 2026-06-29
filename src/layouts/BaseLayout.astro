@@ -47,6 +47,16 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
       // Module import triggers GrowthBook SDK init; getFlag is available globally
       window.__featureFlags = { getFlag };
     </script>
+    <!-- Analytics init — UTM capture + page type tracking -->
+    <script>
+      import { initAnalytics } from '../lib/analytics';
+      if (typeof window !== 'undefined') {
+        // Run after DOM is ready (gtag script may not be loaded yet)
+        document.addEventListener('astro:page-load', () => initAnalytics());
+        // Also fire on initial load (astro:page-load covers client nav)
+        initAnalytics();
+      }
+    </script>
   </head>
   <body class="bg-surface text-on-surface antialiased">
     <!-- Skip to main content for keyboard users (WCAG 2.1 AA) -->

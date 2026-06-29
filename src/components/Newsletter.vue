@@ -54,6 +54,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { getUtmParams, trackEvent } from '../lib/analytics';
 
 // Get current experiment variant from localStorage
 function getHeroVariant(): string {
@@ -66,13 +67,11 @@ function getHeroVariant(): string {
 // Log conversion to console and GA4
 function logConversion(variant: string): void {
   console.log(`[Conversion] hero-copy-test: ${variant} → newsletter_submitted`);
-  if (typeof window !== 'undefined' && window.gtag) {
-    window.gtag('event', 'newsletter_submitted', {
-      experiment_id: 'hero-copy-test',
-      variation_id: variant,
-      page_location: window.location.href,
-    });
-  }
+  trackEvent('newsletter_submitted', {
+    experiment_id: 'hero-copy-test',
+    variation_id: variant,
+    page_location: window.location.href,
+  });
 }
 
 // Newsletter endpoint - Google Apps Script Web App
