@@ -1,0 +1,20 @@
+name = "serviceparadigm-com"
+compatibility_date = "2026-06-28"
+compatibility_flags = ["nodejs_compat"]
+
+# Static assets from Astro build
+pages_build_output_dir = "./dist"
+
+# D1 Database
+[[d1_databases]]
+binding = "DB"
+database_name = "serviceparadigm-db"
+database_id = "22fafb86-b121-4f90-a763-2cd58412ef22"
+
+# Environment variables
+[vars]
+ENVIRONMENT = "production"
+PUBLIC_GROWTHBOOK_API_HOST = "http://127.0.0.1:3102"
+PUBLIC_GROWTHBOOK_CLIENT_KEY = "sdk-hU8PnivLdq1F0Af"
+FEATURE_ORDER_ENABLED = "false"
+CONTACT_EMAIL_TO = "hello@serviceparadigm.com"

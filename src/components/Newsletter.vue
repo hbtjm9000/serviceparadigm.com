@@ -74,8 +74,8 @@ function logConversion(variant: string): void {
   });
 }
 
-// Newsletter endpoint - Google Apps Script Web App
-const NEWSLETTER_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzeIqCSz4HNpY7SXsXywVRwY8DNubVA-Xw2zR8w0ZO3FyMfNhunUDhyG90mujCYb82f/exec';
+// Newsletter endpoint — Worker API (deployed via @astrojs/cloudflare)
+const NEWSLETTER_ENDPOINT = '/api/newsletter';
 
 const email = ref('');
 const isSubmitting = ref(false);

@@ -24,14 +24,17 @@ if r.returncode != 0:
     sys.exit(1)
 
 # Step 2: Generate manifest
-print("=== Generating manifest ===")
+print("=== Generating manifest ===\n")
 dist = Path(DIST_DIR)
+funcs = Path("functions")
 if not dist.exists():
     print(f"ERROR: {DIST_DIR} not found")
     sys.exit(1)
 
 manifest = {}
 files = []
+
+# Static assets from Astro build
 for f in sorted(dist.rglob("*")):
     if f.is_file():
         rel = str(f.relative_to(dist))
@@ -39,7 +42,17 @@ for f in sorted(dist.rglob("*")):
         manifest[rel] = sha
         files.append(f)
 
-print(f"  Found {len(files)} files")
+# Pages Functions (API routes)
+if funcs.exists():
+    for f in sorted(funcs.rglob("*")):
+        if f.is_file():
+            abs_f = f.absolute()
+            rel = str(abs_f.relative_to(Path.cwd().absolute()))
+            sha = hashlib.sha256(f.read_bytes()).hexdigest()
+            manifest[rel] = sha
+            files.append(abs_f)
+
+print(f"  {len(files)} files ({len([f for f in files if 'functions' in str(f)])} functions)")
 
 # Step 3: Create deployment via multipart POST
 print("=== Deploying ===")
@@ -74,8 +87,11 @@ body_parts.append(mime_part("commit_hash", commit_hash))
 body_parts.append(mime_part("commit_message", commit_msg))
 
 for f in files:
-    rel = str(f.relative_to(dist))
-    body_parts.append(mime_part(rel, f.read_bytes()))
+    # Get the project-relative path for the form field name
+    abs_f = f.absolute() if isinstance(f, Path) else Path(f).absolute()
+    proj_root = Path.cwd().absolute()
+    rel_path = str(abs_f.relative_to(proj_root))
+    body_parts.append(mime_part(rel_path, f.read_bytes()))
 
 body_parts.append(f"--{boundary}--\r\n".encode())
 body = b"".join(body_parts)

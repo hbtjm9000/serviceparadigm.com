@@ -6,7 +6,7 @@ export default defineConfig({
   site: 'https://serviceparadigm.com',
   compressHTML: true,
   server: {
-    host: '127.0.0.1', // loopback only — no external exposure
+    host: '127.0.0.1',
     allowedHosts: ['serviceparadigm.test'],
   },
   integrations: [
@@ -17,4 +17,9 @@ export default defineConfig({
     }),
     sitemap(),
   ],
+  vite: {
+    resolve: {
+      conditions: ['web', 'browser'],
+    },
+  },
 });
