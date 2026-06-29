@@ -4,8 +4,8 @@ compatibility_date = "2026-06-12"
 compatibility_flags = ["nodejs_compat"]
 workers_dev = true
 
-# Static assets from the Astro build output
-assets = { directory = "./dist", binding = "ASSETS" }
+# Static assets from Astro build
+pages_build_output_dir = "./dist"
 
 # Route the custom domain
 routes = [
@@ -25,6 +25,7 @@ database_id = "22fafb86-b121-4f90-a763-2cd58412ef22"
 binding = "CMS_ASSETS"
 bucket_name = "paradigm-cms-assets"
 
+# Environment variables
 [vars]
 ENVIRONMENT = "production"
 PUBLIC_GROWTHBOOK_API_HOST = "http://127.0.0.1:3102"
