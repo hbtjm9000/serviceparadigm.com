@@ -1,0 +1,121 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+---
+
+<BaseLayout
+  title="Which Species for Which Job? Mapping Agent Architectures | Paradigm IT Services"
+  description="Not all L3 agents are the same. Deploying the wrong architecture guarantees failure. Here's the species selection framework to pick the right one."
+>
+  <Header logoVariant="mono-white" />
+  <main id="main">
+    <article class="bg-surface py-20 lg:py-28">
+      <div class="max-w-3xl mx-auto px-6 lg:px-8">
+        <a href="/resources" class="font-sans text-xs tracking-[0.2em] text-primary uppercase hover:text-secondary transition-colors">&larr; Resources</a>
+        <span class="font-sans text-xs tracking-[0.2em] text-primary uppercase block mt-6">AI Agents Series &mdash; Part 3 of 4</span>
+        <h1 class="font-serif text-4xl lg:text-5xl text-on-surface mt-4 leading-[1.1]">Which Species for Which Job? Mapping Agent Architectures to Real Work</h1>
+
+        <div class="prose prose-lg font-body text-on-surface-variant mt-10 leading-relaxed max-w-none space-y-6">
+
+<p>Not all L3 agents are the same. Deploying the wrong architecture guarantees failure &mdash; regardless of the model or the prompt.</p>
+
+<p>I learned this the hard way. Last year I tried to run a content pipeline through a coding harness &mdash; the same architecture that handles individual code tasks beautifully. It was a disaster. The harness was designed for a human reviewing one output at a time, not for processing 500 pieces of content in a batch. I was using the right autonomy level and the wrong species.</p>
+
+<p>After studying production deployments across dozens of teams, researcher Nate Jones identified four distinct <a href="/resources/agent-types" class="text-primary hover:text-secondary">agent species</a>. Each is built for a different kind of work. Two systems can both be L3 &mdash; fully autonomous, tool-using, iterative &mdash; and still fail if one is deployed where the other belongs.</p>
+
+<hr class="border-outline my-8" />
+
+<h2 class="font-serif text-3xl text-on-surface mt-10 mb-4">Species 1: Coding Harness</h2>
+
+<p>The human acts as manager. The agent acts as engineer. You set the task, the agent produces output, you judge the work.</p>
+
+<p>This is the most mature species. Boris Cherny says &ldquo;coding is solved&rdquo; &mdash; 27 PRs a day from his phone. That&rsquo;s a coding harness at work. Peter Steinberger pushed this further with OpenClaw: running multiple harnesses in parallel, each on 20-minute cycles, with human review at output.</p>
+
+<p><strong class="text-on-surface">Best for:</strong> Individual contributor work, bounded coding tasks, anything where a human can judge quality at the output boundary.</p>
+
+<p><strong class="text-on-surface">Key trait:</strong> Single-threaded by default. Scaling means running multiple harnesses in parallel, not making one harness more complex.</p>
+
+<hr class="border-outline my-8" />
+
+<h2 class="font-serif text-3xl text-on-surface mt-10 mb-4">Species 2: Dark Factory</h2>
+
+<p>A spec goes in. Software comes out. No human reviews intermediate outputs.</p>
+
+<p>This is the assembly line model. The agent optimizes against your specifications, not against your attention. Human involvement at two points: writing the spec and reviewing the evals.</p>
+
+<p><strong class="text-on-surface">Best for:</strong> Well-specified, bounded, repetitive production work &mdash; automated code migration, bulk refactoring, content pipelines.</p>
+
+<p><strong class="text-on-surface">The risk</strong> is the <a href="/insights/blog-2-three-percent-problem" class="text-primary hover:text-secondary">3% problem</a> magnified. A dark factory producing 10,000 outputs at 97% correctness creates 300 failures no human reviewed. Acceptable only when failures are low-cost or evals catch them before production.</p>
+
+<hr class="border-outline my-8" />
+
+<h2 class="font-serif text-3xl text-on-surface mt-10 mb-4">Species 3: Auto Research</h2>
+
+<p>Descended from classical machine learning. The agent hill-climbs against a metric &mdash; optimizing conversion rate, code quality, response accuracy, or any quantifiable target.</p>
+
+<p>Auto research only works when success can be measured numerically. If you can&rsquo;t define a metric, you&rsquo;re not doing auto research.</p>
+
+<p><strong class="text-on-surface">Best for:</strong> A/B test optimization, prompt tuning, hyperparameter search, any problem with a clear score and a large search space.</p>
+
+<p><strong class="text-on-surface">Key trait:</strong> The agent iterates autonomously, trying variants and measuring results. No human judgment at the iteration level &mdash; just at the objective-setting level.</p>
+
+<hr class="border-outline my-8" />
+
+<h2 class="font-serif text-3xl text-on-surface mt-10 mb-4">Species 4: Orchestration Framework</h2>
+
+<p>Multiple agents lined up with a coordination layer handing work between them. Writer &rarr; editor. Researcher &rarr; drafter. Planner &rarr; executor.</p>
+
+<p>This is the most complex species and the most commonly over-deployed. Jones&rsquo;s rule: &ldquo;The art of building good agents is often the art of finding different simple configurations that enable the agent to do the particular work you have in front of you.&rdquo;</p>
+
+<p><strong class="text-on-surface">Best for:</strong> Multi-step processes where different steps need different skills and volume justifies the coordination overhead.</p>
+
+<p><strong class="text-on-surface">Critical constraint:</strong> Scale-dependent. Worth it at 10,000+ tickets. Overkill at 100.</p>
+
+<hr class="border-outline my-8" />
+
+<h2 class="font-serif text-3xl text-on-surface mt-10 mb-4">The Selection Cheat Sheet</h2>
+
+<div class="overflow-x-auto my-6">
+  <table class="w-full text-sm border-collapse">
+    <thead><tr class="bg-surface-container-low border-b border-outline"><th class="text-left p-3 font-sans font-bold text-on-surface">Your situation</th><th class="text-left p-3 font-sans font-bold text-on-surface">Use this species</th></tr></thead>
+    <tbody>
+      <tr class="border-b border-outline/50"><td class="p-3">You judge the work; agent executes</td><td class="p-3 font-bold text-on-surface">Coding Harness</td></tr>
+      <tr class="border-b border-outline/50"><td class="p-3">You trust evals and specs; human judges at endpoint</td><td class="p-3 font-bold text-on-surface">Dark Factory</td></tr>
+      <tr class="border-b border-outline/50"><td class="p-3">You have a clear metric to optimize</td><td class="p-3 font-bold text-on-surface">Auto Research</td></tr>
+      <tr class="border-b border-outline/50"><td class="p-3">Distinct jobs that chain; scale justifies coordination</td><td class="p-3 font-bold text-on-surface">Orchestration</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<hr class="border-outline my-8" />
+
+<h2 class="font-serif text-3xl text-on-surface mt-10 mb-4">The Common Thread</h2>
+
+<p>Species can hybridize. All three frontier model providers have converged their harnesses toward hybrid capabilities &mdash; Claude Code added coordinator mode, Codex CLI added gateway integrations, Gemini added agent runtime with tool orchestration. The direction is clear: harnesses are becoming species-agnostic at the feature level.</p>
+
+<p>But every species needs the same foundation: a harness that&rsquo;s replaceable, memory that&rsquo;s portable, and an environment that&rsquo;s owned by you. The species determines what the agent can do. The environment determines whether you can keep doing it when the vendor changes terms.</p>
+
+<p>That&rsquo;s the last problem in this series &mdash; and the most important one.</p>
+
+<div class="border-l-4 border-primary pl-6 py-4 mt-8">
+  <p class="font-serif text-xl text-on-surface"><a href="/insights/blog-4-stack-ownership" class="text-primary hover:text-secondary transition-colors">Read Part 4: Stop Renting Your AI. Own the Stack. &rarr;</a></p>
+  <p class="font-body text-sm text-on-surface-variant mt-1">Why stack ownership is a deployment guarantee, not a preference.</p>
+</div>
+
+<hr class="border-outline my-8" />
+
+<div class="bg-surface-container-low p-8">
+  <p class="font-body text-on-surface-variant leading-relaxed">We build <strong class="text-on-surface">Automata</strong> &mdash; autonomous AI agents for invoicing, scheduling, procurement, and customer resolution. Self-hosted on Jamaican infrastructure. Not sure which species fits your workflow? Our team can help.</p>
+  <div class="mt-4 flex flex-wrap gap-3">
+    <a href="/automata#cta" class="font-sans text-sm px-4 py-2 bg-primary text-white hover:bg-secondary transition-colors">Book a Fit Call</a>
+    <a href="/resources/agent-types" class="font-sans text-sm px-4 py-2 border border-outline text-on-surface hover:bg-surface-container-low transition-colors">Agent Type Definitions</a>
+  </div>
+</div>
+
+        </div>
+      </div>
+    </article>
+  </main>
+  <Footer />
+</BaseLayout>

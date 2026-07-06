@@ -1,0 +1,253 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+---
+
+<BaseLayout
+  title="Agent Types — Engineering Taxonomy | Paradigm IT Resources"
+  description="How we classify AI agents: Task Agents, Process Agents, Orchestration Agents, and how they map to the Automata products you buy."
+>
+  <Header logoVariant="mono-white" />
+  <main id="main">
+    <!-- Hero Section -->
+    <section class="bg-tertiary text-on-tertiary py-20 lg:py-28 relative overflow-hidden">
+      <div class="absolute -bottom-10 -right-20 text-[20rem] font-black text-white/5 font-serif pointer-events-none select-none" aria-hidden="true">
+        Agent Types
+      </div>
+      <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+        <a href="/resources" class="font-sans text-xs tracking-[0.2em] text-secondary-fixed-dim uppercase hover:text-white transition-colors">&larr; Resources</a>
+        <h1 class="font-serif text-5xl md:text-6xl lg:text-7xl text-white leading-[1.05] mt-4 max-w-4xl text-balance">
+          Agent Types &amp;
+          <br />
+          <span class="italic text-secondary-fixed-dim">Brand Mapping.</span>
+        </h1>
+      </div>
+    </section>
+
+    <!-- Preamble -->
+    <section class="bg-surface py-20 lg:py-28">
+      <div class="max-w-4xl mx-auto px-6 lg:px-8">
+        <span class="font-sans text-xs tracking-[0.2em] text-primary uppercase">Preamble</span>
+        <h2 class="font-serif text-4xl lg:text-5xl text-on-surface mt-4 leading-[1.1]">What Is an AI Agent?</h2>
+
+        <p class="font-body text-on-surface-variant mt-8 leading-relaxed text-lg">
+          An AI Agent is <strong class="text-on-surface">not</strong> a person. It is not a chatbot. It is not magic.
+        </p>
+
+        <div class="bg-surface-container-low p-8 lg:p-10 mt-8 border border-outline font-mono text-sm leading-relaxed text-on-surface">
+          <strong class="text-primary">Working Environment</strong> (homedir, data, permissions)<br />
+          <strong class="text-on-surface">+</strong> <strong class="text-primary">LLM Model</strong> (inference engine)<br />
+          <strong class="text-on-surface">+</strong> <strong class="text-primary">Agent Harness</strong> (agent loop + guardrails + system prompt + core tools)<br />
+          <strong class="text-on-surface">+</strong> <strong class="text-primary">Tooling Layer</strong> (skills, plugins, MCP servers)
+        </div>
+
+        <p class="font-body text-on-surface-variant mt-6 leading-relaxed">
+          Remove any one of these components and what remains is not an agent — it is a language model generating text in a vacuum. This definition matters because the industry has stretched "AI Agent" to cover everything from a ChatGPT wrapper to a full production system. We do not.
+        </p>
+      </div>
+    </section>
+
+    <!-- Layer 1: Engineering Types -->
+    <section class="bg-surface-container-low py-20 lg:py-28">
+      <div class="max-w-4xl mx-auto px-6 lg:px-8">
+        <span class="font-sans text-xs tracking-[0.2em] text-primary uppercase">Layer 1</span>
+        <h2 class="font-serif text-4xl lg:text-5xl text-on-surface mt-4 leading-[1.1]">Engineering Types — What It Is</h2>
+
+        <div class="mt-10 space-y-6">
+          <div class="bg-surface p-6 border-l-4 border-primary">
+            <h3 class="font-sans text-lg text-on-surface font-bold">Task Agent</h3>
+            <p class="font-body text-on-surface-variant mt-2">Bounded, one-function agent. Executes a defined sequence with tool access and human milestone check-ins.</p>
+            <p class="font-body text-sm text-on-surface-variant mt-2 italic">Example: A Collections Desk automaton that chases overdue invoices — one workflow, clear exit criteria.</p>
+          </div>
+
+          <div class="bg-surface p-6 border-l-4 border-secondary">
+            <h3 class="font-sans text-lg text-on-surface font-bold">Process Agent</h3>
+            <p class="font-body text-on-surface-variant mt-2">Spans an end-to-end business process (e.g. procure-to-pay). Maintains state across steps and hands off between sub-agents.</p>
+            <p class="font-body text-sm text-on-surface-variant mt-2 italic">Example: A Procurement Desk that handles vendor selection → PO creation → delivery tracking → invoice matching.</p>
+          </div>
+
+          <div class="bg-surface p-6 border-l-4 bg-primary/5 border-primary">
+            <h3 class="font-sans text-lg text-on-surface font-bold">Orchestration Agent</h3>
+            <p class="font-body text-on-surface-variant mt-2">Coordinates other agents. Delegates subtasks, aggregates results, routes edge cases. Does not execute tasks directly.</p>
+            <p class="font-body text-sm text-on-surface-variant mt-2 italic">Example: A Directorate automaton that monitors Bureau Desks, escalates exceptions, and reports to the human team lead.</p>
+          </div>
+
+          <div class="bg-surface p-6 border-l-4 border-outline">
+            <h3 class="font-sans text-lg text-on-surface font-bold">Knowledge Agent</h3>
+            <p class="font-body text-on-surface-variant mt-2">Specialized in retrieval, synthesis, and explanation from a defined knowledge base. Read-only by default.</p>
+            <p class="font-body text-sm text-on-surface-variant mt-2 italic">Example: An agent that answers employee policy questions from a company handbook — it knows, it doesn't act.</p>
+          </div>
+
+          <div class="bg-surface p-6 border-l-4 border-outline">
+            <h3 class="font-sans text-lg text-on-surface font-bold">Monitor Agent</h3>
+            <p class="font-body text-on-surface-variant mt-2">Observes systems, data, or processes and alerts on anomalies. Read-only by design.</p>
+            <p class="font-body text-sm text-on-surface-variant mt-2 italic">Example: An agent that watches transaction volumes and flags unusual patterns before they become problems.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Layer 2: Commercial Brand -->
+    <section class="bg-surface py-20 lg:py-28">
+      <div class="max-w-4xl mx-auto px-6 lg:px-8">
+        <span class="font-sans text-xs tracking-[0.2em] text-primary uppercase">Layer 2</span>
+        <h2 class="font-serif text-4xl lg:text-5xl text-on-surface mt-4 leading-[1.1]">Commercial Brand — What Customers Buy</h2>
+
+        <p class="font-body text-on-surface-variant mt-8 leading-relaxed">
+          We market agents under the <strong class="text-on-surface">Automata (Ax)</strong> brand — workshop and industrial terminology that is precise, non-anthropomorphic, and honest about what the technology delivers.
+        </p>
+
+        <div class="overflow-x-auto mt-10">
+          <table class="w-full text-sm border-collapse">
+            <thead>
+              <tr class="bg-surface-container-low border-b border-outline">
+                <th class="text-left p-4 font-sans font-bold text-on-surface">Brand Category</th>
+                <th class="text-left p-4 font-sans font-bold text-on-surface">Engineering Equivalent</th>
+                <th class="text-left p-4 font-sans font-bold text-on-surface">What It Does</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-b border-outline/50">
+                <td class="p-4 font-sans font-bold text-primary">Directorate</td>
+                <td class="p-4 font-body text-on-surface-variant">Orchestration Agent</td>
+                <td class="p-4 font-body text-on-surface-variant">Strategic coordination. Sets direction, monitors operations, reports.</td>
+              </tr>
+              <tr class="border-b border-outline/50">
+                <td class="p-4 font-sans font-bold text-secondary">Bureau</td>
+                <td class="p-4 font-body text-on-surface-variant">Task Agent / Process Agent</td>
+                <td class="p-4 font-body text-on-surface-variant">Back-office operations umbrella. Contains specific Desks.</td>
+              </tr>
+              <tr class="border-b border-outline/50">
+                <td class="p-4 font-body text-on-surface-variant pl-8">├── Collections Desk</td>
+                <td class="p-4 font-body text-on-surface-variant">Task Agent (invoicing)</td>
+                <td class="p-4 font-body text-on-surface-variant">Payment chasing, reconciliation, reminders.</td>
+              </tr>
+              <tr class="border-b border-outline/50">
+                <td class="p-4 font-body text-on-surface-variant pl-8">├── Schedule Desk</td>
+                <td class="p-4 font-body text-on-surface-variant">Task Agent (scheduling)</td>
+                <td class="p-4 font-body text-on-surface-variant">Appointment booking, calendar management.</td>
+              </tr>
+              <tr class="border-b border-outline/50">
+                <td class="p-4 font-body text-on-surface-variant pl-8">├── Procurement Desk</td>
+                <td class="p-4 font-body text-on-surface-variant">Process Agent (procure-to-pay)</td>
+                <td class="p-4 font-body text-on-surface-variant">Vendor selection, PO creation, delivery tracking.</td>
+              </tr>
+              <tr class="border-b border-outline/50">
+                <td class="p-4 font-body text-on-surface-variant pl-8">└── Resolution Desk</td>
+                <td class="p-4 font-body text-on-surface-variant">Task Agent (support)</td>
+                <td class="p-4 font-body text-on-surface-variant">Customer inquiries, escalation, resolution.</td>
+              </tr>
+              <tr class="border-b border-outline/50">
+                <td class="p-4 font-sans font-bold" style="color:#bb86fc;">Laboratory</td>
+                <td class="p-4 font-body text-on-surface-variant italic">Environment (not an agent type)</td>
+                <td class="p-4 font-body text-on-surface-variant">Research, training, validation before deployment.</td>
+              </tr>
+              <tr class="border-b border-outline/50">
+                <td class="p-4 font-sans font-bold" style="color:#bb86fc;">Factory</td>
+                <td class="p-4 font-body text-on-surface-variant italic">Environment (not an agent type)</td>
+                <td class="p-4 font-body text-on-surface-variant">Build and deploy pipelines.</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-sans font-bold" style="color:#1EDDDA;">Assembly</td>
+                <td class="p-4 font-body text-on-surface-variant">Orchestration Agent (multi-agent)</td>
+                <td class="p-4 font-body text-on-surface-variant">Coordinate multiple Automata across end-to-end workflows.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Layer 3: Delivery Form -->
+    <section class="bg-surface-container-low py-20 lg:py-28">
+      <div class="max-w-4xl mx-auto px-6 lg:px-8">
+        <span class="font-sans text-xs tracking-[0.2em] text-primary uppercase">Layer 3</span>
+        <h2 class="font-serif text-4xl lg:text-5xl text-on-surface mt-4 leading-[1.1]">Delivery Form — How It's Packaged</h2>
+
+        <div class="overflow-x-auto mt-10">
+          <table class="w-full text-sm border-collapse">
+            <thead>
+              <tr class="bg-surface-container-lowest border-b border-outline">
+                <th class="text-left p-4 font-sans font-bold text-on-surface">Offering</th>
+                <th class="text-left p-4 font-sans font-bold text-on-surface">Engineering Basis</th>
+                <th class="text-left p-4 font-sans font-bold text-on-surface">Who It's For</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-b border-outline/50">
+                <td class="p-4 font-sans font-bold text-on-surface">Single Desk Automata</td>
+                <td class="p-4 font-body text-on-surface-variant">One Task Agent, one workflow</td>
+                <td class="p-4 font-body text-on-surface-variant">SMEs with a single pain point</td>
+              </tr>
+              <tr class="border-b border-outline/50">
+                <td class="p-4 font-sans font-bold text-on-surface">Multi-Desk Automata</td>
+                <td class="p-4 font-body text-on-surface-variant">2–3 Task/Process Agents, shared Bureau</td>
+                <td class="p-4 font-body text-on-surface-variant">Growing businesses, 2-3 workflows</td>
+              </tr>
+              <tr class="border-b border-outline/50">
+                <td class="p-4 font-sans font-bold text-on-surface">Full Assembly</td>
+                <td class="p-4 font-body text-on-surface-variant">Multiple agents + Orchestration Agent</td>
+                <td class="p-4 font-body text-on-surface-variant">Enterprise, multi-process automation</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-sans font-bold text-on-surface">Hermes Agent (Ha)</td>
+                <td class="p-4 font-body text-on-surface-variant">Full agent stack, self-hosted</td>
+                <td class="p-4 font-body text-on-surface-variant">Organizations running their own agent infrastructure</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Why This Vocabulary -->
+    <section class="bg-surface py-20 lg:py-28">
+      <div class="max-w-4xl mx-auto px-6 lg:px-8">
+        <span class="font-sans text-xs tracking-[0.2em] text-primary uppercase">Why This Vocabulary</span>
+        <h2 class="font-serif text-4xl lg:text-5xl text-on-surface mt-4 leading-[1.1]">Why We Don't Say "Digital Employee"</h2>
+
+        <p class="font-body text-on-surface-variant mt-8 leading-relaxed text-lg">
+          We do not use "Digital Employee," "AI Colleague," or "Digital Staff." These terms are imprecise and, per the BCG Henderson Institute, actively harmful — they reduce human accountability, lower review quality, and over-promise what the technology delivers.
+        </p>
+
+        <p class="font-body text-on-surface-variant mt-6 leading-relaxed">
+          Instead, we use:
+        </p>
+
+        <ul class="mt-6 space-y-4 font-body text-on-surface-variant leading-relaxed">
+          <li class="flex items-start gap-3">
+            <span class="w-2 h-2 bg-primary mt-2 flex-shrink-0"></span>
+            <span><strong class="text-on-surface">Workshop language</strong> (Bureau, Desk, Factory, Assembly) — implies machines and process, not people</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="w-2 h-2 bg-secondary mt-2 flex-shrink-0"></span>
+            <span><strong class="text-on-surface">Capability-prefixed engineering types</strong> (Task Agent, Process Agent, Orchestration Agent) — says what it does, not what it pretends to be</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="w-2 h-2 bg-primary mt-2 flex-shrink-0"></span>
+            <span><strong class="text-on-surface">Element symbols</strong> (Ax for Automata) — fits the Periodic Table of Elements brand without collision</span>
+          </li>
+        </ul>
+
+        <p class="font-body text-on-surface-variant mt-8 leading-relaxed border-l-4 border-primary pl-6 italic">
+          When you see "Automata" on this site, read: <em>an AI Agent built on open infrastructure, self-hosted in Jamaica, with a defined task scope and human verification gates.</em>
+        </p>
+      </div>
+    </section>
+
+    <!-- Related -->
+    <section class="bg-surface-container-low py-16">
+      <div class="max-w-4xl mx-auto px-6 lg:px-8">
+        <h3 class="font-sans text-sm tracking-[0.2em] text-primary uppercase">Related Resources</h3>
+        <div class="mt-6 flex flex-wrap gap-4">
+          <a href="/resources/glossary" class="font-sans text-sm px-4 py-2 bg-primary text-white hover:bg-secondary transition-colors">Customer Glossary</a>
+          <a href="/elements/automata" class="font-sans text-sm px-4 py-2 border border-outline text-on-surface hover:bg-surface-container-low transition-colors">Automata (Ax) Element</a>
+          <a href="/elements/hermes-agent" class="font-sans text-sm px-4 py-2 border border-outline text-on-surface hover:bg-surface-container-low transition-colors">Hermes Agent (Ha)</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+  <Footer />
+</BaseLayout>

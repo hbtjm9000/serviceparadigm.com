@@ -218,35 +218,8 @@ async function handleContact(request: Request, env: Env): Promise<Response> {
   try {
     logId = await logBegin(env.DB, tx)
 
-    if (env.RESEND_API_KEY && env.CONTACT_EMAIL_TO) {
-      const body = tx.body as Record<string, unknown>
-      const emailBody = `
-        Name: ${body.name ?? ''}
-        Email: ${body.email ?? ''}
-        Company: ${body.company ?? ''}
-        Service: ${body.service ?? ''}
-        Message: ${body.message ?? ''}
-        ---
-        Request ID: ${tx.requestId}
-      `
-      const res = await fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${env.RESEND_API_KEY}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          from: 'contact@serviceparadigm.com',
-          to: env.CONTACT_EMAIL_TO,
-          subject: `New Contact: ${body.name ?? 'Unknown'}`,
-          text: emailBody,
-        }),
-      })
-      if (!res.ok) {
-        const errText = await res.text()
-        throw new Error(`Email send failed: ${res.status} ${errText}`)
-      }
-    }
+    // Lead captured in D1 — CRM pipeline handled separately
+    // (transaction_log stores name, email, company, message, UTM params)
 
     const response = { ok: true, request_id: tx.requestId }
     await logSuccess(env.DB, logId, response)

@@ -1,0 +1,87 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import Newsletter from '../../components/Newsletter.vue';
+---
+
+<BaseLayout
+  title="Resources | Paradigm IT Services"
+  description="Technical resources, agent type definitions, and customer glossary from Paradigm IT Services."
+>
+  <Header logoVariant="mono-white" />
+  <main id="main">
+    <!-- Hero Section -->
+    <section class="bg-tertiary text-on-tertiary py-20 lg:py-28 relative overflow-hidden">
+      <div class="absolute -bottom-10 -right-20 text-[20rem] font-black text-white/5 font-serif pointer-events-none select-none" aria-hidden="true">
+        Resources
+      </div>
+      <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+        <span class="font-sans text-xs tracking-[0.2em] text-secondary-fixed-dim uppercase">Reference Library</span>
+        <h1 class="font-serif text-5xl md:text-6xl lg:text-7xl text-white leading-[1.05] mt-4 max-w-4xl text-balance">
+          Technical Resources
+          <br />
+          <span class="italic text-secondary-fixed-dim">&amp; Definitions.</span>
+        </h1>
+        <p class="mt-8 max-w-xl text-white/70 font-body leading-relaxed text-lg">
+          How we build, what we call things, and why it matters. 
+          No marketing — just engineering truth.
+        </p>
+      </div>
+    </section>
+
+    <!-- Resource Cards -->
+    <section class="bg-surface py-20 lg:py-28">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          
+          <a href="/resources/agent-types" class="group bg-surface-container-low p-10 border border-outline hover:border-primary transition-colors">
+            <div class="w-12 h-12 bg-primary flex items-center justify-center mb-6">
+              <span class="font-serif text-2xl text-on-primary font-bold">A</span>
+            </div>
+            <h2 class="font-serif text-2xl text-on-surface group-hover:text-primary transition-colors">Agent Types</h2>
+            <p class="font-body text-on-surface-variant mt-4 leading-relaxed">
+              The engineering taxonomy behind Automata — Task Agents, Process Agents, Orchestration Agents, 
+              and how they map to the products you buy.
+            </p>
+            <span class="inline-flex items-center gap-1 font-sans font-bold uppercase tracking-widest text-xs text-primary group-hover:text-secondary mt-6 transition-colors">
+              Read
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </span>
+          </a>
+
+          <a href="/resources/glossary" class="group bg-surface-container-low p-10 border border-outline hover:border-primary transition-colors">
+            <div class="w-12 h-12 bg-secondary flex items-center justify-center mb-6">
+              <span class="font-serif text-2xl text-on-secondary font-bold">G</span>
+            </div>
+            <h2 class="font-serif text-2xl text-on-surface group-hover:text-primary transition-colors">Customer Glossary</h2>
+            <p class="font-body text-on-surface-variant mt-4 leading-relaxed">
+              Plain-English definitions of every term we use — from Automata and Bureau to 
+              Verification Gate and Sovereign Deploy.
+            </p>
+            <span class="inline-flex items-center gap-1 font-sans font-bold uppercase tracking-widest text-xs text-secondary group-hover:text-primary mt-6 transition-colors">
+              Read
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </span>
+          </a>
+
+        </div>
+
+        <div class="max-w-2xl mx-auto mt-16 text-center">
+          <p class="font-body text-sm text-on-surface-variant">
+            When we use our agent branding on this site, we link back to these definitions.
+            You should always be able to find exactly what we mean by a term.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <Newsletter client:visible />
+  </main>
+  <Footer />
+</BaseLayout>

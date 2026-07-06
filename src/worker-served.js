@@ -144,6 +144,35 @@ async function handleContact(request, env) {
   let logId = 0;
   try {
     logId = await logBegin(env.DB, tx);
+    if (env.RESEND_API_KEY && env.CONTACT_EMAIL_TO) {
+      const body = tx.body;
+      const emailBody = `
+        Name: ${body.name ?? ""}
+        Email: ${body.email ?? ""}
+        Company: ${body.company ?? ""}
+        Service: ${body.service ?? ""}
+        Message: ${body.message ?? ""}
+        ---
+        Request ID: ${tx.requestId}
+      `;
+      const res = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${env.RESEND_API_KEY}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          from: "contact@serviceparadigm.com",
+          to: env.CONTACT_EMAIL_TO,
+          subject: `New Contact: ${body.name ?? "Unknown"}`,
+          text: emailBody
+        })
+      });
+      if (!res.ok) {
+        const errText = await res.text();
+        throw new Error(`Email send failed: ${res.status} ${errText}`);
+      }
+    }
     const response = { ok: true, request_id: tx.requestId };
     await logSuccess(env.DB, logId, response);
     return json(response);
@@ -535,3 +564,18 @@ var worker_default = {
 export {
   worker_default as default
 };
+import { worker_default } from './worker-bundle.js';
+
+addEventListener('fetch', (event) => {
+  const env = {
+    DB: event.DB,
+    ASSETS: event.ASSETS,
+    RESEND_API_KEY: event.RESEND_API_KEY,
+    CONTACT_EMAIL_TO: event.CONTACT_EMAIL_TO,
+    GROWTHBOOK_CLIENT_KEY: event.GROWTHBOOK_CLIENT_KEY,
+    ADMIN_PASSWORD: event.ADMIN_PASSWORD,
+    ADMIN_PIN: event.ADMIN_PIN,
+    FEATURE_ORDER_ENABLED: event.FEATURE_ORDER_ENABLED,
+  };
+  event.respondWith(worker_default.fetch(event.request, env));
+});

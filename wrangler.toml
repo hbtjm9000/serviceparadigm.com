@@ -1,17 +1,25 @@
-# serviceparadigm.com — Cloudflare Pages + Functions
-# Deployed via scripts/deploy-cf.py (direct API, not wrangler)
 name = "serviceparadigm-com"
-pages_build_output_dir = "./dist"
-compatibility_date = "2026-06-28"
+main = "src/worker.js"
+compatibility_date = "2026-06-12"
 compatibility_flags = ["nodejs_compat"]
+workers_dev = true
 
-# D1 Database (availablv via Pages Functions env.DB)
+# Static assets from the Astro build output
+assets = { directory = "./dist", binding = "ASSETS" }
+
+# Route the custom domain
+routes = [
+  { pattern = "serviceparadigm.com", zone_id = "473ebebb4b53769217fa9f7767b8d423" },
+  { pattern = "serviceparadigm.com/*", zone_id = "473ebebb4b53769217fa9f7767b8d423" },
+  { pattern = "www.serviceparadigm.com/*", zone_id = "473ebebb4b53769217fa9f7767b8d423" }
+]
+
+# D1 Database
 [[d1_databases]]
 binding = "DB"
 database_name = "serviceparadigm-db"
 database_id = "22fafb86-b121-4f90-a763-2cd58412ef22"
 
-# Environment variables (also set in Cloudflare Dashboard)
 [vars]
 ENVIRONMENT = "production"
 PUBLIC_GROWTHBOOK_API_HOST = "http://127.0.0.1:3102"

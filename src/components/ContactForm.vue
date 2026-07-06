@@ -105,7 +105,7 @@
 
 <script setup lang="ts">
 import { ref, reactive } from 'vue';
-import { getUtmParams, trackEvent } from '../lib/analytics';
+import { getCampaignParams, trackConversion } from '../lib/analytics';
 
 // Get current experiment variant from localStorage
 function getHeroVariant(): string {
@@ -118,10 +118,10 @@ function getHeroVariant(): string {
 // Log conversion to console and GA4
 function logConversion(variant: string): void {
   console.log(`[Conversion] hero-copy-test: ${variant} → form_submitted`);
-  trackEvent('form_submitted', {
+  trackConversion('form_submit', {
     experiment_id: 'hero-copy-test',
     variation_id: variant,
-    page_location: window.location.href,
+    form_id: 'contact',
   });
 }
 
@@ -156,7 +156,7 @@ const handleSubmit = async () => {
           company: form.company,
           service: form.service,
           message: form.message,
-          ...getUtmParams(),       // append UTM tracking
+          ...getCampaignParams(),   // append UTM + referral + discount tracking
           page_url: window.location.href,
           page_type: window.location.pathname,
         })

@@ -1,0 +1,345 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+---
+
+<BaseLayout
+  title="Customer Glossary — AI Agent Terminology | Paradigm IT Resources"
+  description="Plain-English definitions of every AI agent term used across Paradigm IT Services — from Automata and Bureau to Verification Gate and Sovereign Deploy."
+>
+  <Header logoVariant="mono-white" />
+  <main id="main">
+    <!-- Hero Section -->
+    <section class="bg-tertiary text-on-tertiary py-20 lg:py-28 relative overflow-hidden">
+      <div class="absolute -bottom-10 -right-20 text-[20rem] font-black text-white/5 font-serif pointer-events-none select-none" aria-hidden="true">
+        Glossary
+      </div>
+      <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+        <a href="/resources" class="font-sans text-xs tracking-[0.2em] text-secondary-fixed-dim uppercase hover:text-white transition-colors">&larr; Resources</a>
+        <h1 class="font-serif text-5xl md:text-6xl lg:text-7xl text-white leading-[1.05] mt-4 max-w-4xl text-balance">
+          Customer
+          <br />
+          <span class="italic text-secondary-fixed-dim">Glossary.</span>
+        </h1>
+        <p class="mt-8 max-w-xl text-white/70 font-body leading-relaxed text-lg">
+          We build AI tools for your business. This glossary defines what we mean — 
+          no hype, no marketing fluff, just what they are.
+        </p>
+      </div>
+    </section>
+
+    <!-- A Section -->
+    <section class="bg-surface py-12 lg:py-16" id="a">
+      <div class="max-w-4xl mx-auto px-6 lg:px-8">
+        <h2 class="font-serif text-4xl text-on-surface border-b border-outline pb-4">A</h2>
+
+        <div class="mt-8 space-y-8">
+          <div>
+            <h3 class="font-sans text-lg text-primary font-bold">Agent</h3>
+            <p class="font-body text-on-surface-variant mt-2 leading-relaxed">See <a href="#ai-agent" class="text-primary hover:text-secondary transition-colors">AI Agent</a>.</p>
+          </div>
+
+          <div>
+            <h3 class="font-sans text-lg text-primary font-bold">Agent Harness</h3>
+            <p class="font-body text-on-surface-variant mt-2 leading-relaxed">The runtime system that wraps an AI model with safety rails, tool access, and human checkpoints. The harness is where we enforce limits — not the model. Every Automata includes a harness.</p>
+          </div>
+
+          <div id="ai-agent">
+            <h3 class="font-sans text-lg text-primary font-bold">AI Agent</h3>
+            <p class="font-body text-on-surface-variant mt-2 leading-relaxed">An automated system that follows instructions, uses tools, and completes tasks within defined boundaries. It is not a person, not a chatbot, not magic. It is a machine built for work — composed of a model, a harness, tools, and a working environment. It handles <em>tasks</em>, not <em>jobs</em>.</p>
+          </div>
+
+          <div>
+            <h3 class="font-sans text-lg text-primary font-bold">Assembly</h3>
+            <p class="font-body text-on-surface-variant mt-2 leading-relaxed">Multi-Automata orchestration. When you need several Automata working together across end-to-end processes. See also <a href="#directorate" class="text-primary hover:text-secondary transition-colors">Directorate</a>, <a href="#bureau" class="text-primary hover:text-secondary transition-colors">Bureau</a>.</p>
+          </div>
+
+          <div>
+            <h3 class="font-sans text-lg text-primary font-bold">Automata (Ax)</h3>
+            <p class="font-body text-on-surface-variant mt-2 leading-relaxed">Our brand for autonomous AI agents. The name comes from "automaton" — a machine that follows a set of instructions. Not a person, not an employee. Automata handle invoicing, scheduling, procurement, and customer resolution. Self-hosted on Jamaican infrastructure.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- B Section -->
+    <section class="bg-surface-container-low py-12 lg:py-16" id="b">
+      <div class="max-w-4xl mx-auto px-6 lg:px-8">
+        <h2 class="font-serif text-4xl text-on-surface border-b border-outline pb-4">B</h2>
+
+        <div class="mt-8 space-y-8">
+          <div id="bureau">
+            <h3 class="font-sans text-lg text-secondary font-bold">Bureau</h3>
+            <p class="font-body text-on-surface-variant mt-2 leading-relaxed">The back-office category of Automata. A Bureau contains specific Desks — the actual workflows. See <a href="#collections-desk" class="text-primary hover:text-secondary transition-colors">Collections Desk</a>, <a href="#schedule-desk" class="text-primary hover:text-secondary transition-colors">Schedule Desk</a>, <a href="#procurement-desk" class="text-primary hover:text-secondary transition-colors">Procurement Desk</a>, <a href="#resolution-desk" class="text-primary hover:text-secondary transition-colors">Resolution Desk</a>.</p>
+          </div>
+
+          <div>
+            <h3 class="font-sans text-lg text-secondary font-bold">Bootstrapped Agent</h3>
+            <p class="font-body text-on-surface-variant mt-2 leading-relaxed">A pre-configured AI Agent for a common business function. Delivered in 2 weeks at a fixed price. Includes working environment, harness, and one trained task loop.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- C Section -->
+    <section class="bg-surface py-12 lg:py-16" id="c">
+      <div class="max-w-4xl mx-auto px-6 lg:px-8">
+        <h2 class="font-serif text-4xl text-on-surface border-b border-outline pb-4">C</h2>
+
+        <div class="mt-8 space-y-8">
+          <div id="collections-desk">
+            <h3 class="font-sans text-lg text-primary font-bold">Collections Desk</h3>
+            <p class="font-body text-on-surface-variant mt-2 leading-relaxed">An Automaton that handles invoicing, payment chasing, reminders, and reconciliation. Your collections process, automated end-to-end.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- D Section -->
+    <section class="bg-surface-container-low py-12 lg:py-16" id="d">
+      <div class="max-w-4xl mx-auto px-6 lg:px-8">
+        <h2 class="font-serif text-4xl text-on-surface border-b border-outline pb-4">D</h2>
+
+        <div class="mt-8 space-y-8">
+          <div>
+            <h3 class="font-sans text-lg text-secondary font-bold">Desk</h3>
+            <p class="font-body text-on-surface-variant mt-2 leading-relaxed">A specific workflow within a Bureau. Each Desk is one task-focused Automaton. Example: Collections Desk, Schedule Desk.</p>
+          </div>
+
+          <div id="directorate">
+            <h3 class="font-sans text-lg text-secondary font-bold">Directorate</h3>
+            <p class="font-body text-on-surface-variant mt-2 leading-relaxed">The coordination Automaton. It doesn't do the work itself — it monitors your Bureau Desks, escalates exceptions, and reports to your team. Think of it as the supervisor that never sleeps.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- F Section -->
+    <section class="bg-surface py-12 lg:py-16" id="f">
+      <div class="max-w-4xl mx-auto px-6 lg:px-8">
+        <h2 class="font-serif text-4xl text-on-surface border-b border-outline pb-4">F</h2>
+
+        <div class="mt-8 space-y-8">
+          <div>
+            <h3 class="font-sans text-lg text-primary font-bold">Factory</h3>
+            <p class="font-body text-on-surface-variant mt-2 leading-relaxed">Our build and deployment environment. Automata are constructed here, tested here, and shipped from here to your workspace.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- G Section -->
+    <section class="bg-surface-container-low py-12 lg:py-16" id="g">
+      <div class="max-w-4xl mx-auto px-6 lg:px-8">
+        <h2 class="font-serif text-4xl text-on-surface border-b border-outline pb-4">G</h2>
+
+        <div class="mt-8 space-y-8">
+          <div>
+            <h3 class="font-sans text-lg text-secondary font-bold">Guided Execution</h3>
+            <p class="font-body text-on-surface-variant mt-2 leading-relaxed">A workflow where the agent proposes a plan, a human approves it, the agent executes, and a human verifies the result. No autonomy ambiguity — you stay in control.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- H Section -->
+    <section class="bg-surface py-12 lg:py-16" id="h">
+      <div class="max-w-4xl mx-auto px-6 lg:px-8">
+        <h2 class="font-serif text-4xl text-on-surface border-b border-outline pb-4">H</h2>
+
+        <div class="mt-8 space-y-8">
+          <div>
+            <h3 class="font-sans text-lg text-primary font-bold">Harness</h3>
+            <p class="font-body text-on-surface-variant mt-2 leading-relaxed">See <a href="#agent-harness" class="text-primary hover:text-secondary transition-colors">Agent Harness</a>.</p>
+          </div>
+
+          <div>
+            <h3 class="font-sans text-lg text-primary font-bold">Harness Engineering</h3>
+            <p class="font-body text-on-surface-variant mt-2 leading-relaxed">The discipline of designing environments, constraints, and feedback loops that make AI agents reliable in production. Distinct from prompt engineering. This is what we do.</p>
+          </div>
+
+          <div>
+            <h3 class="font-sans text-lg text-primary font-bold">Hybrid Inference</h3>
+            <p class="font-body text-on-surface-variant mt-2 leading-relaxed">Running AI models across both local (self-hosted) and cloud infrastructure, selected per-task based on sensitivity and speed requirements.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- K Section -->
+    <section class="bg-surface-container-low py-12 lg:py-16" id="k">
+      <div class="max-w-4xl mx-auto px-6 lg:px-8">
+        <h2 class="font-serif text-4xl text-on-surface border-b border-outline pb-4">K</h2>
+
+        <div class="mt-8 space-y-8">
+          <div>
+            <h3 class="font-sans text-lg text-secondary font-bold">Knowledge Agent</h3>
+            <p class="font-body text-on-surface-variant mt-2 leading-relaxed">An AI Agent specialized in finding and explaining information from a defined knowledge base. Read-only by default — it answers questions but does not take action.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- L Section -->
+    <section class="bg-surface py-12 lg:py-16" id="l">
+      <div class="max-w-4xl mx-auto px-6 lg:px-8">
+        <h2 class="font-serif text-4xl text-on-surface border-b border-outline pb-4">L</h2>
+
+        <div class="mt-8 space-y-8">
+          <div>
+            <h3 class="font-sans text-lg text-primary font-bold">Laboratory</h3>
+            <p class="font-body text-on-surface-variant mt-2 leading-relaxed">Our research, training, and validation environment. Automata are tested here before they reach your Bureau.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- M Section -->
+    <section class="bg-surface-container-low py-12 lg:py-16" id="m">
+      <div class="max-w-4xl mx-auto px-6 lg:px-8">
+        <h2 class="font-serif text-4xl text-on-surface border-b border-outline pb-4">M</h2>
+
+        <div class="mt-8 space-y-8">
+          <div>
+            <h3 class="font-sans text-lg text-secondary font-bold">Monitor Agent</h3>
+            <p class="font-body text-on-surface-variant mt-2 leading-relaxed">An AI Agent that watches systems, data, or processes and alerts on anomalies. Watch only — it does not make changes.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- O Section -->
+    <section class="bg-surface py-12 lg:py-16" id="o">
+      <div class="max-w-4xl mx-auto px-6 lg:px-8">
+        <h2 class="font-serif text-4xl text-on-surface border-b border-outline pb-4">O</h2>
+
+        <div class="mt-8 space-y-8">
+          <div>
+            <h3 class="font-sans text-lg text-primary font-bold">Orchestration Agent</h3>
+            <p class="font-body text-on-surface-variant mt-2 leading-relaxed">An agent that coordinates other agents. Delegates tasks, collects results, routes problems. Does not execute tasks directly.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- P Section -->
+    <section class="bg-surface-container-low py-12 lg:py-16" id="p">
+      <div class="max-w-4xl mx-auto px-6 lg:px-8">
+        <h2 class="font-serif text-4xl text-on-surface border-b border-outline pb-4">P</h2>
+
+        <div class="mt-8 space-y-8">
+          <div>
+            <h3 class="font-sans text-lg text-secondary font-bold">Process Agent</h3>
+            <p class="font-body text-on-surface-variant mt-2 leading-relaxed">An AI Agent that spans an end-to-end business process (e.g. procurement, order-to-cash). Maintains state across steps and hands off between sub-agents.</p>
+          </div>
+
+          <div id="procurement-desk">
+            <h3 class="font-sans text-lg text-secondary font-bold">Procurement Desk</h3>
+            <p class="font-body text-on-surface-variant mt-2 leading-relaxed">An Automaton that handles vendor selection, purchase order creation, and delivery tracking. End-to-end procurement automation.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- R Section -->
+    <section class="bg-surface py-12 lg:py-16" id="r">
+      <div class="max-w-4xl mx-auto px-6 lg:px-8">
+        <h2 class="font-serif text-4xl text-on-surface border-b border-outline pb-4">R</h2>
+
+        <div class="mt-8 space-y-8">
+          <div id="resolution-desk">
+            <h3 class="font-sans text-lg text-primary font-bold">Resolution Desk</h3>
+            <p class="font-body text-on-surface-variant mt-2 leading-relaxed">An Automaton that handles customer inquiries, support tickets, and escalation. Keeps your customers informed while you handle the complex cases.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- S Section -->
+    <section class="bg-surface-container-low py-12 lg:py-16" id="s">
+      <div class="max-w-4xl mx-auto px-6 lg:px-8">
+        <h2 class="font-serif text-4xl text-on-surface border-b border-outline pb-4">S</h2>
+
+        <div class="mt-8 space-y-8">
+          <div id="schedule-desk">
+            <h3 class="font-sans text-lg text-secondary font-bold">Schedule Desk</h3>
+            <p class="font-body text-on-surface-variant mt-2 leading-relaxed">An Automaton that manages appointments, calendar booking, and reminders. No more back-and-forth emails to find a time.</p>
+          </div>
+
+          <div>
+            <h3 class="font-sans text-lg text-secondary font-bold">Sovereign Deploy</h3>
+            <p class="font-body text-on-surface-variant mt-2 leading-relaxed">AI infrastructure deployed on customer-owned hardware or dedicated tenancy in Jamaican data centres. Your data never leaves the country. This is our default deployment model, not a premium add-on.</p>
+          </div>
+
+          <div>
+            <h3 class="font-sans text-lg text-secondary font-bold">Stack Ownership</h3>
+            <p class="font-body text-on-surface-variant mt-2 leading-relaxed">Owning your full AI stack — inference, memory, tooling — rather than renting from a single vendor. Prevents lock-in and vendor dependency.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- T Section -->
+    <section class="bg-surface py-12 lg:py-16" id="t">
+      <div class="max-w-4xl mx-auto px-6 lg:px-8">
+        <h2 class="font-serif text-4xl text-on-surface border-b border-outline pb-4">T</h2>
+
+        <div class="mt-8 space-y-8">
+          <div>
+            <h3 class="font-sans text-lg text-primary font-bold">Task Agent</h3>
+            <p class="font-body text-on-surface-variant mt-2 leading-relaxed">A focused AI Agent that executes one function well. The basic unit of deployment. A Task Agent handles a defined sequence of steps with tool access and human milestone check-ins.</p>
+          </div>
+
+          <div>
+            <h3 class="font-sans text-lg text-primary font-bold">Tooling Layer</h3>
+            <p class="font-body text-on-surface-variant mt-2 leading-relaxed">The set of capabilities an agent can call: skills (procedures), plugins (third-party integrations), and MCP servers (external tools). This defines what the agent is allowed to do.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- V Section -->
+    <section class="bg-surface-container-low py-12 lg:py-16" id="v">
+      <div class="max-w-4xl mx-auto px-6 lg:px-8">
+        <h2 class="font-serif text-4xl text-on-surface border-b border-outline pb-4">V</h2>
+
+        <div class="mt-8 space-y-8">
+          <div>
+            <h3 class="font-sans text-lg text-secondary font-bold">Verification Gate</h3>
+            <p class="font-body text-on-surface-variant mt-2 leading-relaxed">A mandatory human review step before agent output becomes action. Built into every Automata. Not a limitation — a design principle. You see what the agent produced before it takes effect.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How We Use These Terms -->
+    <section class="bg-surface py-16 lg:py-20">
+      <div class="max-w-4xl mx-auto px-6 lg:px-8">
+        <h2 class="font-serif text-3xl text-on-surface">How We Use These Terms</h2>
+
+        <ul class="mt-8 space-y-4 font-body text-on-surface-variant leading-relaxed">
+          <li class="flex items-start gap-3">
+            <span class="w-2 h-2 bg-primary mt-2 flex-shrink-0"></span>
+            <span><strong class="text-on-surface">On this site</strong> — We use the Automata brand (Directorate, Bureau, Desk) because it's clear and honest about what you're buying.</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="w-2 h-2 bg-secondary mt-2 flex-shrink-0"></span>
+            <span><strong class="text-on-surface">In our blogs</strong> — We use the engineering taxonomy (Task Agent, Process Agent, Orchestration Agent) when discussing architecture.</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="w-2 h-2 bg-primary mt-2 flex-shrink-0"></span>
+            <span><strong class="text-on-surface">In your contract</strong> — We use the delivery form (Single Desk, Multi-Desk, Assembly) because it maps to what you pay for.</span>
+          </li>
+        </ul>
+
+        <p class="font-body text-on-surface-variant mt-8 leading-relaxed border-l-4 border-primary pl-6 italic">
+          They describe the same thing at different levels of detail. This glossary connects them.
+        </p>
+        <p class="font-body text-sm text-on-surface-variant mt-4"><em>Last updated: July 2026</em></p>
+      </div>
+    </section>
+
+  </main>
+  <Footer />
+</BaseLayout>
