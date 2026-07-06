@@ -1,5 +1,5 @@
 <template>
-  <section class="bg-primary py-24 text-white overflow-hidden relative">
+  <section v-if="showNewsletter" class="bg-primary py-24 text-white overflow-hidden relative">
     <div class="max-w-3xl mx-auto px-6 lg:px-8 relative z-10 flex flex-col items-center text-center">
       <!-- Headline -->
       <h2 class="font-serif text-5xl lg:text-7xl text-white font-black mb-8">
@@ -53,24 +53,21 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import { getUtmParams, trackEvent } from '../lib/analytics';
+import { ref, onMounted } from 'vue';
+import { getCampaignParams, trackConversion } from '../lib/analytics';
+import { isOn } from '../lib/features';
 
-// Get current experiment variant from localStorage
-function getHeroVariant(): string {
-  if (typeof window !== 'undefined') {
-    return localStorage.getItem('exp:hero-copy-test') || 'unknown';
-  }
-  return 'unknown';
-}
+const showNewsletter = ref(false);
+
+onMounted(() => {
+  showNewsletter.value = isOn('show-newsletter');
+});
 
 // Log conversion to console and GA4
-function logConversion(variant: string): void {
-  console.log(`[Conversion] hero-copy-test: ${variant} → newsletter_submitted`);
-  trackEvent('newsletter_submitted', {
-    experiment_id: 'hero-copy-test',
-    variation_id: variant,
-    page_location: window.location.href,
+function logConversion(): void {
+  console.log(`[Conversion] newsletter_submitted`);
+  trackConversion('form_submit', {
+    form_id: 'newsletter',
   });
 }
 
@@ -105,9 +102,8 @@ const handleSubmit = async () => {
     isSubmitting.value = false;
     email.value = '';
     
-    // Log conversion with experiment variant
-    const variant = getHeroVariant();
-    logConversion(variant);
+    // Log conversion
+    logConversion();
     
     // Reset success message after 5 seconds
     setTimeout(() => {
