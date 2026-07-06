@@ -63,7 +63,7 @@ const elements = [
   { symbol: 'Zt', name: 'Zero Trust', route: '/elements/zero-trust', short: 'Identity and access management built on zero trust principles.' },
   { symbol: 'Dp', name: 'Digital Presence', route: '/elements/digital-presence', short: 'Websites and social media to establish your digital footprint.' },
   { symbol: 'Bc', name: 'Business Continuity', route: '/elements/business-continuity', short: 'Backup and disaster recovery for any disruption.' },
-  { symbol: 'Cp', name: 'Cloud', route: '/elements/cloud', short: 'Cloud hosting and infrastructure across leading platforms.' },
+  { symbol: 'Cp', name: 'Compute', route: '/elements/cloud', short: 'Public, private, and hybrid cloud — including sovereign solutions.' },
   { symbol: 'Ha', name: 'Hermes Agent', route: '/elements/hermes-agent', short: 'Autonomous AI agent infrastructure, fully under your control.' },
 ]
 
