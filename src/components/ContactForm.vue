@@ -130,8 +130,33 @@ const form = reactive({
   email: '',
   company: '',
   service: '',
-  message: ''
+  message: '',
+  interest: '',
 });
+
+// Read ?interest= from URL on mount
+if (typeof window !== 'undefined') {
+  const params = new URLSearchParams(window.location.search);
+  const interest = params.get('interest');
+  if (interest) {
+    form.interest = interest;
+    // Pre-select the service dropdown if interest matches
+    const serviceMap: Record<string, string> = {
+      'automata': 'ai-strategy',
+      'hermes-agent': 'ai-strategy',
+      'compute': 'solutions-architecture',
+      'cloud': 'solutions-architecture',
+      'zero-trust': 'cybersecurity',
+      'cybersecurity': 'cybersecurity',
+      'digital-presence': 'digital-presence',
+      'email': 'solutions-architecture',
+      'business-continuity': 'solutions-architecture',
+    };
+    if (serviceMap[interest] && !form.service) {
+      form.service = serviceMap[interest];
+    }
+  }
+}
 
 const isSubmitting = ref(false);
 const submitted = ref(false);

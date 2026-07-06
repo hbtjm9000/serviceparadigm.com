@@ -408,6 +408,8 @@ interface Article {
   image_url?: string
   author_id: string
   read_time_minutes?: number
+  sort_order?: number
+  is_pinned?: number
   status?: 'draft' | 'published' | 'archived'
   published_at?: string
   created_at?: string
@@ -439,10 +441,10 @@ async function handleGetArticles(request: Request, env: Env): Promise<Response> 
   // List all published articles
   const { results } = await env.DB.prepare(`
     SELECT id, slug, title, excerpt, category, image_url, author_id,
-           read_time_minutes, published_at
+           read_time_minutes, sort_order, is_pinned, published_at
     FROM articles
     WHERE status = 'published'
-    ORDER BY published_at DESC
+    ORDER BY is_pinned DESC, sort_order ASC, published_at DESC
   `).all()
 
   return json({ ok: true, articles: results as unknown as Article[] })

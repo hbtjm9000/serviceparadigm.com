@@ -20,34 +20,34 @@
 
         <!-- Featured + Grid -->
         <template v-else>
-          <article class="grid lg:grid-cols-2 gap-12 items-center group" :key="articles[0].id">
-            <div class="aspect-[16/10] bg-surface-container overflow-hidden">
+          <!-- Featured article: first pinned article, or first article overall -->
+          <article class="grid lg:grid-cols-2 gap-12 items-center group border border-outline p-8 lg:p-12" :key="featured.id">
+            <div class="aspect-[16/10] bg-surface-container overflow-hidden flex items-center justify-center">
               <img
-                v-if="articles[0].image_url"
-                :src="articles[0].image_url"
-                :alt="articles[0].title"
+                v-if="featured.image_url"
+                :src="featured.image_url"
+                :alt="featured.title"
                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
               />
-              <div v-else class="w-full h-full bg-surface-container flex items-center justify-center">
-                <span class="text-on-surface-variant font-serif italic">Paradigm</span>
-              </div>
+              <span v-else class="text-on-surface-variant font-serif text-6xl italic opacity-30">Featured</span>
             </div>
             <div>
               <div class="flex items-center gap-4 mb-4">
-                <span class="font-sans text-xs tracking-[0.15em] text-primary uppercase">{{ articles[0].category || 'Article' }}</span>
+                <span v-if="featured.is_pinned" class="bg-primary text-on-primary font-sans text-[10px] tracking-[0.15em] uppercase px-3 py-1">Featured</span>
+                <span class="font-sans text-xs tracking-[0.15em] text-primary uppercase">{{ featured.category || 'Article' }}</span>
                 <span class="text-outline">•</span>
-                <span class="font-sans text-xs text-on-surface-variant">{{ formatDate(articles[0].published_at) }}</span>
+                <span class="font-sans text-xs text-on-surface-variant">{{ formatDate(featured.published_at) }}</span>
               </div>
               <h2 class="font-serif text-3xl lg:text-4xl text-on-surface leading-tight group-hover:text-primary transition-colors">
-                <a :href="`/insights/${articles[0].slug}/`">{{ articles[0].title }}</a>
+                <a :href="`/insights/${featured.slug}/`">{{ featured.title }}</a>
               </h2>
               <p class="font-body text-on-surface-variant mt-4 leading-relaxed text-lg">
-                {{ articles[0].excerpt }}
+                {{ featured.excerpt }}
               </p>
               <div class="flex items-center gap-6 mt-6">
-                <span class="font-sans text-xs text-on-surface-variant">{{ articles[0].read_time_minutes }} min read</span>
+                <span class="font-sans text-xs text-on-surface-variant">{{ featured.read_time_minutes }} min read</span>
                 <a
-                  :href="`/insights/${articles[0].slug}/`"
+                  :href="`/insights/${featured.slug}/`"
                   class="inline-flex items-center gap-2 font-sans text-sm text-primary hover:gap-3 transition-all tracking-wide"
                 >
                   Read Article
@@ -64,20 +64,18 @@
             <div class="max-w-7xl mx-auto">
               <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <article
-                  v-for="article in articles.slice(1)"
+                  v-for="article in rest"
                   :key="article.id"
                   class="group"
                 >
-                  <div class="aspect-[16/10] bg-surface-container overflow-hidden mb-6">
+                  <div class="aspect-[16/10] bg-surface-container overflow-hidden mb-6 flex items-center justify-center">
                     <img
                       v-if="article.image_url"
                       :src="article.image_url"
                       :alt="article.title"
                       class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
-                    <div v-else class="w-full h-full bg-surface-container flex items-center justify-center">
-                      <span class="text-on-surface-variant font-serif italic">Paradigm</span>
-                    </div>
+                    <span v-else class="text-on-surface-variant font-serif italic opacity-20">{{ article.category === 'Position' ? 'Opinion' : 'Article' }}</span>
                   </div>
                   <div class="flex items-center gap-4 mb-3">
                     <span class="font-sans text-xs tracking-[0.15em] text-primary uppercase">{{ article.category || 'Article' }}</span>
@@ -110,7 +108,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 
 interface Article {
   id: number
@@ -120,12 +118,23 @@ interface Article {
   category: string
   image_url: string
   read_time_minutes: number
+  sort_order: number
+  is_pinned: number
   published_at: string
 }
 
 const loading = ref(true)
 const error = ref<string | null>(null)
 const articles = ref<Article[]>([])
+
+const featured = computed(() => {
+  const pinned = articles.value.find(a => a.is_pinned)
+  return pinned || articles.value[0]
+})
+
+const rest = computed(() =>
+  articles.value.filter(a => a.id !== featured.value?.id)
+)
 
 function formatDate(dateStr: string) {
   const d = new Date(dateStr)
