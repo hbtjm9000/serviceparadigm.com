@@ -2,16 +2,88 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import ArticlesList from '../components/ArticlesList.vue';
 import Newsletter from '../components/Newsletter.vue';
+
+interface Article {
+  slug: string;
+  title: string;
+  excerpt: string;
+  category: string;
+  read_time_minutes: number;
+  published: string;
+  tab: string;  // 'featured' | 'series' | 'position'
+  order: number;
+}
+
+// ── Article manifest ─────────────────────────────────────────────
+// Order is explicit. Set tab='featured' on exactly one article to
+// pin it at the top. The rest are ordered by `order` ascending.
+const articles: Article[] = [
+  {
+    slug: 'ai-position-piece',
+    title: 'AI Is Not the Next Industrial Revolution',
+    excerpt: 'Every previous revolution replaced physical labor. This one replaces reasoning itself. We have agency — but the window is closing.',
+    category: 'Position',
+    read_time_minutes: 8,
+    published: 'July 2026',
+    tab: 'featured',
+    order: 0,
+  },
+  {
+    slug: 'blog-1-chatbot-vs-agent',
+    title: 'Beyond the Chatbot: What Actually Counts as an AI Agent?',
+    excerpt: 'Most things called AI agents are chatbots with premium price tags. Here\'s the diagnostic to tell the difference.',
+    category: 'Series — AI Agents',
+    read_time_minutes: 10,
+    published: 'July 2026',
+    tab: 'series',
+    order: 1,
+  },
+  {
+    slug: 'blog-2-three-percent-problem',
+    title: 'The 3% Problem: Why 86% of Enterprise Agent Pilots Fail',
+    excerpt: 'Not a model problem. The bottleneck shifted from "can the model do it" to "can the infrastructure support it."',
+    category: 'Series — AI Agents',
+    read_time_minutes: 10,
+    published: 'July 2026',
+    tab: 'series',
+    order: 2,
+  },
+  {
+    slug: 'blog-3-which-species',
+    title: 'Which Species for Which Job? Mapping Agent Architectures',
+    excerpt: 'Not all L3 agents are the same. Deploying the wrong architecture guarantees failure regardless of the model.',
+    category: 'Series — AI Agents',
+    read_time_minutes: 8,
+    published: 'July 2026',
+    tab: 'series',
+    order: 3,
+  },
+  {
+    slug: 'blog-4-stack-ownership',
+    title: 'Stop Renting Your AI. Own the Stack.',
+    excerpt: 'If your agent infrastructure relies on a single vendor\'s model, memory, and toolchain, you don\'t own your deployment.',
+    category: 'Series — AI Agents',
+    read_time_minutes: 8,
+    published: 'July 2026',
+    tab: 'series',
+    order: 4,
+  },
+];
+
+const featured = articles.find(a => a.tab === 'featured');
+const rest = articles.filter(a => a.tab !== 'featured').sort((a, b) => a.order - b.order);
 ---
 
-<BaseLayout title="Insights | Paradigm IT Services" description="Technical insights, thought leadership, and industry perspectives from Paradigm IT Services. AI strategy, cloud architecture, and cybersecurity for Caribbean enterprises.">
+<BaseLayout
+  title="Insights | Paradigm IT Services"
+  description="Technical insights, thought leadership, and industry perspectives from Paradigm IT Services."
+>
   <Header logoVariant="mono-white" />
   <main id="main">
+
     <!-- Hero Section -->
     <section class="bg-tertiary text-on-tertiary py-20 lg:py-28 relative overflow-hidden">
-      <!-- Background text effect -->
       <div class="absolute -bottom-10 -right-20 text-[20rem] font-black text-white/5 font-serif pointer-events-none select-none" aria-hidden="true">
         Insights
       </div>
@@ -27,11 +99,83 @@ import Newsletter from '../components/Newsletter.vue';
       </div>
     </section>
 
-    <!-- Dynamic Articles (fetched from API) -->
-    <ArticlesList client:load />
+    <!-- Featured Article -->
+    <section class="bg-surface py-20 lg:py-24">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        {featured && (
+          <article class="grid lg:grid-cols-2 gap-12 items-center group border border-outline p-8 lg:p-12">
+            <div class="aspect-[16/10] bg-surface-container flex items-center justify-center">
+              <span class="text-on-surface-variant font-serif text-6xl italic opacity-30">Featured</span>
+            </div>
+            <div>
+              <div class="flex items-center gap-4 mb-4">
+                <span class="bg-primary text-on-primary font-sans text-[10px] tracking-[0.15em] uppercase px-3 py-1">Featured</span>
+                <span class="font-sans text-xs tracking-[0.15em] text-primary uppercase">{featured.category}</span>
+                <span class="text-outline">•</span>
+                <span class="font-sans text-xs text-on-surface-variant">{featured.published}</span>
+              </div>
+              <h2 class="font-serif text-3xl lg:text-4xl text-on-surface leading-tight group-hover:text-primary transition-colors">
+                <a href={`/insights/${featured.slug}`}>{featured.title}</a>
+              </h2>
+              <p class="font-body text-on-surface-variant mt-4 leading-relaxed text-lg">
+                {featured.excerpt}
+              </p>
+              <div class="flex items-center gap-6 mt-6">
+                <span class="font-sans text-xs text-on-surface-variant">{featured.read_time_minutes} min read</span>
+                <a
+                  href={`/insights/${featured.slug}`}
+                  class="inline-flex items-center gap-2 font-sans text-sm text-primary hover:gap-3 transition-all tracking-wide"
+                >
+                  Read Article
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </article>
+        )}
+      </div>
+    </section>
+
+    <!-- Article Grid -->
+    <section class="bg-surface-container-low py-20 lg:py-24">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {rest.map((article) => (
+            <article class="group">
+              <div class="aspect-[16/10] bg-surface-container flex items-center justify-center mb-6">
+                <span class="text-on-surface-variant font-serif italic opacity-20">{article.category === 'Position' ? 'Opinion' : 'Series'}</span>
+              </div>
+              <div class="flex items-center gap-4 mb-3">
+                <span class="font-sans text-xs tracking-[0.15em] text-primary uppercase">{article.category}</span>
+                <span class="text-outline">•</span>
+                <span class="font-sans text-xs text-on-surface-variant">{article.published}</span>
+              </div>
+              <h3 class="font-serif text-xl lg:text-2xl text-on-surface leading-tight group-hover:text-primary transition-colors">
+                <a href={`/insights/${article.slug}`}>{article.title}</a>
+              </h3>
+              <p class="font-body text-on-surface-variant mt-3 leading-relaxed" style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+                {article.excerpt}
+              </p>
+              <div class="flex items-center justify-between mt-4">
+                <span class="font-sans text-xs text-on-surface-variant">{article.read_time_minutes} min read</span>
+                <a
+                  href={`/insights/${article.slug}`}
+                  class="font-sans text-sm text-primary hover:text-secondary transition-colors tracking-wide"
+                >
+                  Read →
+                </a>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
 
     <!-- Newsletter -->
     <Newsletter client:visible />
+
   </main>
   <Footer />
 </BaseLayout>
