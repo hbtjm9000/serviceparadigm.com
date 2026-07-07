@@ -183,6 +183,7 @@ async function protectInternalRoute(request: Request, env: Env): Promise<Respons
 
   // Allow login page and API auth endpoints
   if (url.pathname === '/internala/login' || url.pathname.startsWith('/internala/login')) return null
+  if (url.pathname === '/internala/pending' || url.pathname.startsWith('/internala/pending')) return null
 
   const cookie = parseCookie(request, AUTH_COOKIE)
   if (!cookie) {
@@ -578,9 +579,9 @@ async function handleAdminCreateArticle(request: Request, env: Env): Promise<Res
     type D1RunResult = { meta: { last_row_id: number } }
     const { meta } = await (env.DB.prepare(`
       INSERT INTO articles (slug, title, excerpt, body, category, image_url,
-                            author_id, read_time_minutes, status, published_at,
-                            created_at, updated_at)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                            author_id, read_time_minutes, sort_order, is_pinned,
+                            status, published_at, created_at, updated_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).bind(
       body.slug,
       body.title,
@@ -590,6 +591,8 @@ async function handleAdminCreateArticle(request: Request, env: Env): Promise<Res
       body.image_url ?? null,
       body.author_id ?? 'hal',
       body.read_time_minutes ?? 5,
+      body.sort_order ?? 0,
+      body.is_pinned ?? 0,
       body.status ?? 'draft',
       publishedAt,
       now,
@@ -654,6 +657,7 @@ async function handleAdminUpdateArticle(request: Request, env: Env): Promise<Res
       UPDATE articles SET
         slug = ?, title = ?, excerpt = ?, body = ?, category = ?,
         image_url = ?, author_id = ?, read_time_minutes = ?,
+        sort_order = ?, is_pinned = ?,
         status = ?, published_at = ?, updated_at = ?
       WHERE id = ?
     `).bind(
@@ -665,6 +669,8 @@ async function handleAdminUpdateArticle(request: Request, env: Env): Promise<Res
       body.image_url ?? current.image_url ?? null,
       body.author_id ?? current.author_id,
       body.read_time_minutes ?? current.read_time_minutes ?? 5,
+      body.sort_order ?? current.sort_order ?? 0,
+      body.is_pinned ?? current.is_pinned ?? 0,
       body.status ?? current.status,
       publishedAt,
       now,
@@ -704,6 +710,335 @@ async function handleAdminDeleteArticle(request: Request, env: Env): Promise<Res
   return json({ ok: true })
 }
 
+// ── Admin Appointment Request Handlers ────────────────────────────────────
+
+async function handleAdminGetAppointments(request: Request, env: Env): Promise<Response> {
+  const url = new URL(request.url)
+
+  // CSV export
+  if (url.pathname.endsWith('/export')) {
+    const { results } = await env.DB.prepare(
+      `SELECT id, email, name, company, interest, source, status,
+              utm_source, utm_medium, utm_campaign,
+              referral_code, discount_code, page_url,
+              created_at, updated_at
+       FROM appointment_requests
+       ORDER BY created_at DESC`
+    ).all()
+    const rows = results as unknown as Record<string, unknown>[]
+    const header = 'id,email,name,company,interest,source,status,utm_source,utm_medium,utm_campaign,referral_code,discount_code,page_url,created_at,updated_at'
+    const csv = rows.map(r =>
+      [r.id, r.email, r.name, r.company, r.interest, r.source, r.status,
+       r.utm_source, r.utm_medium, r.utm_campaign,
+       r.referral_code, r.discount_code, r.page_url,
+       r.created_at, r.updated_at].map(v => v ?? '').join(',')
+    ).join('\n')
+    return new Response(`${header}\n${csv}`, {
+      headers: { 'Content-Type': 'text/csv', 'Content-Disposition': 'attachment; filename=appointments.csv' },
+    })
+  }
+
+  // List all
+  const statusFilter = url.searchParams.get('status') ?? ''
+  let rows: unknown[]
+  if (statusFilter) {
+    const { results } = await env.DB.prepare(
+      'SELECT * FROM appointment_requests WHERE status = ? ORDER BY created_at DESC'
+    ).bind(statusFilter).all()
+    rows = results
+  } else {
+    const { results } = await env.DB.prepare(
+      'SELECT * FROM appointment_requests ORDER BY created_at DESC'
+    ).all()
+    rows = results
+  }
+  return json({ ok: true, appointments: rows as unknown[] })
+}
+
+async function handleAdminUpdateAppointment(request: Request, env: Env): Promise<Response> {
+  const url = new URL(request.url)
+  const idMatch = url.pathname.match(/^\/api\/admin\/appointment-requests\/(\d+)$/)
+  if (!idMatch) return json({ ok: false, error: 'Appointment ID required' }, 400)
+
+  const id = parseInt(idMatch[1], 10)
+  try {
+    const body = await request.json() as { status?: string }
+    if (body.status && !['pending', 'verified', 'completed', 'cancelled'].includes(body.status)) {
+      return json({ ok: false, error: 'Invalid status' }, 400)
+    }
+    await env.DB.prepare(`
+      UPDATE appointment_requests SET status = ?, updated_at = datetime('now')
+      WHERE id = ?
+    `).bind(body.status ?? 'completed', id).run()
+    return json({ ok: true })
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err)
+    return json({ ok: false, error: msg }, 400)
+  }
+}
+
+// ── Admin Subscriber Handlers ─────────────────────────────────────────────
+
+async function handleAdminGetSubscribers(request: Request, env: Env): Promise<Response> {
+  const url = new URL(request.url)
+
+  // CSV export
+  if (url.pathname.endsWith('/export')) {
+    const { results } = await env.DB.prepare(
+      `SELECT id, email, name, source, status,
+              utm_source, utm_medium, utm_campaign,
+              created_at, updated_at
+       FROM subscribers
+       ORDER BY created_at DESC`
+    ).all()
+    const rows = results as unknown as Record<string, unknown>[]
+    const header = 'id,email,name,source,status,utm_source,utm_medium,utm_campaign,created_at,updated_at'
+    const csv = rows.map(r =>
+      [r.id, r.email, r.name, r.source, r.status,
+       r.utm_source, r.utm_medium, r.utm_campaign,
+       r.created_at, r.updated_at].map(v => v ?? '').join(',')
+    ).join('\n')
+    return new Response(`${header}\n${csv}`, {
+      headers: { 'Content-Type': 'text/csv', 'Content-Disposition': 'attachment; filename=subscribers.csv' },
+    })
+  }
+
+  // List all
+  const statusFilter = url.searchParams.get('status') ?? ''
+  let rows: unknown[]
+  if (statusFilter) {
+    const { results } = await env.DB.prepare(
+      'SELECT * FROM subscribers WHERE status = ? ORDER BY created_at DESC'
+    ).bind(statusFilter).all()
+    rows = results
+  } else {
+    const { results } = await env.DB.prepare(
+      'SELECT * FROM subscribers ORDER BY created_at DESC'
+    ).all()
+    rows = results
+  }
+  return json({ ok: true, subscribers: rows as unknown[] })
+}
+
+// ── Admin Upload Handlers ─────────────────────────────────────────────────
+
+async function handleAdminUpload(request: Request, env: Env): Promise<Response> {
+  try {
+    const formData = await request.formData()
+    const file = formData.get('file') as File | null
+    const slug = formData.get('slug') as string | null
+
+    if (!file) return json({ ok: false, error: 'No file provided' }, 400)
+
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml']
+    if (!allowedTypes.includes(file.type)) {
+      return json({ ok: false, error: `Invalid file type: ${file.type}. Allowed: ${allowedTypes.join(', ')}` }, 400)
+    }
+
+    // Max 10MB
+    if (file.size > 10 * 1024 * 1024) {
+      return json({ ok: false, error: 'File too large. Max 10MB' }, 400)
+    }
+
+    // Generate path: /articles/{slug or uuid}/{filename}
+    const assetSlug = slug || crypto.randomUUID()
+    const ext = file.name.split('.').pop() || 'png'
+    const filename = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`
+    const key = `articles/${assetSlug}/${filename}`
+
+    const buffer = await file.arrayBuffer()
+    await env.CMS_ASSETS.put(key, buffer, {
+      httpMetadata: { contentType: file.type },
+    })
+
+    const publicUrl = `/cms-assets/${key}`
+
+    return json({ ok: true, url: publicUrl, key })
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err)
+    return json({ ok: false, error: msg }, 500)
+  }
+}
+
+// ── OAuth Handlers ────────────────────────────────────────────────────────
+
+function generateState(): string {
+  const bytes = new Uint8Array(16)
+  crypto.getRandomValues(bytes)
+  return Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('')
+}
+
+async function handleOAuthGoogle(request: Request, env: Env): Promise<Response> {
+  const clientId = env.GOOGLE_CLIENT_ID
+  if (!clientId) return json({ ok: false, error: 'Google OAuth not configured' }, 501)
+
+  const state = generateState()
+  const baseUrl = env.OAUTH_BASE_URL || `https://${new URL(request.url).hostname}`
+  const redirectUri = `${baseUrl}/api/admin/auth/google/callback`
+
+  // Store state in D1 with 10min expiry
+  await env.DB.prepare(
+    "INSERT INTO admin_oauth_state (state, provider, expires_at) VALUES (?, 'google', datetime('now', '+10 minutes'))"
+  ).bind(state).run()
+
+  const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=email%20profile&state=${state}`
+  return Response.redirect(url, 302)
+}
+
+async function handleOAuthGoogleCallback(request: Request, env: Env): Promise<Response> {
+  const url = new URL(request.url)
+  const code = url.searchParams.get('code')
+  const state = url.searchParams.get('state')
+
+  if (!code || !state) return json({ ok: false, error: 'Missing code or state' }, 400)
+
+  // Verify state
+  const { results } = await env.DB.prepare(
+    "SELECT 1 FROM admin_oauth_state WHERE state = ? AND provider = 'google' AND expires_at > datetime('now')"
+  ).bind(state).all()
+  if (!results || (results as unknown[]).length === 0) {
+    return json({ ok: false, error: 'Invalid or expired state' }, 400)
+  }
+  await env.DB.prepare('DELETE FROM admin_oauth_state WHERE state = ?').bind(state).run()
+
+  const clientId = env.GOOGLE_CLIENT_ID!
+  const clientSecret = env.GOOGLE_CLIENT_SECRET!
+  const baseUrl = env.OAUTH_BASE_URL || `https://${url.hostname}`
+  const redirectUri = `${baseUrl}/api/admin/auth/google/callback`
+
+  // Exchange code for token
+  const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      code, client_id: clientId, client_secret: clientSecret,
+      redirect_uri: redirectUri, grant_type: 'authorization_code',
+    }),
+  })
+  const tokenData = await tokenRes.json() as { access_token?: string; error?: string }
+  if (!tokenData.access_token) {
+    return json({ ok: false, error: tokenData.error || 'Token exchange failed' }, 400)
+  }
+
+  // Get user info
+  const userRes = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+    headers: { Authorization: `Bearer ${tokenData.access_token}` },
+  })
+  const userData = await userRes.json() as { email?: string; name?: string; id?: string }
+  if (!userData.email) {
+    return json({ ok: false, error: 'Failed to get user info' }, 400)
+  }
+
+  return handleOAuthUserLogin(request, env, userData.email, userData.name || userData.email, 'google')
+}
+
+async function handleOAuthGitHub(request: Request, env: Env): Promise<Response> {
+  const clientId = env.GITHUB_CLIENT_ID
+  if (!clientId) return json({ ok: false, error: 'GitHub OAuth not configured' }, 501)
+
+  const state = generateState()
+  const baseUrl = env.OAUTH_BASE_URL || `https://${new URL(request.url).hostname}`
+  const redirectUri = `${baseUrl}/api/admin/auth/github/callback`
+
+  await env.DB.prepare(
+    "INSERT INTO admin_oauth_state (state, provider, expires_at) VALUES (?, 'github', datetime('now', '+10 minutes'))"
+  ).bind(state).run()
+
+  const url = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=user:email&state=${state}`
+  return Response.redirect(url, 302)
+}
+
+async function handleOAuthGitHubCallback(request: Request, env: Env): Promise<Response> {
+  const url = new URL(request.url)
+  const code = url.searchParams.get('code')
+  const state = url.searchParams.get('state')
+
+  if (!code || !state) return json({ ok: false, error: 'Missing code or state' }, 400)
+
+  // Verify state
+  const { results } = await env.DB.prepare(
+    "SELECT 1 FROM admin_oauth_state WHERE state = ? AND provider = 'github' AND expires_at > datetime('now')"
+  ).bind(state).all()
+  if (!results || (results as unknown[]).length === 0) {
+    return json({ ok: false, error: 'Invalid or expired state' }, 400)
+  }
+  await env.DB.prepare('DELETE FROM admin_oauth_state WHERE state = ?').bind(state).run()
+
+  const clientId = env.GITHUB_CLIENT_ID!
+  const clientSecret = env.GITHUB_CLIENT_SECRET!
+
+  // Exchange code for token
+  const tokenRes = await fetch('https://github.com/login/oauth/access_token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded', Accept: 'application/json' },
+    body: new URLSearchParams({
+      code, client_id: clientId, client_secret: clientSecret,
+    }),
+  })
+  const tokenData = await tokenRes.json() as { access_token?: string; error?: string }
+  if (!tokenData.access_token) {
+    return json({ ok: false, error: tokenData.error || 'Token exchange failed' }, 400)
+  }
+
+  // Get user info
+  const userRes = await fetch('https://api.github.com/user', {
+    headers: { Authorization: `Bearer ${tokenData.access_token}` },
+  })
+  const userData = await userRes.json() as { email?: string; login?: string; id?: number }
+  let email = userData.email
+
+  // If public email is empty, try the emails API
+  if (!email) {
+    const emailsRes = await fetch('https://api.github.com/user/emails', {
+      headers: { Authorization: `Bearer ${tokenData.access_token}` },
+    })
+    const emails = await emailsRes.json() as Array<{ email: string; primary: boolean }>
+    const primary = emails.find(e => e.primary)
+    email = primary?.email || emails[0]?.email
+  }
+
+  if (!email) return json({ ok: false, error: 'Failed to get email' }, 400)
+
+  return handleOAuthUserLogin(request, env, email, userData.login || email, 'github')
+}
+
+async function handleOAuthUserLogin(
+  request: Request, env: Env, email: string, name: string, provider: string
+): Promise<Response> {
+  // Check if user exists in admin_users
+  const { results } = await env.DB.prepare(
+    'SELECT id, status FROM admin_users WHERE email = ?'
+  ).bind(email).all()
+  const rows = results as unknown as Array<{ id: number; status: string }>
+
+  if (!rows || rows.length === 0) {
+    // Auto-register as pending
+    await env.DB.prepare(
+      "INSERT INTO admin_users (email, name, provider, status) VALUES (?, ?, ?, 'pending')"
+    ).bind(email, name, provider).run()
+    // Redirect to pending approval page
+    return Response.redirect(new URL('/internala/pending', request.url).toString(), 302)
+  }
+
+  const user = rows[0]
+  if (user.status !== 'approved') {
+    return Response.redirect(new URL('/internala/pending', request.url).toString(), 302)
+  }
+
+  // Create session
+  const sessionId = generateSessionId()
+  const expiresAt = new Date(Date.now() + SESSION_DURATION * 1000).toISOString()
+  await env.DB.prepare(
+    'INSERT INTO admin_sessions (session_id, created_at, expires_at) VALUES (?, datetime(\'now\'), ?)'
+  ).bind(sessionId, expiresAt).run()
+
+  const response = new Response(null, { status: 302 })
+  response.headers.set('Location', '/internala')
+  response.headers.set('Set-Cookie', setSessionCookie(sessionId))
+  return response
+}
+
 // ── Router ───────────────────────────────────────────────────────────────
 
 async function handleApi(request: Request, env: Env): Promise<Response | null> {
@@ -718,6 +1053,7 @@ async function handleApi(request: Request, env: Env): Promise<Response | null> {
       case '/api/appointment-requests': return handleAppointmentRequest(request, env)
       case '/api/admin/login': return handleAdminLogin(request, env)
       case '/api/admin/logout': return handleAdminLogout(request, env)
+      case '/api/admin/upload': return handleAdminUpload(request, env)
     }
   }
 
@@ -730,6 +1066,28 @@ async function handleApi(request: Request, env: Env): Promise<Response | null> {
     // Admin articles
     if (path.startsWith('/api/admin/articles')) {
       return handleAdminGetArticles(request, env)
+    }
+
+    // Admin appointment requests
+    if (path.startsWith('/api/admin/appointment-requests')) {
+      return handleAdminGetAppointments(request, env)
+    }
+
+    // Admin subscribers
+    if (path.startsWith('/api/admin/subscribers')) {
+      return handleAdminGetSubscribers(request, env)
+    }
+
+    // OAuth endpoints
+    switch (path) {
+      case '/api/admin/auth/google':
+        return handleOAuthGoogle(request, env)
+      case '/api/admin/auth/google/callback':
+        return handleOAuthGoogleCallback(request, env)
+      case '/api/admin/auth/github':
+        return handleOAuthGitHub(request, env)
+      case '/api/admin/auth/github/callback':
+        return handleOAuthGitHubCallback(request, env)
     }
 
     switch (path) {
@@ -751,6 +1109,11 @@ async function handleApi(request: Request, env: Env): Promise<Response | null> {
     if (request.method === 'DELETE') return handleAdminDeleteArticle(request, env)
   }
 
+  // Admin appointment request mutation (PUT to update status)
+  if (path.startsWith('/api/admin/appointment-requests')) {
+    if (request.method === 'PUT') return handleAdminUpdateAppointment(request, env)
+  }
+
   return null
 }
 
@@ -761,6 +1124,8 @@ export interface Env {
   ASSETS: Fetcher
   /** D1 database for transaction log + business data */
   DB: D1Database
+  /** R2 bucket for CMS asset uploads */
+  CMS_ASSETS: R2Bucket
   /** Feature flag: enable/disable order form */
   FEATURE_ORDER_ENABLED?: string
   /** Email forwarding (Resend API key — optional) */
@@ -773,6 +1138,16 @@ export interface Env {
   ADMIN_PASSWORD?: string
   /** Admin PIN (second factor, set in Cloudflare dashboard) */
   ADMIN_PIN?: string
+  /** Google OAuth client ID */
+  GOOGLE_CLIENT_ID?: string
+  /** Google OAuth client secret */
+  GOOGLE_CLIENT_SECRET?: string
+  /** GitHub OAuth client ID */
+  GITHUB_CLIENT_ID?: string
+  /** GitHub OAuth client secret */
+  GITHUB_CLIENT_SECRET?: string
+  /** Base URL for OAuth redirects */
+  OAUTH_BASE_URL?: string
 }
 
 // ── Main entry ───────────────────────────────────────────────────────────
@@ -788,6 +1163,20 @@ export default {
         // Rewrite to the static article page — Vue component reads slug from URL
         url.pathname = '/insights/article/'
         return env.ASSETS.fetch(new Request(url.toString(), request))
+      }
+
+      // Serve uploaded CMS assets from R2
+      const assetsMatch = url.pathname.match(/^\/cms-assets\/(.+)$/)
+      if (assetsMatch) {
+        const key = assetsMatch[1]
+        const object = await env.CMS_ASSETS.get(key)
+        if (!object) {
+          return json({ ok: false, error: 'Asset not found' }, 404)
+        }
+        const headers = new Headers()
+        headers.set('Content-Type', object.httpMetadata?.contentType || 'application/octet-stream')
+        headers.set('Cache-Control', 'public, max-age=31536000, immutable')
+        return new Response(object.body, { headers })
       }
 
       // Protect internal routes (redirect to login if no session)
