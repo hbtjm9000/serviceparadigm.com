@@ -1,0 +1,38 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import BookingGate from '../components/BookingGate.vue';
+---
+
+<BaseLayout
+  title="Book a Meeting | Paradigm IT Services"
+  description="Schedule a conversation with our team. Tell us about your project and we'll prepare before we meet."
+>
+  <Header logoVariant="mono-white" />
+  <main id="main">
+    <section class="bg-tertiary text-on-tertiary py-20 lg:py-28 relative overflow-hidden">
+      <div class="absolute -bottom-10 -right-20 text-[20rem] font-black text-white/5 font-serif pointer-events-none select-none" aria-hidden="true">
+        Book
+      </div>
+      <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+        <h1 class="font-serif text-5xl md:text-6xl lg:text-7xl text-white leading-[1.05] mt-4 max-w-4xl text-balance">
+          Book a
+          <br />
+          <span class="italic text-secondary-fixed-dim">Meeting.</span>
+        </h1>
+        <p class="mt-8 max-w-xl text-white/70 font-body leading-relaxed text-lg">
+          Tell us a bit about yourself so we can prepare before we meet.
+          Already booked before? You'll skip straight to the calendar.
+        </p>
+      </div>
+    </section>
+
+    <section class="bg-surface py-20 lg:py-28">
+      <div class="max-w-3xl mx-auto px-6 lg:px-8">
+        <BookingGate client:load />
+      </div>
+    </section>
+  </main>
+  <Footer />
+</BaseLayout>

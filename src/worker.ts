@@ -336,6 +336,72 @@ async function handleOrder(request: Request, env: Env): Promise<Response> {
   }
 }
 
+async function handleAppointmentRequest(request: Request, env: Env): Promise<Response> {
+  const cf = (request as any).cf as { country?: string; asOrganization?: string } | undefined
+  const tx: Transaction = {
+    requestId: requestId(),
+    endpoint: '/api/appointment-requests',
+    method: request.method,
+    body: await request.clone().json(),
+    headers: Object.fromEntries(request.headers),
+    cfCountry: cf?.country,
+    cfIp: cf?.asOrganization,
+  }
+
+  let logId = 0
+  try {
+    logId = await logBegin(env.DB, tx)
+    const { email, name, company, interest } = tx.body as {
+      email?: string; name?: string; company?: string; interest?: string
+    }
+
+    if (!email || !email.includes('@')) throw new Error('Valid email required')
+    if (!name || name.trim().length === 0) throw new Error('Name required')
+
+    // Insert appointment request
+    await env.DB.prepare(`
+      INSERT INTO appointment_requests
+        (email, name, company, interest, source,
+         utm_source, utm_medium, utm_campaign,
+         referral_code, discount_code, page_url, status)
+      VALUES (?, ?, ?, ?, 'booking',
+        ?, ?, ?,
+        ?, ?, ?,
+        'pending')
+    `).bind(
+      email, name, company || '', interest || '',
+      tx.body?.utm_source || null,
+      tx.body?.utm_medium || null,
+      tx.body?.utm_campaign || null,
+      tx.body?.referral_code || null,
+      tx.body?.discount_code || null,
+      tx.body?.page_url || null,
+    ).run()
+
+    // Also upsert into subscribers (unified contact list)
+    await env.DB.prepare(`
+      INSERT INTO subscribers (email, source, status, utm_source, utm_medium, utm_campaign)
+      VALUES (?, 'booking', 'active', ?, ?, ?)
+      ON CONFLICT(email) DO UPDATE SET
+        source = CASE WHEN source = 'newsletter' THEN 'both' ELSE 'booking' END,
+        updated_at = datetime('now')
+    `).bind(
+      email,
+      tx.body?.utm_source || null,
+      tx.body?.utm_medium || null,
+      tx.body?.utm_campaign || null,
+    ).run()
+
+    const response = { ok: true, redirect: 'https://calendar.app.google/teRByg9wRAUZSYww5' }
+    await logSuccess(env.DB, logId, response)
+    return json(response)
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err)
+    if (logId > 0) await logFailed(env.DB, logId, msg)
+    return json({ ok: false, error: msg }, 400)
+  }
+}
+
 async function handleTransactionList(request: Request, env: Env): Promise<Response> {
   const url = new URL(request.url)
   const statusFilter = url.searchParams.get('status') ?? ''
@@ -649,6 +715,7 @@ async function handleApi(request: Request, env: Env): Promise<Response | null> {
       case '/api/contact': return handleContact(request, env)
       case '/api/newsletter': return handleNewsletter(request, env)
       case '/api/order': return handleOrder(request, env)
+      case '/api/appointment-requests': return handleAppointmentRequest(request, env)
       case '/api/admin/login': return handleAdminLogin(request, env)
       case '/api/admin/logout': return handleAdminLogout(request, env)
     }
