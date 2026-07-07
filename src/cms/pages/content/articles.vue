@@ -177,13 +177,24 @@
               />
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700">Image URL</label>
-              <input
-                v-model="form.image_url"
-                type="text"
-                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                placeholder="/images/hero.jpg"
-              />
+              <label class="block text-sm font-medium text-gray-700">Image</label>
+              <div class="mt-1 flex items-center space-x-3">
+                <input
+                  v-model="form.image_url"
+                  type="text"
+                  class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                  placeholder="/images/hero.jpg"
+                />
+                <label class="cursor-pointer inline-flex items-center px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                  <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  Upload
+                  <input type="file" accept="image/*" class="hidden" @change="onFileSelected" />
+                </label>
+              </div>
+              <p v-if="uploading" class="mt-1 text-xs text-blue-500">Uploading...</p>
+              <p v-if="uploadError" class="mt-1 text-xs text-red-500">{{ uploadError }}</p>
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700">Author ID</label>
@@ -216,6 +227,29 @@
                 min="1"
                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
               />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Sort Order</label>
+              <input
+                v-model="form.sort_order"
+                type="number"
+                min="0"
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+              />
+              <p class="mt-1 text-xs text-gray-400">Lower numbers appear first</p>
+            </div>
+            <div>
+              <label class="flex items-center mt-6">
+                <input
+                  v-model="form.is_pinned"
+                  type="checkbox"
+                  class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 h-4 w-4"
+                />
+                <span class="ml-2 text-sm text-gray-700">Pin to top</span>
+              </label>
             </div>
           </div>
         </div>
@@ -252,6 +286,8 @@ interface Article {
   image_url?: string
   author_id: string
   read_time_minutes?: number
+  sort_order?: number
+  is_pinned?: number
   status: string
   published_at?: string
 }
@@ -259,6 +295,8 @@ interface Article {
 const loading = ref(true)
 const error = ref<string | null>(null)
 const saving = ref(false)
+const uploading = ref(false)
+const uploadError = ref<string | null>(null)
 const articles = ref<Article[]>([])
 const showCreateModal = ref(false)
 const editingArticle = ref<Article | null>(null)
@@ -272,6 +310,8 @@ const form = reactive({
   image_url: '',
   author_id: 'hal',
   read_time_minutes: 5,
+  sort_order: 0,
+  is_pinned: false,
   status: 'draft',
 })
 
@@ -300,7 +340,42 @@ function closeModal() {
   form.image_url = ''
   form.author_id = 'hal'
   form.read_time_minutes = 5
+  form.sort_order = 0
+  form.is_pinned = false
   form.status = 'draft'
+}
+
+async function onFileSelected(event: Event) {
+  const input = event.target as HTMLInputElement
+  if (!input.files?.length) return
+
+  uploading.value = true
+  uploadError.value = null
+
+  try {
+    const fd = new FormData()
+    fd.append('file', input.files[0])
+    fd.append('slug', form.slug || '')
+
+    const res = await fetch('/api/admin/upload', {
+      method: 'POST',
+      body: fd,
+    })
+
+    const data = await res.json()
+
+    if (data.ok) {
+      form.image_url = data.url
+    } else {
+      uploadError.value = data.error || 'Upload failed'
+    }
+  } catch {
+    uploadError.value = 'Upload failed'
+  } finally {
+    uploading.value = false
+    // Reset file input so re-selecting same file triggers change
+    input.value = ''
+  }
 }
 
 function editArticle(article: Article) {
@@ -313,6 +388,8 @@ function editArticle(article: Article) {
   form.image_url = article.image_url || ''
   form.author_id = article.author_id
   form.read_time_minutes = article.read_time_minutes || 5
+  form.sort_order = article.sort_order ?? 0
+  form.is_pinned = !!article.is_pinned
   form.status = article.status
 }
 

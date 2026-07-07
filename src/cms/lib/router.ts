@@ -15,7 +15,23 @@ const routes = [
     children: [
       {
         path: '',
-        redirect: '/experiments',
+        redirect: '/dashboard',
+      },
+      {
+        path: 'dashboard',
+        component: () => import('../pages/dashboard/index.vue'),
+      },
+      {
+        path: 'content',
+        component: () => import('../pages/content/articles.vue'),
+      },
+      {
+        path: 'appointments',
+        component: () => import('../pages/appointments/index.vue'),
+      },
+      {
+        path: 'subscribers',
+        component: () => import('../pages/subscribers/index.vue'),
       },
       {
         path: 'experiments',
@@ -24,10 +40,6 @@ const routes = [
       {
         path: 'experiments/:key',
         component: () => import('../pages/experiments/[key].vue'),
-      },
-      {
-        path: 'content',
-        component: () => import('../pages/content/articles.vue'),
       },
     ],
   },

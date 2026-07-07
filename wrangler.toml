@@ -1,5 +1,5 @@
 name = "serviceparadigm-com"
-main = "src/worker.js"
+main = "src/worker.ts"
 compatibility_date = "2026-06-12"
 compatibility_flags = ["nodejs_compat"]
 workers_dev = true
@@ -19,6 +19,11 @@ routes = [
 binding = "DB"
 database_name = "serviceparadigm-db"
 database_id = "22fafb86-b121-4f90-a763-2cd58412ef22"
+
+# R2 bucket for CMS asset uploads
+[[r2_buckets]]
+binding = "CMS_ASSETS"
+bucket_name = "paradigm-cms-assets"
 
 [vars]
 ENVIRONMENT = "production"
