@@ -1,0 +1,73 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+---
+<BaseLayout title="Cortex — Ha's Permanent Knowledge Graph | Paradigm IT Services" description="Every research output, every captured document, every insight — saved permanently. Ha's Cortex knowledge graph compounds knowledge over time.">
+  <Header logoVariant="mono-white" />
+  <main id="main">
+
+    <!-- Hero -->
+    <section class="bg-tertiary text-on-tertiary py-20 lg:py-28 relative overflow-hidden">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+        <div class="inline-block border-2 border-secondary-fixed-dim p-3 mb-4"><span class="font-serif text-4xl text-secondary-fixed-dim">Cx</span></div>
+        <h1 class="font-serif text-5xl md:text-6xl lg:text-7xl text-white leading-[1.05] mt-4 max-w-4xl">Cortex. <span class="italic text-secondary-fixed-dim">Knowledge That Compounds.</span></h1>
+        <p class="mt-6 max-w-xl text-white/70 font-body leading-relaxed text-lg">Every AI agent forgets between conversations. Cortex doesn't. Every research output, every document you capture, every insight — saved permanently into a searchable knowledge graph that grows richer over time.</p>
+        <a href="/contact" class="inline-flex items-center gap-2 bg-primary text-on-primary font-sans text-sm px-6 py-3 mt-8 hover:bg-secondary transition-colors tracking-wide group">Deploy Ha with Cortex <svg class="h-4 w-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg></a>
+      </div>
+    </section>
+
+    <!-- Problem -->
+    <section class="bg-surface py-20 lg:py-24">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="grid lg:grid-cols-2 gap-16 items-center">
+          <div>
+            <span class="font-body text-xs text-primary uppercase tracking-[0.4em] block">The Problem</span>
+            <h2 class="font-serif text-4xl lg:text-5xl text-on-surface mt-4 leading-[1.1]">Every Conversation Starts <span class="italic text-primary">From Zero.</span></h2>
+            <p class="font-body text-on-surface-variant mt-6 leading-relaxed">You spend an hour researching a topic with your AI. The result is good — thorough, sourced, actionable. Then you close the chat. Tomorrow, the AI remembers nothing. You ask the same question, it starts from scratch. That's not a knowledge worker. That's a search engine with a nicer face.</p>
+            <p class="font-body text-on-surface-variant mt-4 leading-relaxed">Cortex fixes this by making every output permanent. Research, captured articles, classified content — it all goes into a knowledge graph that Ha searches before it touches the web.</p>
+          </div>
+          <div class="aspect-[4/3] bg-surface-container flex items-center justify-center">
+            <span class="font-serif text-[10rem] text-on-surface/10">Cx</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How it works -->
+    <section class="bg-surface-container py-20 lg:py-28">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="text-center mb-16">
+          <span class="font-body text-xs text-primary uppercase tracking-[0.4em] block">How It Works</span>
+          <h2 class="font-serif text-4xl lg:text-5xl text-on-surface mt-4 leading-[1.1]">Three Operations, <span class="italic text-primary">One Knowledge Graph.</span></h2>
+        </div>
+        <div class="grid md:grid-cols-3 gap-8">
+          <div class="bg-surface p-8">
+            <span class="font-serif text-5xl text-primary/20 font-bold">01</span>
+            <h3 class="font-sans text-sm text-on-surface font-semibold tracking-wide uppercase mt-4">ha_research</h3>
+            <p class="font-body text-sm text-on-surface-variant mt-2 leading-relaxed">Ask "research RAG patterns" and Ha searches Cortex first — finding what it already knows — then enriches with web results. The synthesis is saved permanently. Next time, it builds on previous research instead of repeating it.</p>
+          </div>
+          <div class="bg-surface p-8">
+            <span class="font-serif text-5xl text-primary/20 font-bold">02</span>
+            <h3 class="font-sans text-sm text-on-surface font-semibold tracking-wide uppercase mt-4">ha_capture</h3>
+            <p class="font-body text-sm text-on-surface-variant mt-2 leading-relaxed">Share a URL — YouTube, arxiv paper, newsletter, tweet. Ha detects the source type, extracts the content, classifies it (signal/framework/tool/reference/position), saves it to Cortex, and triggers a graph re-parse. Every capture makes the graph smarter.</p>
+          </div>
+          <div class="bg-surface p-8">
+            <span class="font-serif text-5xl text-primary/20 font-bold">03</span>
+            <h3 class="font-sans text-sm text-on-surface font-semibold tracking-wide uppercase mt-4">UA Graph Index</h3>
+            <p class="font-body text-sm text-on-surface-variant mt-2 leading-relaxed">All files are indexed by Understand Anything — a deterministic + LLM-enriched pipeline that builds a knowledge graph with nodes (topics, people, tools) and edges (relationships, citations, contradictions). Every week, the graph gets richer.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="bg-tertiary text-on-tertiary py-20 text-center">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <h2 class="font-serif text-4xl text-white leading-[1.1]">Make Your AI Smarter Every Day.</h2>
+        <a href="/contact" class="inline-flex items-center gap-2 bg-secondary-fixed text-on-secondary-fixed font-sans text-sm px-8 py-4 mt-8 hover:bg-white hover:text-on-surface transition-colors tracking-wide group">Deploy Ha with Cortex <svg class="h-4 w-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg></a>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</BaseLayout>

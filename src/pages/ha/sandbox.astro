@@ -1,0 +1,93 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+---
+<BaseLayout title="Bounded Sandbox — Ha's Secure Execution | Paradigm IT Services" description="Every command runs in an isolated container. Read-only filesystem, no host access, resource-limited. Zero blast radius.">
+  <Header logoVariant="mono-white" />
+  <main id="main">
+
+    <!-- Hero -->
+    <section class="bg-tertiary text-on-tertiary py-20 lg:py-28 relative overflow-hidden">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+        <div class="inline-block border-2 border-secondary-fixed-dim p-3 mb-4"><span class="font-serif text-4xl text-secondary-fixed-dim">Sx</span></div>
+        <h1 class="font-serif text-5xl md:text-6xl lg:text-7xl text-white leading-[1.05] mt-4 max-w-4xl">Bounded Sandbox. <span class="italic text-secondary-fixed-dim">Safe by Design.</span></h1>
+        <p class="mt-6 max-w-xl text-white/70 font-body leading-relaxed text-lg">AI agents with shell access are dangerous — a bad prompt can destroy data. Ha's Bounded Sandbox makes that impossible. Every command runs in a hermetic container with zero host access.</p>
+        <a href="/contact" class="inline-flex items-center gap-2 bg-primary text-on-primary font-sans text-sm px-6 py-3 mt-8 hover:bg-secondary transition-colors tracking-wide group">Deploy a Secure Ha <svg class="h-4 w-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg></a>
+      </div>
+    </section>
+
+    <!-- Problem -->
+    <section class="bg-surface py-20 lg:py-24">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="grid lg:grid-cols-2 gap-16 items-center lg:grid-flow-dense">
+          <div class="lg:col-start-2">
+            <span class="font-body text-xs text-primary uppercase tracking-[0.4em] block">The Risk</span>
+            <h2 class="font-serif text-4xl lg:text-5xl text-on-surface mt-4 leading-[1.1]">An AI Agent With Shell Access <span class="italic text-primary">Is an Incident Waiting to Happen.</span></h2>
+            <p class="font-body text-on-surface-variant mt-6 leading-relaxed">The scenario: you ask your agent to clean up old log files. It interprets the prompt too broadly and runs <code class="text-primary text-sm">rm -rf /</code>. Or a prompt injection attack tells it to exfiltrate your environment variables to a remote server. These aren't theoretical — they're documented failure modes.</p>
+            <p class="font-body text-on-surface-variant mt-4 leading-relaxed">Ha's Bounded Sandbox eliminates these risks entirely. Terminal commands run in a container that cannot reach the host, the Docker socket, or any service outside its internal network.</p>
+          </div>
+          <div class="aspect-[4/3] bg-surface-container flex items-center justify-center lg:col-start-1 lg:row-start-1">
+            <span class="font-serif text-[10rem] text-on-surface/10">Sx</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Security Specs -->
+    <section class="bg-surface-container py-20 lg:py-28">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="text-center mb-16">
+          <h2 class="font-serif text-4xl lg:text-5xl text-on-surface leading-[1.1]">The Security Profile.</h2>
+        </div>
+        <div class="max-w-3xl mx-auto">
+          <div class="grid grid-cols-2 gap-4">
+            <div class="bg-surface p-6"><span class="font-sans text-xs text-primary uppercase tracking-wider block">Rootfs</span><span class="font-body text-sm text-on-surface mt-2 block">Read-only</span></div>
+            <div class="bg-surface p-6"><span class="font-sans text-xs text-primary uppercase tracking-wider block">CPU Limit</span><span class="font-body text-sm text-on-surface mt-2 block">2 cores</span></div>
+            <div class="bg-surface p-6"><span class="font-sans text-xs text-primary uppercase tracking-wider block">Memory Limit</span><span class="font-body text-sm text-on-surface mt-2 block">4 GB</span></div>
+            <div class="bg-surface p-6"><span class="font-sans text-xs text-primary uppercase tracking-wider block">Capabilities</span><span class="font-body text-sm text-on-surface mt-2 block">ALL dropped, CHOWN + DAC only</span></div>
+            <div class="bg-surface p-6"><span class="font-sans text-xs text-primary uppercase tracking-wider block">Docker Socket</span><span class="font-body text-sm text-on-surface mt-2 block">Not mounted</span></div>
+            <div class="bg-surface p-6"><span class="font-sans text-xs text-primary uppercase tracking-wider block">User</span><span class="font-body text-sm text-on-surface mt-2 block">Non-root</span></div>
+            <div class="bg-surface p-6"><span class="font-sans text-xs text-primary uppercase tracking-wider block">Temp Storage</span><span class="font-body text-sm text-on-surface mt-2 block">tmpfs (128 MB)</span></div>
+            <div class="bg-surface p-6"><span class="font-sans text-xs text-primary uppercase tracking-wider block">Network</span><span class="font-body text-sm text-on-surface mt-2 block">Internal bridge only</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Defence layers -->
+    <section class="bg-surface py-20 lg:py-24">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="text-center mb-16">
+          <h2 class="font-serif text-4xl lg:text-5xl text-on-surface leading-[1.1]">Defence in Depth. <span class="italic text-primary">Not a Single Wall.</span></h2>
+        </div>
+        <div class="grid md:grid-cols-3 gap-8">
+          <div class="text-center">
+            <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto"><span class="font-serif text-2xl text-primary font-bold">1</span></div>
+            <h3 class="font-sans text-sm text-on-surface font-semibold tracking-wide uppercase mt-6">Container Isolation</h3>
+            <p class="font-body text-sm text-on-surface-variant mt-2">Commands run in a dedicated Docker container, not on the host. Process-level isolation.</p>
+          </div>
+          <div class="text-center">
+            <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto"><span class="font-serif text-2xl text-primary font-bold">2</span></div>
+            <h3 class="font-sans text-sm text-on-surface font-semibold tracking-wide uppercase mt-6">Resource Controls</h3>
+            <p class="font-body text-sm text-on-surface-variant mt-2">CPU, memory, and storage are capped. A runaway process can't consume host resources.</p>
+          </div>
+          <div class="text-center">
+            <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto"><span class="font-serif text-2xl text-primary font-bold">3</span></div>
+            <h3 class="font-sans text-sm text-on-surface font-semibold tracking-wide uppercase mt-6">No Escalation Path</h3>
+            <p class="font-body text-sm text-on-surface-variant mt-2">No Docker socket, no privileged mode, no kernel capabilities. The sandbox cannot escape itself.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="bg-tertiary text-on-tertiary py-20 text-center">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <h2 class="font-serif text-4xl text-white leading-[1.1]">Your Data, Your Control.</h2>
+        <a href="/contact" class="inline-flex items-center gap-2 bg-secondary-fixed text-on-secondary-fixed font-sans text-sm px-8 py-4 mt-8 hover:bg-white hover:text-on-surface transition-colors tracking-wide group">Deploy a Secure Ha <svg class="h-4 w-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg></a>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</BaseLayout>
