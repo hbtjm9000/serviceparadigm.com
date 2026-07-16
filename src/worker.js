@@ -144,13 +144,13 @@ async function handleContact(request, env) {
   let logId = 0;
   try {
     logId = await logBegin(env.DB, tx);
-    const response = { ok: true, request_id: tx.requestId };
+    const response = { success: true, request_id: tx.requestId };
     await logSuccess(env.DB, logId, response);
     return json(response);
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     if (logId > 0) await logFailed(env.DB, logId, msg);
-    return json({ ok: false, error: msg }, 500);
+    return json({ success: false, error: msg }, 500);
   }
 }
 async function handleNewsletter(request, env) {
