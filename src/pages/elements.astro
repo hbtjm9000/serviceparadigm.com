@@ -13,6 +13,11 @@ interface Element {
 }
 
 const elements: Element[] = [
+  { 
+    symbol: "Ha", name: "Hermes Agent", route: "/elements/hermes-agent",
+    description: "Deploy and manage your own autonomous AI agent infrastructure—powered by Nous Research's Hermes Agent. Deterministic, sovereign, and fully under your control.",
+    features: ["Agent lifecycle management", "Deterministic workspace", "Private model inference", "24/7 NOC support"]
+  },
   {
   symbol: "Ax", name: "Automata", route: "/elements/automata",
   description: "Autonomous AI agents that handle your business processes — invoicing, scheduling, procurement, and customer resolution. Self-hosted on Jamaican infrastructure.",
@@ -42,11 +47,6 @@ const elements: Element[] = [
     symbol: "Cp", name: "Compute", route: "/elements/cloud",
     description: "Public, private, and hybrid cloud infrastructure — including local and sovereign solutions. Compute capacity where you need it.",
     features: ["Multi-cloud management", "Infrastructure as Code", "Cost optimization", "24/7 monitoring"]
-  },
-  { 
-    symbol: "Ha", name: "Hermes Agent", route: "/elements/hermes-agent",
-    description: "Deploy and manage your own autonomous AI agent infrastructure—powered by Nous Research's Hermes Agent. Deterministic, sovereign, and fully under your control.",
-    features: ["Agent lifecycle management", "Deterministic workspace", "Private model inference", "24/7 NOC support"]
   },
 ];
 ---
