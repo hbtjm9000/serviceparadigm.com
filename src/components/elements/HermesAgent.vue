@@ -89,7 +89,7 @@ const features = [
   { symbol: 'Sx', title: 'Bounded Sandbox', desc: 'Isolated execution environment. Read-only filesystem, no host access, resource-limited. Zero blast radius on bad prompts.' },
   { symbol: 'Mo', title: 'Mixture of Agents', desc: 'Three AI models in parallel — advisors generate analysis, an aggregator synthesises the final answer. Catches blind spots.' },
   { symbol: 'Ha', title: 'Multi-Platform Gateway', desc: 'Works on Telegram, Discord, WhatsApp, Signal, Email, and CLI. Same agent, same memory, everywhere.' },
-  { symbol: 'Ha', title: 'TencentDB Memory', desc: '4-tier local memory (L0-L3). Remembers your preferences, writing style, and recurring tasks across sessions. Zero external API calls.' },
-  { symbol: 'Ha', title: '21 Curated Skills', desc: 'Research, content capture, morning housekeeping, writing, operations — pre-installed and security-reviewed. Ready on day one.' },
+  { symbol: 'Ha', title: 'Persistent Local Memory', desc: 'Remembers your preferences, writing style, and recurring tasks across sessions. Zero external API calls — your data stays on your infrastructure.' },
+  { symbol: 'Ha', title: 'Curated Agent Skills', desc: 'Research, content capture, morning housekeeping, writing, operations — pre-installed and security-reviewed. Ready on day one.' },
 ]
 </script>
